@@ -158,7 +158,7 @@ export async function run(s, G, flow, k) {
 
   const c = site.centre, sp = site.spacing;
   const play = gamePose(G, site);
-  d.shift(0, -0.05);                                  // the field sits a little low: the HUD's formula chip owns the top
+  d.shift(0, hudShift());                             // the field sits a little low: the HUD's formula chip owns the top
   s.onKill(() => d.shift(0, 0));
   // the camera descends to the zone (after NEXT: up and over from the last one)
   await s.run(d.path({ points: [c.clone().add(V(-sp * 1.4, sp * 2.6, sp * 3.2)), play.pos], target: [c.clone().add(V(0, 0, -sp * 0.6)), play.target], fov: [50, play.fov], roll: 'bank', bank: 0.8, dur: 2.6, ease: Ease.inOutCubic, blendIn: 0.1 }));
@@ -263,7 +263,6 @@ export async function run(s, G, flow, k) {
   for (const isl of site.islands) if (isl.area !== shape.area) { isl.sink(1.8); P.ocean.ripple(isl.position.x, isl.position.z, 0.5); }
   tags.forEach((t, i) => { if (site.islands[i].area !== shape.area) G.labels.remove(t, true); });
   if (shape.vo.after) await say(s, G, shape.vo.after);
-  hud.formula(null);
   if (G.auto) setTimeout(() => hud._next(), 1500);
   await s.run(hud.next());
   G.labels.clear(true); dims.dispose(); flow.dims = null;
@@ -278,11 +277,18 @@ export async function run(s, G, flow, k) {
 /** the playing view over a site: all three islands, the ship, room for the HUD */
 function gamePose(G, site) {
   const c = site.centre, sp = site.spacing, aspect = G.camera.aspect;
-  const R = sp * 1.32 * (aspect < 1.3 ? 1.25 : 1);
-  const fov = 46, pitch = 57 * DEG;
-  const dist = R / Math.sin((fov * DEG) / 2) * (aspect < 1 ? 1.6 : 1) * 0.92;
+  const fov = 46, pitch = 57 * DEG, vf = (fov * DEG) / 2, hf = Math.atan(Math.tan(vf) * aspect);
+  let dist;
+  if (aspect >= 1.3) dist = (sp * 1.32) / Math.sin(vf) * 0.92;
+  else {
+    // a narrow screen: the field's width (three islands across) decides, the height has room to spare
+    const half = sp * 1.32 * 1.08;
+    dist = Math.max(half / Math.tan(hf), (sp * 1.32) / Math.sin(vf) * 0.92 * 0.85);
+  }
   return { pos: c.clone().add(V(0, Math.sin(pitch) * dist, Math.cos(pitch) * dist)), target: c.clone().add(V(0, 0, -sp * 0.08)), fov, roll: 0 };
 }
+/** the field sits a little low, clear of the HUD's top band (hearts, fleet, formula chip): more on a short screen */
+const hudShift = () => -clamp(110 / innerHeight * 0.5, 0.04, 0.15);
 
 /* ------------------------------------------------------- flying the ship */
 async function fly(s, G, flow, { site, ship, play, hoverLoop, first, tags, k }) {
@@ -378,9 +384,10 @@ async function landExact(s, G, { site, ship, isl, k, tags, hoverLoop, auto = fal
   await s.wait(0.25);
   A.play('success'); A.play('confetti');
   P.confetti.burst(V(pos.x, TOP + 2, pos.z), 170, { speed: 8, up: 11, spread: 1.6 });
-  tags.forEach((t, i) => G.labels.cls(t, 'good', site.islands[i] === isl));
-  // the working, as a hologram over the ship (praise the method)
-  G.labels.add(`work-${k}`, `<div class="rule-tag"><b>${site.shape.rule.toUpperCase()}</b><span>${site.shape.work} = ${site.shape.area} ✓</span></div>`, { worldPos: () => V(pos.x, TOP + 5.2, pos.z), anchor: 'bottom' });
+  tags.forEach((t, i) => { if (site.islands[i] === isl) G.labels.cls(t, 'good', true); else G.labels.remove(t, true); });
+  // the working, as a hologram over the ship (praise the method); it takes over from the HUD's formula chip
+  hud.formula(null);
+  G.labels.add(`work-${k}`, `<div class="rule-tag"><b>${site.shape.rule.toUpperCase()}</b><span>${site.shape.work} = ${site.shape.area} ✓</span></div>`, { worldPos: () => V(pos.x, TOP + 3.6, pos.z), anchor: 'bottom' });
   // a hero shot: low, round the landed ship
   d.orbit({ center: V(pos.x, TOP + 1, pos.z), radius: ship.size * 2.1 + 4, height: [2.5, 4.5], from: -14, to: 40, fov: 40, dur: 6, ease: Ease.inOutSine });
   if (!auto) { await say(s, G, 'o.perfect'); await say(s, G, 'o.success'); }
@@ -499,4 +506,4 @@ async function autopilot(s, G, { ship, isl }) {
   ship.vel.set(0, 0, 0);
 }
 
-void scaledVerts; void Tex; void SHAPES; void clamp; void fx;
+void scaledVerts; void Tex; void SHAPES; void fx;

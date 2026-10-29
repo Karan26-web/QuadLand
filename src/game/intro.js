@@ -24,14 +24,15 @@ export async function run(s, G) {
 
   // 1 — the engine, very close
   d.handheld(0.9); d.shake(0.35);
-  await d.cut({ pos: V(2.6, 6.4, 16.2), target: V(0, 5.6, 11.4), fov: 64, roll: -0.12 });
+  // up behind the right wing: the three pods' honeycomb nozzles blazing toward us (well outside their flames)
+  await d.cut({ pos: V(7.5, 10.5, 22), target: V(1.5, 3.6, 10.5), fov: 56, roll: -0.14 });
   G.post.fx.ca = 0.004;
   await s.wait(1.4);
   // 2 — back and away along the hull, banking, then round the nose
   A.play('whoosh', { dur: 1.2, from: 0.6, to: -0.6, vol: 0.32 });
   fx(G, 'ca', 0, 1.6);
   d.handheld(0.2);
-  await s.run(d.path({ points: [V(6, 10, 25), V(-14, 13, 32), V(-34, 7, 16)], target: V(0, 1, -2), fov: [64, 44], roll: 'bank', bank: 1.3, dur: 3.0, ease: Ease.inOutSine }));
+  await s.run(d.path({ points: [V(6, 14, 30), V(-14, 14, 32), V(-34, 7, 16)], target: V(0, 1, -2), fov: [56, 44], roll: 'bank', bank: 1.3, dur: 3.0, ease: Ease.inOutSine }));
   A.play('flyby', { dur: 2.6, from: -0.9, to: 0.9, vol: 0.42 });
   await s.run(d.path({ points: [V(-38, 2, -8), V(-14, -5, -44), V(24, 2, -46), V(40, 7, -24)], target: V(0, 1, -12), fov: [44, 40], roll: 'bank', bank: 1.6, dur: 3.4, ease: Ease.inOutSine, blendIn: 0.15 }));
 

@@ -153,7 +153,7 @@ export function riseIsland(G, isl, { dur = 2.4, shake = 0.14 } = {}) {
   let pour = 0;
   const off = G.onFrame((dt) => {
     pour += dt;
-    if (pour < dur + 1.6) P.pour(isl, pour < dur ? 1.4 : 0.6);
+    if (pour < dur + 1.6) P.pour(isl, pour < dur ? 1.4 : 0.5, dt);
     else off();
   });
   setTimeout(() => { P.splash(pos.x, pos.z, { count: 90, power: 1.3, radius: isl.verts.reduce((m, p) => Math.max(m, Math.hypot(p.x, p.y)), 0) * 0.8 }); A.play('splash', { vol: 0.32 }); P.ocean.ripple(pos.x, pos.z, 0.55); }, dur * 0.8 * 1000 / G.clock.scale);

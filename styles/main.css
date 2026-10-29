@@ -354,6 +354,9 @@ body.question-on #subs { display: none; }
   .hearts { gap: 5px; padding: 6px 10px; } .heart { width: 24px; height: 22px; }
   .fleet .fs { width: 28px; height: 21px; }
   .formula, .caption { top: calc(var(--pad) * 0.6 + var(--sat) + 48px); }
+  .formula { font-size: 15px; padding: 6px 16px 7px; } .caption { font-size: 14px; padding: 7px 16px; }
+  .area-tag { padding: 3px 9px 5px; min-width: 56px; } .area-tag b { font-size: 20px; } .area-tag small { font-size: 10px; }
+  .dim-tag { font-size: 15px; }
   body.caption-on .formula { top: calc(var(--pad) * 0.6 + var(--sat) + 96px); }
   .ck-gauge { padding: 6px 10px; } .g-label, .g-unit { font-size: 10px; }
   .ck-lever { padding: 4px 10px; gap: 3px; } .lv-label { font-size: 10px; } .lv-slot { height: clamp(52px, 14vh, 90px); width: 40px; } .lv-handle { width: 64px; height: 28px; margin-left: -32px; }

@@ -111,12 +111,13 @@ export class PlanetWorld {
         life: 2 + Math.random(), size: 2.5 * power, sizeEnd: 7 * power, color: 0xc9bfff, alpha: 0.32, alphaEnd: 0, drag: 0.8 };
     });
   }
-  /** water pouring off an island's edges as it comes up */
-  pour(isl, k = 1) {
+  /** water pouring off an island's edges as it comes up (k: how hard, dt: this frame; about 90 drops a second per island) */
+  pour(isl, k = 1, dt = 1 / 60) {
     const v = isl.verts, P = this.spray;
     for (let i = 0; i < v.length; i++) {
       const a = v[i], b = v[(i + 1) % v.length];
-      for (let j = 0; j < 6 * k; j++) {
+      const n = Math.floor(22 * k * dt + Math.random());
+      for (let j = 0; j < n; j++) {
         const t = Math.random(), px = a.x + (b.x - a.x) * t, py = a.y + (b.y - a.y) * t;
         const dx = b.y - a.y, dy = -(b.x - a.x), l = Math.hypot(dx, dy);
         const pos = new THREE.Vector3(px, 0, -py).applyMatrix4(isl.matrixWorld);
