@@ -61,5 +61,6 @@ export const art = {
     }
     if (this.has('logo')) { const img = document.querySelector('.tt-art'); img.src = this.url('logo'); img.hidden = false; document.querySelector('.tt-text').hidden = true; }
     if (this.has('cockpit')) { const img = document.querySelector('.ck-art'); img.src = this.url('cockpit'); img.hidden = false; document.body.classList.add('ck-painted'); }
+    if (this.has('icon')) { const l = document.getElementById('favicon'); if (l) l.href = this.url('icon'); }
   },
 };

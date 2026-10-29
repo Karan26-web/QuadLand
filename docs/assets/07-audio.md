@@ -1,6 +1,6 @@
 # 07 · Sound effects and music (optional upgrades)
 
-The game already has a full sound design, synthesised live by `src/engine/audio.js`: 73 cues, 8 continuous loops and a generative score with 8 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
+The game already has a full sound design, synthesised live by `src/engine/audio.js`: 67 cues, 8 continuous loops and a generative score with 8 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
 
 **To install a recording:**
 1. Save it as `assets/sfx/<anything>.m4a` (AAC, which plays in every browser including iPad Safari), or `.mp3`.

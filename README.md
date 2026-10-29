@@ -69,7 +69,7 @@ src/main.js                     boot (renderer, post, worlds, loading), the fram
 src/engine/
   camera.js                     the camera director: spline paths with banking, orbits, dolly zoom, chase, whip pans, trauma shake, FOV punch, lens shift, motion blur
   post.js                       the HDR pipeline: dual-Kawase bloom, chromatic aberration, warp zoom blur, whip smear, glitch, drone feed, ACES, grading
-  audio.js                      procedural sound: buses, reverb, 73 cues, 8 live loops, a generative score with 8 moods; recorded files override cues
+  audio.js                      procedural sound: buses, reverb, 67 cues, 8 live loops, a generative score with 8 moods; recorded files override cues
   voice.js                      the narrator: decoded lines through Web Audio (the waveform and the orb follow the real voice), subtitles, ducking
   clock.js, tween.js            game time and real time, slow motion, cancellable scripts
   input.js, labels.js, fx.js, assets.js, util.js

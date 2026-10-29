@@ -14,7 +14,7 @@
 | A water planet with living waves, inspired by Interstellar's water planet | A living sea: six Gerstner waves, ripples, foam, subsurface glow, a moon-glitter path, plankton sparkles after the scan. Mountain-sized waves roll on the horizon: they read first as mountains, then you see them move. §6. |
 | Land quad ships on lands that rise from the water | Screens 3–12 (§3). |
 | Optional: a landing simulation like the airplane game's | Used for the trip to the planet: steer, thrust, hold to descend, in the cockpit with the airplane game's guided, unfailable rhythm. The five landings keep the LXD's joystick + GO, so a miss is always a wrong area, never a shaky thumb (§4). |
-| Proper SFX and audio throughout | 73 synthesised cues, 8 live loops and a generative score with 8 moods; temp narration for all 110 lines. Recordings can replace any of them (§7). |
+| Proper SFX and audio throughout | 67 synthesised cues, 8 live loops and a generative score with 8 moods; temp narration for all 110 lines. Recordings can replace any of them (§7). |
 | Asset MD files for GPT | `docs/assets/00-README.md` to `08-voice.md`: 19 picture slots with ready-to-paste prompts and acceptance checks, an audio upgrade list and the voice script. |
 | No Swiftee (user, mid-brief) | The Ship AI presents the lesson: the same narrator as the cockpit, shown as a pulsing orb (§4.3). The LXD's Screen 6 says Swiftee greets the learner; this is the one place the build departs from the LXD's text on the user's instruction. |
 
@@ -126,7 +126,7 @@ The options stay open and are never struck out, as the earlier LXD reviews asked
 ## 7. Audio
 `src/engine/audio.js`:
 - **Buses:** SFX, music, ambience and voice, through a limiter, plus a generated reverb.
-- **73 one-shot cues.** Every learner-facing event has a sound, and each outcome has its own sound family.
+- **67 one-shot cues.** Every learner-facing event has a sound, and each outcome has its own sound family.
 - **8 live loops** that follow the game: the engine with the thrust lever, the hover jets with the ship's speed, the warp tunnel, re-entry plasma, the sea, the drone, the tractor beam.
 - **A generative score**, one mood per part: title, cockpit, warp, planet, lesson, landing, complete.
 - **The narrator ducks the music.**
