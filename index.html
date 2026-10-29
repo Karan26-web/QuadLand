@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#05030f" />
+  <title>Spaceship Mission</title>
+  <link rel="preload" href="assets/fonts/Exo2-500-700-800-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="assets/fonts/Nunito-600-700-800-900-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <canvas id="gl" aria-hidden="true"></canvas>
+
+  <!-- ================================================================ cockpit -->
+  <div id="cockpit" class="layer" hidden>
+    <div class="ck-shake">
+      <div class="ck-canopy">
+        <div class="ck-plasma"></div>
+        <div class="ck-glass"></div>
+        <div class="ck-reticle" hidden>
+          <div class="ret-ring"></div><div class="ret-cross"></div>
+          <div class="ret-lock">LOCKED</div>
+        </div>
+        <div class="ck-marker" hidden><div class="mk-box"></div><div class="mk-arrow"></div></div>
+      </div>
+      <div class="ck-frame"><img class="ck-art" alt="" hidden /><svg class="ck-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg></div>
+      <div class="ck-dash">
+        <div class="ck-gauge ck-gauge-l">
+          <div class="g-label">SPEED</div><div class="g-val" id="ckSpeed">0.4</div><div class="g-unit">LY/H</div>
+        </div>
+        <div class="ck-lever" id="ckLever" aria-label="Thrust lever" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+          <div class="lv-label">THRUST</div>
+          <div class="lv-slot"><div class="lv-fill"></div><div class="lv-ticks"></div><div class="lv-handle"><span></span></div></div>
+          <div class="lv-hint"></div>
+        </div>
+        <div class="ck-screen">
+          <div class="sc-head"><span class="sc-dot"></span><span id="ckWho">SHIP AI</span></div>
+          <canvas id="ckWave" width="480" height="120"></canvas>
+          <div class="sc-status" id="ckStatus">CRUISING</div>
+        </div>
+        <div class="ck-buttons">
+          <button class="ck-btn ck-descend" id="ckDescend" hidden><span class="b-ring"></span><span class="b-label">HOLD<br />DESCEND</span></button>
+          <button class="ck-btn ck-launch" id="ckLaunch" hidden><span class="b-ring"></span><span class="b-label">LAUNCH</span></button>
+        </div>
+        <div class="ck-gauge ck-gauge-r">
+          <div class="g-label">ALTITUDE</div><div class="g-val" id="ckAlt">——</div><div class="g-unit">KM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ drone feed -->
+  <div id="feed" class="layer" hidden>
+    <div class="fd-corner tl"></div><div class="fd-corner tr"></div><div class="fd-corner bl"></div><div class="fd-corner br"></div>
+    <div class="fd-top"><span class="fd-rec"></span><span>DRONE CAM</span><span class="fd-sep">|</span><span id="fdAlt">ALT 24 m</span></div>
+    <div class="fd-compass"><div class="fd-ticks"></div><div class="fd-needle"></div></div>
+    <div class="fd-scan" id="fdScan" hidden>SCANNING<span class="fd-pct">0%</span></div>
+    <button class="hud-big scan-btn" id="btnScan" hidden><span class="b-glow"></span><span class="b-icon" aria-hidden="true"></span><span class="b-text">SCAN</span></button>
+  </div>
+
+  <!-- =========================================================== world labels -->
+  <div id="labels" class="layer"></div>
+
+  <!-- =================================================================== HUD -->
+  <div id="hud" class="layer" hidden>
+    <div class="hud-top">
+      <div class="hearts" id="hearts" aria-label="Hearts"></div>
+      <div class="fleet" id="fleet" aria-label="Spaceships landed"></div>
+      <button class="hud-pause" id="btnPause" aria-label="Pause"><span></span><span></span></button>
+    </div>
+    <div class="formula" id="formula" hidden></div>
+    <button class="hud-big go-btn" id="btnGo" disabled><span class="b-glow"></span><span class="b-text">GO</span></button>
+    <button class="hud-big next-btn" id="btnNext" hidden><span class="b-glow"></span><span class="b-text">NEXT</span><span class="b-chev">›</span></button>
+  </div>
+
+  <!-- ================================================================ lesson -->
+  <div id="lesson" class="layer" hidden>
+    <div class="ls-top">
+      <div class="ls-ai"><canvas id="lsOrb" width="96" height="96"></canvas><span>SHIP AI</span></div>
+      <div class="ls-steps" id="lsSteps"></div>
+    </div>
+    <div class="ls-board">
+      <div class="ls-title" id="lsTitle"></div>
+      <svg class="ls-svg" id="lsSvg" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+      <div class="ls-rule" id="lsRule"></div>
+    </div>
+    <div class="ls-question" id="lsQuestion" hidden>
+      <div class="ls-q" id="lsQ"></div>
+      <div class="ls-opts" id="lsOpts"></div>
+      <div class="ls-hint" id="lsHint" hidden></div>
+    </div>
+  </div>
+
+  <!-- ===================================================== mission complete -->
+  <div id="complete" class="layer" hidden>
+    <div class="cp-title"><span>Mission complete!</span></div>
+    <button class="hud-big restart-btn" id="btnRestart" hidden><span class="b-glow"></span><span class="b-text">RESTART</span></button>
+  </div>
+
+  <!-- ===================================== the stick (cockpit steering + flying) -->
+  <div id="joystick" class="joystick"><div class="js-base"><div class="js-ring"></div><div class="js-knob"></div><div class="js-hand"></div></div></div>
+
+  <!-- ================================================ instructions + subtitles -->
+  <div id="caption" class="caption" hidden></div>
+  <div id="subs" class="layer"><div class="sub-line" id="subLine"></div></div>
+
+  <!-- ================================================================= title -->
+  <div id="title" class="layer">
+    <div class="tt-logo">
+      <img class="tt-art" alt="Spaceship Mission" hidden />
+      <div class="tt-text" aria-hidden="true"><span class="tt-l1">SPACESHIP</span><span class="tt-l2">MISSION</span></div>
+    </div>
+    <div class="tt-gate">
+      <div class="tt-bar" id="ttBar"><div class="tt-fill" id="ttFill"></div><div class="tt-pct" id="ttPct">0%</div></div>
+      <button class="tt-play" id="btnPlay" hidden><span class="b-glow"></span><span class="tt-tri" aria-hidden="true"></span><span class="b-text">PLAY</span></button>
+    </div>
+  </div>
+
+  <button id="btnSkip" class="skip" hidden>Skip <span>›</span></button>
+
+  <!-- ================================================================= pause -->
+  <div id="pause" class="layer" hidden>
+    <div class="pz-card">
+      <div class="pz-title">Paused</div>
+      <button class="pz-btn primary" id="pzResume">Resume</button>
+      <button class="pz-btn" id="pzSound">Sound: On</button>
+      <button class="pz-btn" id="pzSubs">Subtitles: On</button>
+      <button class="pz-btn" id="pzRestart">Restart mission</button>
+    </div>
+  </div>
+
+  <div id="dev" hidden></div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

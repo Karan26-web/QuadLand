@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "note": "Every picture the game can take. docs/assets/*.md says what to paint for each slot; `python3 tools/install_art.py <slot> <png>` processes a delivery into its file and sets installed: true. Until then the game draws its procedural stand-in.",
+  "slots": {
+    "logo":          { "doc": "01", "file": "img/logo.webp",          "size": [1600, 800],  "process": "magenta", "installed": false },
+    "icon":          { "doc": "01", "file": "img/icon.webp",          "size": [512, 512],   "process": "opaque",  "installed": false },
+    "cockpit":       { "doc": "02", "file": "img/cockpit.webp",       "size": [2560, 1440], "process": "magenta", "dashTop": 0.69, "installed": false },
+    "nebula_1":      { "doc": "03", "file": "img/nebula_1.webp",      "size": [1536, 1024], "process": "black",   "installed": false },
+    "nebula_2":      { "doc": "03", "file": "img/nebula_2.webp",      "size": [1536, 1024], "process": "black",   "installed": false },
+    "nebula_3":      { "doc": "03", "file": "img/nebula_3.webp",      "size": [1536, 1024], "process": "black",   "installed": false },
+    "nebula_4":      { "doc": "03", "file": "img/nebula_4.webp",      "size": [1536, 1024], "process": "black",   "installed": false },
+    "planet_ocean":  { "doc": "03", "file": "img/planet_ocean.webp",  "size": [2048, 1024], "process": "equirect","installed": false },
+    "planet_ringed": { "doc": "03", "file": "img/planet_ringed.webp", "size": [2048, 1024], "process": "equirect","installed": false },
+    "ring":          { "doc": "03", "file": "img/ring.webp",          "size": [2048, 64],   "process": "ring",    "installed": false },
+    "moon":          { "doc": "03", "file": "img/moon.webp",          "size": [1024, 512],  "process": "equirect","installed": false },
+    "hull_plating":  { "doc": "04", "file": "img/hull_plating.webp",  "size": [1024, 1024], "process": "tile",    "installed": false },
+    "rock":          { "doc": "05", "file": "img/rock.webp",          "size": [1024, 1024], "process": "tile",    "installed": false },
+    "pad":           { "doc": "05", "file": "img/pad.webp",           "size": [1024, 1024], "process": "tile",    "installed": false },
+    "pad_glow":      { "doc": "05", "file": "img/pad_glow.webp",      "size": [1024, 1024], "process": "tile",    "installed": false },
+    "cloud":         { "doc": "06", "file": "img/cloud.webp",         "size": [1024, 1024], "process": "luma",    "installed": false },
+    "smoke":         { "doc": "06", "file": "img/smoke.webp",         "size": [512, 512],   "process": "luma",    "installed": false },
+    "splash":        { "doc": "06", "file": "img/splash.webp",        "size": [512, 512],   "process": "luma",    "installed": false },
+    "spark":         { "doc": "06", "file": "img/spark.webp",         "size": [512, 128],   "process": "luma",    "installed": false }
+  }
+}

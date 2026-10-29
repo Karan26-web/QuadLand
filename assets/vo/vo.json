@@ -1,0 +1,665 @@
+{
+ "lines": {
+  "s2.welcome": {
+   "file": "s2.welcome.m4a",
+   "dur": 3.52,
+   "hash": "e8cbe7dce42d",
+   "voice": "Samantha"
+  },
+  "s2.planet": {
+   "file": "s2.planet.m4a",
+   "dur": 2.318,
+   "hash": "756816c9380c",
+   "voice": "Samantha"
+  },
+  "s2.align": {
+   "file": "s2.align.m4a",
+   "dur": 3.87,
+   "hash": "1b8714a211bd",
+   "voice": "Samantha"
+  },
+  "s2.locked": {
+   "file": "s2.locked.m4a",
+   "dur": 3.127,
+   "hash": "7dee32c49fdb",
+   "voice": "Samantha"
+  },
+  "s2.arrive": {
+   "file": "s2.arrive.m4a",
+   "dur": 2.22,
+   "hash": "a8b435c636a8",
+   "voice": "Samantha"
+  },
+  "s2.descend": {
+   "file": "s2.descend.m4a",
+   "dur": 2.945,
+   "hash": "478a76eb2e65",
+   "voice": "Samantha"
+  },
+  "s2.safe": {
+   "file": "s2.safe.m4a",
+   "dur": 2.533,
+   "hash": "a85e93ae2711",
+   "voice": "Samantha"
+  },
+  "s2.drone": {
+   "file": "s2.drone.m4a",
+   "dur": 2.489,
+   "hash": "8e30fa1341db",
+   "voice": "Samantha"
+  },
+  "s2.launch": {
+   "file": "s2.launch.m4a",
+   "dur": 2.216,
+   "hash": "30bc2239c0ad",
+   "voice": "Samantha"
+  },
+  "s3.dark": {
+   "file": "s3.dark.m4a",
+   "dur": 2.377,
+   "hash": "f59f8b859bcb",
+   "voice": "Samantha"
+  },
+  "s3.scan": {
+   "file": "s3.scan.m4a",
+   "dur": 2.185,
+   "hash": "4b5460eb8294",
+   "voice": "Samantha"
+  },
+  "s4.found": {
+   "file": "s4.found.m4a",
+   "dur": 2.948,
+   "hash": "60c31df3207a",
+   "voice": "Samantha"
+  },
+  "s4.shapes": {
+   "file": "s4.shapes.m4a",
+   "dur": 2.744,
+   "hash": "d9031fa67f28",
+   "voice": "Samantha"
+  },
+  "s5.ships": {
+   "file": "s5.ships.m4a",
+   "dur": 4.529,
+   "hash": "e1e3e059b432",
+   "voice": "Samantha"
+  },
+  "s5.match": {
+   "file": "s5.match.m4a",
+   "dur": 5.408,
+   "hash": "fc579c767f7f",
+   "voice": "Samantha"
+  },
+  "s5.need": {
+   "file": "s5.need.m4a",
+   "dur": 4.923,
+   "hash": "23d64e83817a",
+   "voice": "Samantha"
+  },
+  "s5.learn": {
+   "file": "s5.learn.m4a",
+   "dur": 2.812,
+   "hash": "a0f49dd5ea36",
+   "voice": "Samantha"
+  },
+  "l.hello": {
+   "file": "l.hello.m4a",
+   "dur": 3.375,
+   "hash": "0c3a4c7dc207",
+   "voice": "Samantha"
+  },
+  "l.area1": {
+   "file": "l.area1.m4a",
+   "dur": 3.017,
+   "hash": "7fe04196a887",
+   "voice": "Samantha"
+  },
+  "l.area2": {
+   "file": "l.area2.m4a",
+   "dur": 4.263,
+   "hash": "d575d0459d8d",
+   "voice": "Samantha"
+  },
+  "l.sq.1": {
+   "file": "l.sq.1.m4a",
+   "dur": 2.088,
+   "hash": "c04376e8eb10",
+   "voice": "Samantha"
+  },
+  "l.sq.2": {
+   "file": "l.sq.2.m4a",
+   "dur": 4.509,
+   "hash": "3756d2c51017",
+   "voice": "Samantha"
+  },
+  "l.sq.3": {
+   "file": "l.sq.3.m4a",
+   "dur": 3.574,
+   "hash": "3494eb9a5ad1",
+   "voice": "Samantha"
+  },
+  "l.sq.rule": {
+   "file": "l.sq.rule.m4a",
+   "dur": 3.044,
+   "hash": "8a60df279c9d",
+   "voice": "Samantha"
+  },
+  "l.sq.q": {
+   "file": "l.sq.q.m4a",
+   "dur": 4.021,
+   "hash": "40141d9c0cfa",
+   "voice": "Samantha"
+  },
+  "l.sq.h24": {
+   "file": "l.sq.h24.m4a",
+   "dur": 4.702,
+   "hash": "ecdd49ca2ce3",
+   "voice": "Samantha"
+  },
+  "l.sq.h12": {
+   "file": "l.sq.h12.m4a",
+   "dur": 4.33,
+   "hash": "2a8dbe397bd7",
+   "voice": "Samantha"
+  },
+  "l.sq.w": {
+   "file": "l.sq.w.m4a",
+   "dur": 3.695,
+   "hash": "fbb2c53fad4f",
+   "voice": "Samantha"
+  },
+  "l.re.1": {
+   "file": "l.re.1.m4a",
+   "dur": 3.284,
+   "hash": "b4fa97f135ae",
+   "voice": "Samantha"
+  },
+  "l.re.2": {
+   "file": "l.re.2.m4a",
+   "dur": 3.317,
+   "hash": "099703617b5f",
+   "voice": "Samantha"
+  },
+  "l.re.3": {
+   "file": "l.re.3.m4a",
+   "dur": 4.46,
+   "hash": "e0cb9a5f97a5",
+   "voice": "Samantha"
+  },
+  "l.re.rule": {
+   "file": "l.re.rule.m4a",
+   "dur": 2.727,
+   "hash": "160108254ab8",
+   "voice": "Samantha"
+  },
+  "l.re.q": {
+   "file": "l.re.q.m4a",
+   "dur": 4.327,
+   "hash": "4ad5bc1b5c46",
+   "voice": "Samantha"
+  },
+  "l.re.h22": {
+   "file": "l.re.h22.m4a",
+   "dur": 5.805,
+   "hash": "704ce29a4cb1",
+   "voice": "Samantha"
+  },
+  "l.re.h11": {
+   "file": "l.re.h11.m4a",
+   "dur": 4.444,
+   "hash": "0b89e00b909b",
+   "voice": "Samantha"
+  },
+  "l.re.w": {
+   "file": "l.re.w.m4a",
+   "dur": 3.499,
+   "hash": "98bbe5fbeee2",
+   "voice": "Samantha"
+  },
+  "l.pa.1": {
+   "file": "l.pa.1.m4a",
+   "dur": 4.965,
+   "hash": "bed20d45983b",
+   "voice": "Samantha"
+  },
+  "l.pa.2": {
+   "file": "l.pa.2.m4a",
+   "dur": 4.877,
+   "hash": "853c9058b22c",
+   "voice": "Samantha"
+  },
+  "l.pa.3": {
+   "file": "l.pa.3.m4a",
+   "dur": 3.857,
+   "hash": "ad502ff6fb97",
+   "voice": "Samantha"
+  },
+  "l.pa.4": {
+   "file": "l.pa.4.m4a",
+   "dur": 6.065,
+   "hash": "a800edbe79b1",
+   "voice": "Samantha"
+  },
+  "l.pa.rule": {
+   "file": "l.pa.rule.m4a",
+   "dur": 3.555,
+   "hash": "2b24b6d784db",
+   "voice": "Samantha"
+  },
+  "l.pa.q": {
+   "file": "l.pa.q.m4a",
+   "dur": 7.334,
+   "hash": "28502b179a90",
+   "voice": "Samantha"
+  },
+  "l.pa.h45": {
+   "file": "l.pa.h45.m4a",
+   "dur": 5.435,
+   "hash": "516ea69b1e90",
+   "voice": "Samantha"
+  },
+  "l.pa.h28": {
+   "file": "l.pa.h28.m4a",
+   "dur": 5.039,
+   "hash": "d364ebc2d0b4",
+   "voice": "Samantha"
+  },
+  "l.pa.w": {
+   "file": "l.pa.w.m4a",
+   "dur": 3.557,
+   "hash": "8aa19f35f83a",
+   "voice": "Samantha"
+  },
+  "l.rh.1": {
+   "file": "l.rh.1.m4a",
+   "dur": 3.586,
+   "hash": "76bed4a14ab7",
+   "voice": "Samantha"
+  },
+  "l.rh.2": {
+   "file": "l.rh.2.m4a",
+   "dur": 4.687,
+   "hash": "ffc11fedeb8a",
+   "voice": "Samantha"
+  },
+  "l.rh.3": {
+   "file": "l.rh.3.m4a",
+   "dur": 4.265,
+   "hash": "669e60516485",
+   "voice": "Samantha"
+  },
+  "l.rh.4": {
+   "file": "l.rh.4.m4a",
+   "dur": 6.181,
+   "hash": "2aa09507e712",
+   "voice": "Samantha"
+  },
+  "l.rh.5": {
+   "file": "l.rh.5.m4a",
+   "dur": 2.817,
+   "hash": "8a0ed339fd59",
+   "voice": "Samantha"
+  },
+  "l.rh.rule": {
+   "file": "l.rh.rule.m4a",
+   "dur": 4.994,
+   "hash": "7c17011b14d0",
+   "voice": "Samantha"
+  },
+  "l.rh.q": {
+   "file": "l.rh.q.m4a",
+   "dur": 4.618,
+   "hash": "e55cc5f4e8b7",
+   "voice": "Samantha"
+  },
+  "l.rh.h60": {
+   "file": "l.rh.h60.m4a",
+   "dur": 4.357,
+   "hash": "2af5fee5d9d0",
+   "voice": "Samantha"
+  },
+  "l.rh.h17": {
+   "file": "l.rh.h17.m4a",
+   "dur": 4.902,
+   "hash": "a04a00612e25",
+   "voice": "Samantha"
+  },
+  "l.rh.w": {
+   "file": "l.rh.w.m4a",
+   "dur": 3.711,
+   "hash": "9ed2f2f77be3",
+   "voice": "Samantha"
+  },
+  "l.tr.1": {
+   "file": "l.tr.1.m4a",
+   "dur": 6.407,
+   "hash": "07d81437126b",
+   "voice": "Samantha"
+  },
+  "l.tr.2": {
+   "file": "l.tr.2.m4a",
+   "dur": 2.848,
+   "hash": "02e22a146765",
+   "voice": "Samantha"
+  },
+  "l.tr.3": {
+   "file": "l.tr.3.m4a",
+   "dur": 3.051,
+   "hash": "b4b45ecbdbf1",
+   "voice": "Samantha"
+  },
+  "l.tr.4": {
+   "file": "l.tr.4.m4a",
+   "dur": 8.043,
+   "hash": "25696404065d",
+   "voice": "Samantha"
+  },
+  "l.tr.5": {
+   "file": "l.tr.5.m4a",
+   "dur": 3.416,
+   "hash": "2b44de037014",
+   "voice": "Samantha"
+  },
+  "l.tr.rule": {
+   "file": "l.tr.rule.m4a",
+   "dur": 5.343,
+   "hash": "fe41592fe461",
+   "voice": "Samantha"
+  },
+  "l.tr.q": {
+   "file": "l.tr.q.m4a",
+   "dur": 6.44,
+   "hash": "74e1d2d6b6a5",
+   "voice": "Samantha"
+  },
+  "l.tr.h56": {
+   "file": "l.tr.h56.m4a",
+   "dur": 4.611,
+   "hash": "ddb75c4f8d24",
+   "voice": "Samantha"
+  },
+  "l.tr.h36": {
+   "file": "l.tr.h36.m4a",
+   "dur": 5.11,
+   "hash": "66d36479d826",
+   "voice": "Samantha"
+  },
+  "l.tr.w": {
+   "file": "l.tr.w.m4a",
+   "dur": 4.39,
+   "hash": "bd536447e71a",
+   "voice": "Samantha"
+  },
+  "l.ok1": {
+   "file": "l.ok1.m4a",
+   "dur": 1.697,
+   "hash": "dc3719ebba55",
+   "voice": "Samantha"
+  },
+  "l.ok2": {
+   "file": "l.ok2.m4a",
+   "dur": 1.867,
+   "hash": "c3d3c534a5c7",
+   "voice": "Samantha"
+  },
+  "l.ok3": {
+   "file": "l.ok3.m4a",
+   "dur": 1.674,
+   "hash": "231cf29d544a",
+   "voice": "Samantha"
+  },
+  "l.ok4": {
+   "file": "l.ok4.m4a",
+   "dur": 1.56,
+   "hash": "a8b2adf35720",
+   "voice": "Samantha"
+  },
+  "l.ok5": {
+   "file": "l.ok5.m4a",
+   "dur": 1.809,
+   "hash": "7df6cd9b49d2",
+   "voice": "Samantha"
+  },
+  "l.tryagain": {
+   "file": "l.tryagain.m4a",
+   "dur": 1.818,
+   "hash": "03dd44db94ff",
+   "voice": "Samantha"
+  },
+  "l.lookglow": {
+   "file": "l.lookglow.m4a",
+   "dur": 1.737,
+   "hash": "b2f467701277",
+   "voice": "Samantha"
+  },
+  "s7.back": {
+   "file": "s7.back.m4a",
+   "dur": 4.994,
+   "hash": "5b2a67046956",
+   "voice": "Samantha"
+  },
+  "s7.land": {
+   "file": "s7.land.m4a",
+   "dur": 2.697,
+   "hash": "b724b1667c44",
+   "voice": "Samantha"
+  },
+  "s8.here": {
+   "file": "s8.here.m4a",
+   "dur": 1.888,
+   "hash": "c8aef3c31334",
+   "voice": "Samantha"
+  },
+  "s8.space": {
+   "file": "s8.space.m4a",
+   "dur": 3.838,
+   "hash": "ea843e6fcc8e",
+   "voice": "Samantha"
+  },
+  "s8.rule": {
+   "file": "s8.rule.m4a",
+   "dur": 1.971,
+   "hash": "0a73cd2ed1b6",
+   "voice": "Samantha"
+  },
+  "s8.calc": {
+   "file": "s8.calc.m4a",
+   "dur": 4.609,
+   "hash": "e85f41a9e240",
+   "voice": "Samantha"
+  },
+  "s9.here": {
+   "file": "s9.here.m4a",
+   "dur": 1.958,
+   "hash": "70d8f3d98a70",
+   "voice": "Samantha"
+  },
+  "s9.rule": {
+   "file": "s9.rule.m4a",
+   "dur": 2.052,
+   "hash": "79cb20225a4e",
+   "voice": "Samantha"
+  },
+  "s9.find": {
+   "file": "s9.find.m4a",
+   "dur": 3.647,
+   "hash": "2ad65e1770e0",
+   "voice": "Samantha"
+  },
+  "s9.after": {
+   "file": "s9.after.m4a",
+   "dur": 5.1,
+   "hash": "09279de1e676",
+   "voice": "Samantha"
+  },
+  "s10.here": {
+   "file": "s10.here.m4a",
+   "dur": 1.807,
+   "hash": "7459523e5c05",
+   "voice": "Samantha"
+  },
+  "s10.rule": {
+   "file": "s10.rule.m4a",
+   "dur": 1.959,
+   "hash": "041dc2c3c5ef",
+   "voice": "Samantha"
+  },
+  "s11.here": {
+   "file": "s11.here.m4a",
+   "dur": 1.865,
+   "hash": "29869f18053f",
+   "voice": "Samantha"
+  },
+  "s11.rule": {
+   "file": "s11.rule.m4a",
+   "dur": 3.793,
+   "hash": "b000313d6ecc",
+   "voice": "Samantha"
+  },
+  "s12.here": {
+   "file": "s12.here.m4a",
+   "dur": 1.842,
+   "hash": "771db4e8c054",
+   "voice": "Samantha"
+  },
+  "s12.rule": {
+   "file": "s12.rule.m4a",
+   "dur": 3.886,
+   "hash": "9c87f65c4fda",
+   "voice": "Samantha"
+  },
+  "o.perfect": {
+   "file": "o.perfect.m4a",
+   "dur": 3.005,
+   "hash": "83a7eac9aee8",
+   "voice": "Samantha"
+  },
+  "o.success": {
+   "file": "o.success.m4a",
+   "dur": 3.418,
+   "hash": "1dd26cb97b8a",
+   "voice": "Samantha"
+  },
+  "o.small": {
+   "file": "o.small.m4a",
+   "dur": 3.876,
+   "hash": "30b215f7e0e8",
+   "voice": "Samantha"
+  },
+  "o.large": {
+   "file": "o.large.m4a",
+   "dur": 3.888,
+   "hash": "5612eee617d5",
+   "voice": "Samantha"
+  },
+  "o.exact": {
+   "file": "o.exact.m4a",
+   "dur": 2.471,
+   "hash": "1d4d1f7c0e27",
+   "voice": "Samantha"
+  },
+  "o.auto": {
+   "file": "o.auto.m4a",
+   "dur": 3.048,
+   "hash": "57d83ae620b4",
+   "voice": "Samantha"
+  },
+  "h.sq.20": {
+   "file": "h.sq.20.m4a",
+   "dur": 5.689,
+   "hash": "e1a2b839ec0b",
+   "voice": "Samantha"
+  },
+  "h.sq.30": {
+   "file": "h.sq.30.m4a",
+   "dur": 3.102,
+   "hash": "243a730223f8",
+   "voice": "Samantha"
+  },
+  "h.re.24": {
+   "file": "h.re.24.m4a",
+   "dur": 5.457,
+   "hash": "1fc4706a223e",
+   "voice": "Samantha"
+  },
+  "h.re.40": {
+   "file": "h.re.40.m4a",
+   "dur": 4.421,
+   "hash": "2c670c30fabb",
+   "voice": "Samantha"
+  },
+  "h.pa.26": {
+   "file": "h.pa.26.m4a",
+   "dur": 4.516,
+   "hash": "92fcae1eb216",
+   "voice": "Samantha"
+  },
+  "h.pa.42": {
+   "file": "h.pa.42.m4a",
+   "dur": 4.39,
+   "hash": "230465d11630",
+   "voice": "Samantha"
+  },
+  "h.rh.20": {
+   "file": "h.rh.20.m4a",
+   "dur": 5.84,
+   "hash": "cd6b2cd76d7d",
+   "voice": "Samantha"
+  },
+  "h.rh.30": {
+   "file": "h.rh.30.m4a",
+   "dur": 3.162,
+   "hash": "10280f493f6a",
+   "voice": "Samantha"
+  },
+  "h.tr.40": {
+   "file": "h.tr.40.m4a",
+   "dur": 4.82,
+   "hash": "50eb54e98d4d",
+   "voice": "Samantha"
+  },
+  "h.tr.60": {
+   "file": "h.tr.60.m4a",
+   "dur": 4.937,
+   "hash": "4552c41971e8",
+   "voice": "Samantha"
+  },
+  "w.sq": {
+   "file": "w.sq.m4a",
+   "dur": 2.666,
+   "hash": "a84bc574a434",
+   "voice": "Samantha"
+  },
+  "w.re": {
+   "file": "w.re.m4a",
+   "dur": 2.48,
+   "hash": "11007e595a37",
+   "voice": "Samantha"
+  },
+  "w.pa": {
+   "file": "w.pa.m4a",
+   "dur": 2.678,
+   "hash": "d75559cefd42",
+   "voice": "Samantha"
+  },
+  "w.rh": {
+   "file": "w.rh.m4a",
+   "dur": 2.922,
+   "hash": "decc87661ab1",
+   "voice": "Samantha"
+  },
+  "w.tr": {
+   "file": "w.tr.m4a",
+   "dur": 4.721,
+   "hash": "003e3069372e",
+   "voice": "Samantha"
+  },
+  "s13.done": {
+   "file": "s13.done.m4a",
+   "dur": 4.53,
+   "hash": "320522385dbe",
+   "voice": "Samantha"
+  }
+ },
+ "voice": "Samantha"
+}

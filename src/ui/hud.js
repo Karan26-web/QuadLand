@@ -1,0 +1,89 @@
+// ---------------------------------------------------------------------------
+// The HUD: hearts, the fleet row (which ships have landed), the formula chip,
+// the instruction caption (LXD "Caption" lines), GO and NEXT, Skip, pause.
+// ---------------------------------------------------------------------------
+import { SHAPES, shapeIcon } from '../world/shapes.js';
+import { audio } from '../engine/audio.js';
+import { voice } from '../engine/voice.js';
+import { clock } from '../engine/clock.js';
+
+const $ = (id) => document.getElementById(id);
+const HEART = '<svg viewBox="0 0 32 29"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8fa6"/><stop offset="1" stop-color="#e8264f"/></linearGradient></defs><path d="M16 28 3.6 15.8C.3 12.5.3 7.1 3.6 3.8s8.7-3.3 12 0l.4.4.4-.4c3.3-3.3 8.7-3.3 12 0s3.3 8.7 0 12L16 28z" fill="url(#hg)" stroke="#ffd6df" stroke-width="1.6"/><ellipse cx="9.5" cy="8" rx="3.4" ry="2.2" fill="#fff" opacity=".55" transform="rotate(-30 9.5 8)"/></svg>';
+const HEART_CRACK = '<svg viewBox="0 0 32 29"><path d="M16 28 3.6 15.8C.3 12.5.3 7.1 3.6 3.8s8.7-3.3 12 0l.4.4.4-.4c3.3-3.3 8.7-3.3 12 0s3.3 8.7 0 12L16 28z" fill="#5a5070" stroke="#9a92b8" stroke-width="1.6"/><path d="M16 5 13.5 11l4 3.5-3 5 2 4" fill="none" stroke="#1b1240" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+
+export class HUD {
+  constructor(G) {
+    this.G = G;
+    this.el = $('hud'); this.heartsEl = $('hearts'); this.fleetEl = $('fleet'); this.formulaEl = $('formula');
+    this.captionEl = $('caption'); this.goEl = $('btnGo'); this.nextEl = $('btnNext'); this.skipEl = $('btnSkip');
+    this.fleetEl.innerHTML = SHAPES.map((s) => `<div class="fs" data-k="${s.key}">${shapeIcon(s, { stroke: '#8ee8ff' })}</div>`).join('');
+    this.hearts = 3; this.renderHearts();
+    this.goHandler = null; this.nextResolve = null; this.skipHandler = null;
+    this.goEl.addEventListener('click', () => this._go());
+    this.nextEl.addEventListener('click', () => this._next());
+    this.skipEl.addEventListener('click', () => { if (this.skipHandler) { audio.play('ui.click'); const h = this.skipHandler; this.skipHandler = null; this.skipEl.hidden = true; h(); } });
+    G.input.on_('confirm', () => { if (!this.nextEl.hidden) this._next(); else if (!this.goEl.disabled && this.goHandler) this._go(); });
+    for (const b of document.querySelectorAll('button')) b.addEventListener('pointerenter', () => { if (matchMedia('(hover: hover)').matches && !b.disabled) audio.play('ui.hover', { minGap: 0.08 }); });
+
+    // pause
+    this.pauseEl = $('pause');
+    $('btnPause').addEventListener('click', () => this.pause(true));
+    $('pzResume').addEventListener('click', () => this.pause(false));
+    $('pzSound').addEventListener('click', () => { audio.toggleMute(); this._pauseLabels(); });
+    $('pzSubs').addEventListener('click', () => { voice.setSubs(!voice.subs); this._pauseLabels(); });
+    $('pzRestart').addEventListener('click', () => { this.pause(false); G.flow.restart(); });
+    G.input.on_('back', () => { if (G.flow && G.flow.started) this.pause(!clock.paused); });
+    G.input.on_('mute', () => { audio.toggleMute(); this._pauseLabels(); });
+    this._pauseLabels();
+  }
+  show(on = true) { this.el.hidden = !on; }
+  /* hearts */
+  setHearts(n) { this.hearts = n; this.renderHearts(); }
+  renderHearts() { this.heartsEl.innerHTML = [0, 1, 2].map((i) => `<div class="heart ${i < this.hearts ? '' : 'lost'}">${i < this.hearts ? HEART : HEART_CRACK}</div>`).join(''); }
+  loseHeart() {
+    if (this.hearts <= 0) return 0;
+    this.hearts--;
+    const el = this.heartsEl.children[this.hearts];
+    if (el) { el.innerHTML = HEART_CRACK; el.classList.add('breaking', 'lost'); }
+    audio.play('ui.heart');
+    return this.hearts;
+  }
+  /* the fleet row */
+  setFleet(current, done) {
+    [...this.fleetEl.children].forEach((el, i) => { el.classList.toggle('now', i === current); el.classList.toggle('done', !!done[i]);
+      const s = SHAPES[i]; el.innerHTML = shapeIcon(s, done[i] ? { fill: '#3dffa2', stroke: '#c8ffe6' } : { stroke: i === current ? '#ffb547' : '#8ee8ff' }); });
+  }
+  /* formula + caption */
+  formula(html) { if (!html) { this.formulaEl.hidden = true; return; } this.formulaEl.innerHTML = html; this.formulaEl.hidden = false; this.formulaEl.style.animation = 'none'; void this.formulaEl.offsetWidth; this.formulaEl.style.animation = ''; audio.play('formula'); }
+  caption(text, { cool = false } = {}) {
+    if (!text) { this.captionEl.hidden = true; document.body.classList.remove('caption-on'); return; }
+    this.captionEl.textContent = text; this.captionEl.classList.toggle('cool', cool); this.captionEl.hidden = false;
+    this.captionEl.style.animation = 'none'; void this.captionEl.offsetWidth; this.captionEl.style.animation = '';
+    document.body.classList.add('caption-on');
+  }
+  /* GO */
+  goShow(on) { this.goEl.hidden = !on; if (!on) this.goEnable(false); }
+  goEnable(on) {
+    const was = !this.goEl.disabled;
+    this.goEl.disabled = !on; this.goEl.classList.toggle('ready', on);
+    if (on && !was) audio.play('go.ready');
+  }
+  onGo(fn) { this.goHandler = fn; }
+  _go() { if (this.goEl.disabled || !this.goHandler) return; audio.play('go.press'); const h = this.goHandler; h(); }
+  /* NEXT: resolves when pressed */
+  next() {
+    this.nextEl.hidden = false; this.nextEl.classList.add('pulse');
+    return new Promise((r) => { this.nextResolve = r; });
+  }
+  _next() { if (this.nextEl.hidden) return; audio.play('ui.confirm'); this.nextEl.hidden = true; const r = this.nextResolve; this.nextResolve = null; if (r) r(true); }
+  hideNext() { this.nextEl.hidden = true; if (this.nextResolve) { const r = this.nextResolve; this.nextResolve = null; r(false); } }
+  /* skip */
+  skip(fn) { this.skipHandler = fn; this.skipEl.hidden = !fn; }
+  /* pause */
+  pause(on) {
+    if (on === clock.paused) return;
+    clock.paused = on; audio.pause(on); this.pauseEl.hidden = !on;
+    if (on) { this._pauseLabels(); $('pzResume').focus({ preventScroll: true }); }
+  }
+  _pauseLabels() { $('pzSound').textContent = `Sound: ${audio.muted ? 'Off' : 'On'}`; $('pzSubs').textContent = `Subtitles: ${voice.subs ? 'On' : 'Off'}`; }
+}
