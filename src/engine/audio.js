@@ -170,9 +170,6 @@ export class AudioEngine {
 SFX['ui.hover'] = (A) => A.tone({ f0: 1500, f1: 1800, dur: 0.05, vol: 0.02, env: { a: 0.003, d: 0.02, s: 0.2, r: 0.03 } });
 SFX['ui.click'] = (A) => { A.tone({ type: 'triangle', f0: 880, f1: 520, dur: 0.08, vol: 0.12, env: { a: 0.002, d: 0.03, s: 0.2, r: 0.05 } }); A.burst({ dur: 0.03, vol: 0.1, type: 'highpass', f0: 3000 }); };
 SFX['ui.confirm'] = (A) => A.seq([[76, 0, 0.1, 1], [83, 0.08, 0.22, 1]], { vol: 0.13, type: 'sine', verb: 0.3 });
-SFX['ui.pop'] = (A) => { A.tone({ f0: 600, f1: 1400, dur: 0.07, vol: 0.12, env: { a: 0.003, d: 0.03, s: 0.3, r: 0.04 } }); };
-SFX['ui.tick'] = (A, o) => A.tone({ f0: o.f ?? 1200, dur: 0.04, vol: 0.06, env: { a: 0.002, d: 0.015, s: 0.2, r: 0.02 } });
-SFX['ui.whoosh'] = (A) => A.burst({ dur: 0.45, vol: 0.16, type: 'bandpass', f0: 300, f1: 2600, Q: 1.2, env: { a: 0.12, d: 0.15, s: 0.4, r: 0.18 } });
 SFX['ui.correct'] = (A) => { const t = A.now; A.bell(84, { t0: t, vol: 0.12 }); A.bell(91, { t0: t + 0.09, vol: 0.11 }); A.bell(96, { t0: t + 0.18, vol: 0.1, dur: 2 }); A.burst({ t0: t + 0.1, dur: 0.6, vol: 0.05, type: 'highpass', f0: 7000, verb: 0.5 }); };
 SFX['ui.wrong'] = (A) => { const t = A.now; A.tone({ type: 'triangle', f0: 330, f1: 260, dur: 0.22, vol: 0.12, t0: t }); A.tone({ type: 'triangle', f0: 262, f1: 196, dur: 0.32, vol: 0.12, t0: t + 0.16 }); };
 SFX['ui.hint'] = (A) => { const t = A.now; A.bell(79, { t0: t, vol: 0.08 }); A.bell(86, { t0: t + 0.12, vol: 0.07 }); };
@@ -206,7 +203,6 @@ SFX['ck.beep'] = (A, o) => A.tone({ type: 'square', f0: o.f ?? rnd(900, 1500), d
 SFX['ck.chatter'] = (A) => { const t = A.now; for (let i = 0; i < 5; i++) A.tone({ type: 'square', f0: rnd(700, 1900), dur: 0.04, vol: 0.025, t0: t + i * 0.07, dest: A.filter('lowpass', 3500, 1, A.sfxBus) }); };
 SFX['ck.lock'] = (A) => { const t = A.now; A.tone({ f0: 1320, dur: 0.1, vol: 0.12, t0: t }); A.tone({ f0: 1760, dur: 0.25, vol: 0.12, t0: t + 0.1, verb: 0.3 }); A.seq([[72, 0.2, 0.6, 1], [76, 0.2, 0.6, 0.8], [79, 0.2, 0.7, 0.8]], { type: 'sine', vol: 0.07, verb: 0.5 }); };
 SFX['ck.lever'] = (A) => { A.burst({ dur: 0.18, vol: 0.12, type: 'bandpass', f0: 900, f1: 1800, Q: 3, env: { a: 0.02, d: 0.1, s: 0.3, r: 0.06 } }); };
-SFX['ck.clunk'] = (A) => { const t = A.now; A.tone({ f0: 160, f1: 70, dur: 0.18, vol: 0.4, t0: t, env: { a: 0.002, d: 0.06, s: 0.3, r: 0.1 } }); A.burst({ t0: t, dur: 0.08, vol: 0.25, type: 'highpass', f0: 2200 }); };
 SFX['ck.button'] = (A) => { const t = A.now; A.tone({ f0: 220, f1: 90, dur: 0.16, vol: 0.35, t0: t }); A.burst({ t0: t, dur: 0.05, vol: 0.2, type: 'highpass', f0: 2600 }); A.tone({ f0: 1046, dur: 0.15, vol: 0.06, t0: t + 0.05, verb: 0.3 }); };
 SFX['ck.rise'] = (A) => { const t = A.now; A.burst({ t0: t, dur: 0.7, vol: 0.12, type: 'bandpass', f0: 400, f1: 1600, Q: 4, env: { a: 0.1, d: 0.4, s: 0.5, r: 0.2 } }); A.tone({ f0: 300, f1: 600, dur: 0.6, vol: 0.05, t0: t, type: 'sawtooth', dest: A.filter('lowpass', 1200, 1, A.sfxBus) }); A.tone({ f0: 150, f1: 60, dur: 0.15, vol: 0.3, t0: t + 0.62 }); };
 SFX['warp.charge'] = (A, o) => { const t = A.now, d = o.dur ?? 2.2; A.tone({ type: 'sine', f0: 140, f1: 1900, dur: d, vol: 0.12, t0: t, verb: 0.3, env: { a: d * 0.85, d: 0.05, s: 0.9, r: 0.1 } }); A.tone({ type: 'sawtooth', f0: 70, f1: 140, dur: d, vol: 0.08, t0: t, dest: A.filter('lowpass', 600, 1, A.sfxBus), env: { a: d * 0.8, d: 0.1, s: 0.8, r: 0.1 } }); SFX['riser'](A, { dur: d, vol: 0.14 }); };
@@ -234,7 +230,6 @@ SFX['island.rise'] = (A, o) => {
 SFX['splash'] = (A, o) => { const t = A.now, v = o.vol ?? 0.45, out = A.pan(o.pan ?? 0, A.sfxBus); A.burst({ t0: t, dur: 0.9, vol: v, f0: 2400, f1: 300, dest: out, verb: 0.3, env: { a: 0.004, d: 0.25, s: 0.35, r: 0.6 } }); A.tone({ f0: 110, f1: 40, dur: 0.35, vol: v * 0.7, t0: t, dest: out }); for (let i = 0; i < 10; i++) A.burst({ t0: t + 0.1 + Math.random() * 0.6, dur: 0.05, vol: v * 0.2, type: 'bandpass', f0: rnd(1500, 4500), Q: 3, dest: out }); };
 SFX['zone.pulse'] = (A, o) => { const scale = [72, 74, 76, 79, 81]; A.bell(scale[(o.i ?? 0) % 5] + 12, { vol: 0.09, verb: 0.6, pan: o.pan ?? 0 }); };
 SFX['zone.glow'] = (A) => A.burst({ dur: 1.4, vol: 0.06, type: 'highpass', f0: 5000, verb: 0.7, env: { a: 0.5, d: 0.4, s: 0.5, r: 0.5 } });
-SFX['wave.rumble'] = (A) => { const t = A.now; A.tone({ type: 'sawtooth', f0: 34, f1: 30, dur: 5, vol: 0.12, t0: t, dest: A.filter('lowpass', 140, 1, A.ambBus), env: { a: 1.8, d: 1.6, s: 0.6, r: 1.6 } }); A.burst({ t0: t, dur: 5, vol: 0.14, f0: 380, dest: A.ambBus, env: { a: 2, d: 1.5, s: 0.6, r: 1.5 } }); };
 
 // landing
 SFX['ship.arrive'] = (A, o) => { SFX.flyby(A, { dur: o.dur ?? 2.2, vol: 0.4, from: o.from ?? -0.9, to: o.to ?? 0.2 }); A.tone({ type: 'sine', f0: 300, f1: 90, dur: 1.6, vol: 0.06, t0: A.now + 0.6, verb: 0.2 }); };
@@ -351,11 +346,9 @@ const MODES = {
   // C Lydian, slow: wonder (the title, the intro)
   title: { bpm: 64, bars: [[48, 55, 64, 71, 74], [50, 57, 66, 69, 74], [52, 59, 67, 71, 74], [45, 52, 64, 67, 72]], pad: 0.05, bell: 0.05, arp: 'bell8', bass: 0.08, kick: 0, hat: 0 },
   cockpit: { bpm: 84, bars: [[48, 55, 64, 71], [50, 57, 66, 69], [52, 59, 67, 71], [50, 57, 66, 69]], pad: 0.04, bell: 0.04, arp: 'pulse16', bass: 0.07, kick: 0, hat: 0.012 },
-  warp: { bpm: 128, bars: [[45, 52, 60, 64], [41, 48, 57, 60], [43, 50, 59, 62], [40, 47, 56, 59]], pad: 0.05, bell: 0.02, arp: 'drive16', bass: 0.11, kick: 0.22, hat: 0.03 },
   planet: { bpm: 56, bars: [[45, 52, 59, 64, 71], [41, 48, 55, 64, 67], [48, 55, 59, 64, 67], [43, 50, 55, 62, 69]], pad: 0.055, bell: 0.05, arp: 'sparse', bass: 0.07, kick: 0, hat: 0, whale: true },
   lesson: { bpm: 86, bars: [[48, 55, 64, 67], [45, 52, 60, 64], [41, 48, 57, 60], [43, 50, 59, 62]], pad: 0.03, bell: 0.035, arp: 'pluck8', bass: 0.05, kick: 0, hat: 0.008 },
   landing: { bpm: 96, bars: [[48, 55, 64, 67, 71], [45, 52, 60, 64, 67], [41, 48, 57, 60, 64], [43, 50, 59, 62, 67]], pad: 0.035, bell: 0.04, arp: 'pluck8', bass: 0.08, kick: 0.1, hat: 0.016 },
-  tense: { bpm: 96, bars: [[45, 52, 57, 60, 64], [46, 53, 58, 62, 65]], pad: 0.04, bell: 0.02, arp: 'pulse16', bass: 0.08, kick: 0.08, hat: 0.012 },
   complete: { bpm: 100, bars: [[48, 55, 64, 67, 72], [53, 60, 65, 69, 72], [55, 62, 67, 71, 74], [48, 55, 64, 67, 76]], pad: 0.05, bell: 0.06, arp: 'bell8', bass: 0.1, kick: 0.14, hat: 0.02 },
 };
 class Music {

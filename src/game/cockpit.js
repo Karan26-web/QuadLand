@@ -118,7 +118,7 @@ export async function run(s, G, flow) {
   // DESCEND (hold)
   await say(s, G, 's2.descend', { after: 0 });
   ck.showDescend(true);
-  await descend(s, G, { look, dirOf, setFov: (f) => (fov = f), cam, engine, hum, eye });
+  await descend(s, G, { look, dirOf, setFov: (f) => (fov = f), engine, eye });
   ck.showDescend(false);
 
   // over the dark sea: the LXD's lines and LAUNCH
@@ -174,7 +174,7 @@ async function warp(s, G, { look, dirOf, setFov, getFov, engine }) {
 }
 
 /* ------------------------------------------------------- down to the sea */
-async function descend(s, G, { look, dirOf, setFov, engine, hum, eye }) {
+async function descend(s, G, { look, dirOf, setFov, engine, eye }) {
   const S = G.space, P = G.planet, d = G.director, A = G.audio, ck = G.ck, hud = G.hud, f = G.post.fx;
   const start = S.oceanPlanet.position.clone(), toward = start.clone().sub(P0).normalize(), d0 = start.distanceTo(P0);
   let prog = 0, idle = 0, switched = false, plasma = null, k = 0;
@@ -213,11 +213,11 @@ async function descend(s, G, { look, dirOf, setFov, engine, hum, eye }) {
   hud.caption(null); if (G.auto) ck.held = false;
   if (plasma) plasma.stop(1.2); ck.plasmaK(0);
   ck.status('HOVERING'); A.play('ck.chatter');
-  engine.set('power', 0.18, 1.2); void hum;
+  engine.set('power', 0.18, 1.2);
   G.audio.music.play('planet', { fade: 3 });
 }
 function enterClouds(s, G) {
-  const P = G.planet, d = G.director, A = G.audio, f = G.post.fx;
+  const P = G.planet, A = G.audio, f = G.post.fx;
   A.play('atmos.break');
   f.flash = 1; f.flashColor.set(0xe9dcff); fx(G, 'flash', 0, 1.0, { real: true }).then(() => f.flashColor.set(0xffffff));
   G.setWorld(P);
@@ -225,7 +225,6 @@ function enterClouds(s, G) {
   P.ocean.uniforms.uAmp.value = 0.62; P.ocean.u.uBio.value = 0; P.ocean.u.uEnvI.value = 0.85;
   f.exposure = 0.62;
   if (!G.flow.sea) G.flow.sea = G.audio.loop('sea', { vol: 0.42 });
-  void d;
 }
 
 /* -------------------------------------------------------- the drone goes */

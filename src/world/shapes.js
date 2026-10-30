@@ -78,7 +78,6 @@ export const SHAPES = [
     ],
   },
 ];
-export const SHAPE = Object.fromEntries(SHAPES.map((s) => [s.key, s]));
 
 // the LXD's numbers must hold: every ship's area is the one its correct island shows
 for (const s of SHAPES) {

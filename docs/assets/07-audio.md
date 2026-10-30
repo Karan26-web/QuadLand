@@ -1,6 +1,6 @@
 # 07 · Sound effects and music (optional upgrades)
 
-The game already has a full sound design, synthesised live by `src/engine/audio.js`: 67 cues, 8 continuous loops and a generative score with 8 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
+The game already has a full sound design, synthesised live by `src/engine/audio.js`: 62 cues, 8 continuous loops and a generative score with 6 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
 
 **To install a recording:**
 1. Save it as `assets/sfx/<anything>.m4a` (AAC, which plays in every browser including iPad Safari), or `.mp3`.
@@ -20,9 +20,6 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `ui.click` | Any button press | soft futuristic UI click, glassy, friendly | 0.1 s |
 | `ui.confirm` | NEXT, confirm | bright two-note sci-fi confirm chime, rising | 0.4 s |
 | `ui.hover` | Pointer over a button (desktop) | tiny soft tick, high | 0.05 s |
-| `ui.pop` | A small element appears | soft bubble pop, cute | 0.1 s |
-| `ui.tick` | A counter | single soft digital tick | 0.05 s |
-| `ui.whoosh` | A panel slides | soft air whoosh, short | 0.4 s |
 | `ui.correct` | A right practice answer | sparkly magical bell arpeggio, happy, kid-friendly | 1.2 s |
 | `ui.wrong` | A wrong practice answer | gentle descending two-note "oops" tone, soft, not harsh | 0.5 s |
 | `ui.hint` | A hint appears | soft curious two-bell chime | 0.6 s |
@@ -37,7 +34,6 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `ck.chatter` | The computer reacts | short burst of friendly computer chatter beeps | 0.4 s |
 | `ck.lock` | The planet locked in the reticle | target lock confirmation, two pings and a soft major chord | 1 s |
 | `ck.lever` | The thrust lever moves | mechanical slider notch click | 0.15 s |
-| `ck.clunk` | A lever hits its end | solid mechanical clunk | 0.2 s |
 | `ck.button` | A big cockpit button pressed | chunky arcade button press with a small beep | 0.25 s |
 | `ck.rise` | LAUNCH or DESCEND rises into place | small servo whir, then a soft latch click | 0.8 s |
 | `warp.charge` | The hyperdrive spools up | hyperdrive charging whine rising in pitch, energy building | 1.6 s |
@@ -56,7 +52,6 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `splash` | A zone breaks the surface; a ship falls in | big water splash with droplets | 1 s |
 | `zone.pulse` | A zone pulses as the camera passes | soft glassy bell note, magical | 1 s |
 | `zone.glow` | All zones glow | airy sparkle shimmer | 1.5 s |
-| `wave.rumble` | The giant waves far away | distant ocean rumble, enormous waves very far away, low and slow | 5 s |
 | `ship.arrive` | A quad ship flies in | small spaceship arriving: doppler jet whoosh settling into a hover hum | 2.5 s |
 | `dim.draw` | A dimension line draws on | holographic laser pen drawing a line, rising shimmer | 0.5 s |
 | `dim.label` | A dimension number appears | small hologram pop with a chime | 0.3 s |
@@ -92,7 +87,6 @@ Each mood should loop seamlessly, last 60 to 120 s, and stay quiet under narrati
 |---|---|---|
 | `title` | Screen 1, the intro | wondrous slow space-adventure theme for kids, warm synth pads, twinkling bells, Lydian, 64 bpm, cinematic but gentle, instrumental, seamless loop |
 | `cockpit` | Screen 2 | light mission-briefing theme, soft pulsing synth arpeggio, warm pads, curious and hopeful, 84 bpm, instrumental loop |
-| `warp` | The hyperspace jump (short) | driving synthwave hyperspace chase, punchy kick, fast arpeggio, 128 bpm, 20 seconds |
 | `planet` | Screens 3–5 | mysterious calm night ocean, deep drones, distant whale-like synth glides, sparse bells, 56 bpm, instrumental loop |
 | `lesson` | Screen 6 | calm focused learning music, soft marimba and warm pad, gentle and steady, 86 bpm, low energy, instrumental loop |
 | `landing` | Screens 7–12 | upbeat light space-adventure groove, plucky synth, soft percussion, hopeful, 96 bpm, instrumental loop |

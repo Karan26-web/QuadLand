@@ -13,13 +13,12 @@
 // hearts left the autopilot lands on the zone that fits (LXD). NEXT moves on.
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
-import { V, say, fx, fadeIn, cleanFx } from './common.js';
+import { V, say, fadeIn, cleanFx } from './common.js';
 import { Ease, clamp, damp, lerp, DEG } from '../engine/util.js';
 import { tweens } from '../engine/tween.js';
-import { SHAPES, inside, threeShape, scaledVerts } from '../world/shapes.js';
+import { inside, threeShape } from '../world/shapes.js';
 import { TOP } from '../world/islands.js';
 import { Dims, ribbon } from '../world/dims.js';
-import { Tex } from '../world/textures.js';
 import { riseIsland, prepare as surveyPrepare } from './survey.js';
 
 const HOVER_Y = 7.6;          // the ship's height while the player flies it
@@ -392,7 +391,7 @@ async function landExact(s, G, { site, ship, isl, k, tags, hoverLoop, auto = fal
   d.orbit({ center: V(pos.x, TOP + 1, pos.z), radius: ship.size * 2.1 + 4, height: [2.5, 4.5], from: -14, to: 40, fov: 40, dur: 6, ease: Ease.inOutSine });
   if (!auto) { await say(s, G, 'o.perfect'); await say(s, G, 'o.success'); }
   else { await say(s, G, 'o.perfect'); }
-  hud.caption(null); void k;
+  hud.caption(null);
 }
 
 async function landTooSmall(s, G, { ship, isl, hoverLoop }) {
@@ -506,4 +505,3 @@ async function autopilot(s, G, { ship, isl }) {
   ship.vel.set(0, 0, 0);
 }
 
-void scaledVerts; void Tex; void SHAPES; void fx;

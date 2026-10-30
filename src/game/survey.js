@@ -10,7 +10,7 @@
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 import { V, say, fx, fadeOut, cleanFx } from './common.js';
-import { Ease, clamp, lerp, angleDelta, DEG } from '../engine/util.js';
+import { Ease, clamp, lerp, DEG } from '../engine/util.js';
 import { tweens } from '../engine/tween.js';
 
 const FIELD = V(36, 0, -92);           // the middle of the five sites
@@ -104,7 +104,7 @@ export async function run(s, G, flow) {
   feed.hidden = true; feed.style.transition = ''; f.feed = 0;
 
   /* ---- Screen 5: the area hook */
-  const hook = highGlide(G, 26);
+  highGlide(G, 26);
   const glow = pulseAsPassed(G, { glow: true });
   s.onKill(glow);
   await say(s, G, 's5.ships');
@@ -116,7 +116,7 @@ export async function run(s, G, flow) {
   A.play('zone.glow');
   await s.wait(1.0);
   await fadeOut(G, 1.0);
-  void hook; d.stop();
+  d.stop();
   for (const site of P.sites) site.islands[site.first].setState('idle');
 }
 
@@ -195,4 +195,3 @@ function pulseAsPassed(G, { glow }) {
     });
   });
 }
-void angleDelta;

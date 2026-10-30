@@ -11,7 +11,7 @@
 // Each ends with a practice question; a miss gets the idea of the mistake, a
 // second the working, then the answer glows. A practice question cannot be failed.
 // ---------------------------------------------------------------------------
-import { V, say, fx, fadeIn, fadeOut } from './common.js';
+import { V, say, fadeIn, fadeOut } from './common.js';
 import { Ease, shuffle, clamp } from '../engine/util.js';
 import { uiTweens } from '../engine/tween.js';
 import { SHAPES, shapeIcon } from '../world/shapes.js';
@@ -69,8 +69,8 @@ const show = (el, dur = 0.35) => anim(dur, (e) => el.setAttribute('opacity', Str
 function drawIn(el, dur = 0.8) {
   const len = el.getTotalLength ? el.getTotalLength() : 1000;
   el.style.strokeDasharray = `${len}`; el.style.strokeDashoffset = `${len}`;
-  const fill = el.getAttribute('fill'); el.setAttribute('fill-opacity', '0');
-  return anim(dur, (e) => { el.style.strokeDashoffset = String(len * (1 - e)); el.setAttribute('fill-opacity', String(clamp((e - 0.6) / 0.4, 0, 1))); }).then(() => { el.style.strokeDasharray = ''; void fill; });
+  el.setAttribute('fill-opacity', '0');
+  return anim(dur, (e) => { el.style.strokeDashoffset = String(len * (1 - e)); el.setAttribute('fill-opacity', String(clamp((e - 0.6) / 0.4, 0, 1))); }).then(() => { el.style.strokeDasharray = ''; });
 }
 
 /* --------------------------------------------------------------- the run */
@@ -230,8 +230,8 @@ async function rhombus({ s, G, board, A, setTitle, setRule }) {
   const b = say(s, G, 'l.rh.2');
   const d1 = board.line([0, 2], [10, 2]); const d2 = board.line([5, 0], [5, 4]);
   d1.setAttribute('opacity', 0); d2.setAttribute('opacity', 0);
-  await s.run(show(d1)); const t1 = board.text(7.6, 2.35, '10', 'lbl n'); A.play('snap');
-  await s.run(show(d2)); const t2 = board.text(5.4, 3.2, '4', 'lbl n', { anchor: 'start' }); A.play('snap');
+  await s.run(show(d1)); board.text(7.6, 2.35, '10', 'lbl n'); A.play('snap');
+  await s.run(show(d2)); board.text(5.4, 3.2, '4', 'lbl n', { anchor: 'start' }); A.play('snap');
   board.rightAngle([5, 2], [1, 0], [0, 1], 0.32);
   await b;
   const c = say(s, G, 'l.rh.3');
@@ -255,7 +255,6 @@ async function rhombus({ s, G, board, A, setTitle, setRule }) {
   await d;
   const e = say(s, G, 'l.rh.5');
   const eq = board.text(5, -1.75, '½ × 10 × 4 = 20', 'lbl n big'); eq.setAttribute('opacity', 0); await s.run(show(eq)); A.play('snap'); await e;
-  void t1; void t2;
   setRule('<span class="k">Area of a rhombus</span> = ½ × diagonal 1 × diagonal 2');
   await say(s, G, 'l.rh.rule', { after: 0.5 });
   board.reset(); board.frame(12, 5, { U: 52, cy: 265 });
@@ -390,4 +389,3 @@ function orbLoop(G) {
     g.closePath(); g.stroke();
   });
 }
-void fx;

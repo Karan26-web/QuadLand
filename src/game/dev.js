@@ -27,5 +27,4 @@ export function view(G, flow, name) {
     const sh = P.ships[+new URLSearchParams(location.search).get('k') || 0]; sh.visible = true; sh.position.set(-62, 9, -10);
     d.cut({ pos: V(-62, 26, 6), target: V(-62, 6, -12), fov: 50 });
   }
-  void flow;
 }

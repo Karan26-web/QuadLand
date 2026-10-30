@@ -14,9 +14,6 @@ export async function say(s, G, id, { after = 0.25 } = {}) {
   if (after) await s.wait(after);
   return ok;
 }
-/** start a line without waiting for it */
-export function sayBg(G, id) { return G.voice.say(id); }
-
 /** tween a post effect knob (game time unless real) */
 export function fx(G, key, to, dur = 0.6, { ease = Ease.inOutCubic, real = false } = {}) {
   const from = G.post.fx[key], mgr = real ? uiTweens : tweens;
@@ -31,6 +28,3 @@ export function cleanFx(G) {
   Object.assign(f, { zoomBlur: 0, ca: 0, glitch: 0, feed: 0, flash: 0, blurMix: 0, exposure: 1, saturation: 1.06, contrast: 1.04, bloom: 0.55, threshold: 0.9, vignette: 0.32 });
   f.tint.set(1, 1, 1); f.lift.set(0, 0, 0);
 }
-
-/** the narrator's numbers, with the units' word */
-export const sq = (n) => `${n} <small>sq units</small>`;

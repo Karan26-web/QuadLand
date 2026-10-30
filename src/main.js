@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------------
 import * as THREE from '../vendor/three.module.js';
 import { Post } from './engine/post.js';
-import { CameraDirector, pose } from './engine/camera.js';
+import { CameraDirector } from './engine/camera.js';
 import { LabelLayer } from './engine/labels.js';
 import { input } from './engine/input.js';
 import { clock } from './engine/clock.js';
@@ -133,4 +133,3 @@ boot().catch((e) => {
   const d = document.getElementById('dev'); if (d) { d.hidden = false; d.textContent = String(e && e.stack || e); d.style.cssText = 'position:fixed;left:8px;bottom:8px;right:8px;color:#ff9;font:12px monospace;white-space:pre-wrap;z-index:999'; }
 });
 
-export { pose };

@@ -94,7 +94,7 @@ export class CameraDirector {
     const startTarget = this.base.target.clone(), startFov = this.base.fov;
     const blend = o.blendIn ?? 0.35;                  // fraction of the move over which the look blends in from the current one
     const bankGain = o.bank ?? 0.9, ahead = o.ahead ?? 0.04;
-    const tgt = new THREE.Vector3(), p0 = new THREE.Vector3(), p1 = new THREE.Vector3(), p2 = new THREE.Vector3();
+    const tgt = new THREE.Vector3(), p0 = new THREE.Vector3(), p2 = new THREE.Vector3();
     let lastYaw = null;
     m.update = (out, dt) => {
       const k = m.k;
@@ -117,7 +117,6 @@ export class CameraDirector {
         }
         lastYaw = yaw; out.roll = this._bank;
       } else out.roll = o.roll == null ? lerp(this.base.roll, 0, bk) : span(o.roll, k);
-      void p1;
     };
     return this._start(m);
   }

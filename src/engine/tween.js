@@ -65,6 +65,3 @@ export class TweenManager {
 export const tweens = new TweenManager();
 /** unscaled time (camera, UI): runs through slow motion, stops only on pause */
 export const uiTweens = new TweenManager();
-export const tweenTo = (target, props, opts) => tweens.to(target, props, opts).promise;
-export const tweenValue = (from, to, duration, onUpdate, opts) => tweens.value(from, to, duration, onUpdate, opts).promise;
-export const delay = (seconds, tag) => tweens.delay(seconds, tag).promise;

@@ -7,7 +7,7 @@ import * as THREE from '../../vendor/three.module.js';
 import { V, say, fadeIn, fadeOut, cleanFx } from './common.js';
 import { Ease } from '../engine/util.js';
 import { SHAPES } from '../world/shapes.js';
-import { Island, TOP } from '../world/islands.js';
+import { Island } from '../world/islands.js';
 import { QuadShip } from '../world/ships.js';
 import { Confetti } from '../engine/fx.js';
 
@@ -76,5 +76,4 @@ export async function run(s, G, flow) {
   A.play('ui.confirm');
   btn.hidden = true; cp.hidden = true; G.labels.clear(true); F.group.visible = false; S.command.position.set(0, 0, 0);
   flow.restart();
-  void TOP;
 }

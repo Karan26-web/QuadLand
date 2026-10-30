@@ -4,7 +4,6 @@
 // a click, then the theme music, softly.
 // ---------------------------------------------------------------------------
 import { V } from './common.js';
-import { Ease } from '../engine/util.js';
 
 export async function run(s, G, flow) {
   const S = G.space;
@@ -38,5 +37,4 @@ export async function run(s, G, flow) {
   const title = document.getElementById('title'); title.classList.add('out');
   setTimeout(() => (title.hidden = true), 700);
   flow.begin('intro');
-  void Ease;
 }
