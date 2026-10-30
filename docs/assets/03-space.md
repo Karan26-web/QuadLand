@@ -1,6 +1,6 @@
 # 03 · Deep space: nebulae and planets
 
-Deep space appears on the title, in the intro, through the cockpit canopy, in the hyperspace jump and in the finale. Today its sky is a procedural nebula baked into a cubemap, and its planets are shaders. The pictures below are layered on top of the shaders, which keep their own lighting, day/night terminator and atmosphere rim.
+Deep space appears on the title, in the intro, through the cockpit canopy, in the hyperspace jump and in the finale. Today its sky is procedural and baked into a cubemap: dark navy space, a soft galactic band and four nebulae that frame the views; the stars are drawn live and twinkle. Its planets are shaders. The pictures below are layered on top of the shaders, which keep their own lighting, day/night terminator and atmosphere rim.
 
 ---
 
@@ -9,17 +9,17 @@ Deep space appears on the title, in the intro, through the cockpit canopy, in th
 |---|---|
 | Size | 1536 × 1024 each |
 | Background | **BLACK (light)** |
-| Where | Four huge glowing billboards placed around the sky, drawn as added light over the procedural nebula: ahead and up, right, behind-left, below |
+| Where | Four glowing billboards placed around the sky, drawn as added light (at half strength) over the procedural sky: ahead and up, right, behind-left, below |
 | Attach | Your purple ringed-planet night frames for the colours |
 
-Use one prompt each:
+Space must stay **dark**: these clouds are accents, not wallpaper. Each one should be mostly black, with the cloud in the middle half of the frame, and pink only in its brightest heart. Use one prompt each:
 ```
-nebula_1: A vast soft nebula of glowing gas in magenta-pink (#FF3EA5) and violet (#7B3CFF), billowing like smoke in water, with one warm-orange (#FF9A3C) star-forming knot glowing near its centre and fine darker dust lanes winding through it. Painterly and soft, very few or no stars.
-nebula_2: A soft nebula of teal-cyan (#19E3D2) and electric blue wisps, long flowing filaments sweeping diagonally, faint lavender highlights at the tips, and a gentle inner glow. Painterly and soft, very few or no stars.
-nebula_3: A dim, velvety violet and lavender (#C9A7FF) nebula cloud with dark dust lanes and a few bright rims where hidden light catches its edges. Painterly and soft, very few or no stars.
-nebula_4: A glowing pink and peach cloud, like sunset light inside gas: rose (#FF7AB8), peach (#FFB38A) and touches of violet in the shadows. Round and puffy. Painterly and soft, very few or no stars.
+nebula_1: A small, soft nebula floating in black space: deep indigo (#1A1050) and violet (#5A2BB0) gas with a small magenta-pink (#E0408F) glowing heart and one tiny warm-orange (#FF9A3C) knot, fine darker dust lanes winding through it. The cloud fills only the middle half of the frame; the outer half is pure black. Dim and painterly, no stars.
+nebula_2: A faint nebula of deep teal (#0E5560) and blue wisps in black space, a few long thin filaments sweeping diagonally with soft cyan (#3FC9D2) highlights at the tips. Mostly black, the wisps only in the middle half of the frame. Dim and painterly, no stars.
+nebula_3: A dim, velvety violet and lavender (#8A6BD0) nebula cloud with dark dust lanes and a few soft bright rims where hidden light catches its edges. Mostly black, the cloud only in the middle half of the frame. Dim and painterly, no stars.
+nebula_4: A small, faint blue-violet (#3A3A9A) haze with a few lilac wisps, like distant gas lit from behind. Very dark and subtle, mostly black. No stars.
 ```
-**Accept if:** everything fades to pure black well before every edge, with no hard rectangle visible; there is no planet, ship or text; the colours match the prompt.
+**Accept if:** at least half of the picture is pure black and everything fades to black well before every edge, with no hard rectangle visible; pink appears only in `nebula_1`'s heart; there is no planet, ship, star or text; the colours match the prompt.
 
 ---
 

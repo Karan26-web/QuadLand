@@ -11,27 +11,23 @@ import { clamp, noise1 } from '../engine/util.js';
 const $ = (id) => document.getElementById(id);
 
 function frameSVG() {
-  // the canopy region, 1600 × 900 (anchored to its bottom edge); the window is the hole
-  const win = 'M150 900 C190 640 250 330 330 150 Q345 112 395 108 L1205 108 Q1255 112 1270 150 C1350 330 1410 640 1450 900 Z';
-  const rivets = [];
-  for (let i = 0; i < 9; i++) { const t = i / 8; rivets.push([62 + t * 150 - t * t * 30, 880 - t * 700], [1538 - t * 150 + t * t * 30, 880 - t * 700]); }
+  // the canopy region, 1600 × 900 (anchored to its bottom edge); the window is the hole. Slim pillars (about 3% of
+  // the width at the dashboard, 6% near the top) with a cyan rim and three status lights each: the view is the show
+  const win = 'M46 900 C58 640 76 360 98 150 Q106 104 156 98 L1444 98 Q1494 104 1502 150 C1524 360 1542 640 1554 900 Z';
+  const led = (x, y, c, i) => `<circle cx="${x}" cy="${y}" r="4.5" fill="${c}"><animate attributeName="opacity" values=".95;.35;.95" dur="${(1.7 + i * 0.53).toFixed(2)}s" repeatCount="indefinite"/></circle>`;
   return `
   <defs>
     <linearGradient id="fr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2257"/><stop offset=".55" stop-color="#11163a"/><stop offset="1" stop-color="#0a0d26"/></linearGradient>
-    <linearGradient id="frs" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0a0d26"/><stop offset=".5" stop-color="#232b6a"/><stop offset="1" stop-color="#0a0d26"/></linearGradient>
     <radialGradient id="glare" cx=".5" cy=".1" r=".7"><stop offset="0" stop-color="#8be9ff" stop-opacity=".18"/><stop offset="1" stop-color="#8be9ff" stop-opacity="0"/></radialGradient>
   </defs>
   <path d="M0 0 H1600 V900 H0 Z ${win}" fill="url(#fr)" fill-rule="evenodd"/>
-  <path d="${win}" fill="none" stroke="#050616" stroke-width="22"/>
-  <path d="${win}" fill="none" stroke="#5a6fd0" stroke-width="5" opacity=".75"/>
-  <path d="${win}" fill="none" stroke="#9fd8ff" stroke-width="1.5" opacity=".6" transform="translate(0 4)"/>
-  <rect x="640" y="18" width="320" height="66" rx="18" fill="#0b0f2c" stroke="#3d4ea8" stroke-width="3"/>
-  <g>${[0, 1, 2, 3, 4, 5, 6].map((i) => `<circle cx="${676 + i * 41}" cy="51" r="8" fill="${['#3dffa2', '#5cf2ff', '#ffb547', '#5cf2ff', '#ff4d6d', '#5cf2ff', '#3dffa2'][i]}"><animate attributeName="opacity" values="1;.35;1" dur="${(1.3 + i * 0.37).toFixed(2)}s" repeatCount="indefinite"/></circle>`).join('')}</g>
-  <g fill="#2c3780">${rivets.map(([x, y]) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5"/>`).join('')}</g>
-  <rect x="34" y="420" width="70" height="150" rx="14" fill="#0b0f2c" stroke="#3d4ea8" stroke-width="3" transform="rotate(-9 69 495)"/>
-  <rect x="1496" y="420" width="70" height="150" rx="14" fill="#0b0f2c" stroke="#3d4ea8" stroke-width="3" transform="rotate(9 1531 495)"/>
-  <g>${[0, 1, 2].map((i) => `<rect x="${52}" y="${446 + i * 38}" width="34" height="18" rx="5" fill="${['#ffb547', '#5cf2ff', '#3dffa2'][i]}" opacity=".85" transform="rotate(-9 69 495)"/><rect x="${1514}" y="${446 + i * 38}" width="34" height="18" rx="5" fill="${['#5cf2ff', '#ff3ea5', '#ffb547'][i]}" opacity=".85" transform="rotate(9 1531 495)"/>`).join('')}</g>
-  <path d="M330 150 Q345 112 395 108 L1205 108 Q1255 112 1270 150" fill="none" stroke="url(#glare)" stroke-width="80" opacity=".5"/>`;
+  <path d="${win}" fill="none" stroke="#050616" stroke-width="12"/>
+  <path d="${win}" fill="none" stroke="#5a6fd0" stroke-width="3.5" opacity=".8"/>
+  <path d="${win}" fill="none" stroke="#9fd8ff" stroke-width="1.2" opacity=".55" transform="translate(0 3)"/>
+  <rect x="700" y="34" width="200" height="34" rx="17" fill="#0b0f2c" stroke="#3d4ea8" stroke-width="2.5"/>
+  <g>${[0, 1, 2, 3, 4].map((i) => led(728 + i * 36, 51, ['#3dffa2', '#5cf2ff', '#ffb547', '#5cf2ff', '#3dffa2'][i], i)).join('')}</g>
+  <g>${[0, 1, 2].map((i) => led(32 - i * 1.5, 520 + i * 24, ['#ffb547', '#5cf2ff', '#3dffa2'][i], i) + led(1568 + i * 1.5, 520 + i * 24, ['#5cf2ff', '#ff3ea5', '#ffb547'][i], i + 3)).join('')}</g>
+  <path d="M98 150 Q106 104 156 98 L1444 98 Q1494 104 1502 150" fill="none" stroke="url(#glare)" stroke-width="70" opacity=".45"/>`;
 }
 
 export class CockpitUI {

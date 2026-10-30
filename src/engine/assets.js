@@ -52,9 +52,10 @@ export const art = {
       const t = this.texture('hull_plating', { repeat: true }); t.repeat.set(0.22, 0.22);
       for (const sh of [...P.ships, ...S.fleet]) { sh.materials[1].map = t; sh.materials[1].color.set(0xffffff); sh.materials[1].needsUpdate = true; }
     }
+    // painted nebulae add light at half strength: space stays dark, the clouds are accents
     for (let i = 1; i <= 4; i++) {
       const key = `nebula_${i}`; if (!this.has(key)) continue;
-      const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: this.texture(key), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.85 }));
+      const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: this.texture(key), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.45 }));
       const dirs = [[-0.6, 0.35, -1], [1, 0.6, -0.7], [-1, -0.2, 0.4], [0.3, -0.5, 1]][i - 1];
       m.position.set(...dirs).normalize().multiplyScalar(14000); m.scale.set(12000, 6600, 1); m.renderOrder = -5;
       S.scene.add(m);

@@ -1,12 +1,13 @@
 // ---------------------------------------------------------------------------
-// Deep space: the baked nebula, a sun, the ocean planet ahead, the ringed giant
+// Deep space: the baked nebula, live twinkling stars, a sun, the ocean planet ahead, the ringed giant
 // behind it, two moons, the command ship and its fleet of five in formation,
 // drifting space dust (the warp stretches it into streaks).
 // The ships stay near the origin; speed is sold by the streaks and the flames
 // (planets this far away barely move against a moving ship anyway).
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
-import { skyDome, bakeCube } from './sky.js';
+import { skyDome, bakeCube, GALAXY_POLE } from './sky.js';
+import { Stars } from './stars.js';
 import { ringedPlanet, oceanPlanet, moon } from './planets.js';
 import { CommandShip, QuadShip, glowSprite } from './ships.js';
 import { SHAPES } from './shapes.js';
@@ -29,6 +30,8 @@ export class SpaceWorld {
     const pm = new THREE.PMREMGenerator(renderer);
     this.env = pm.fromCubemap(this.cube.texture); pm.dispose();
     scene.environment = this.env.texture; scene.environmentIntensity = 0.8;
+    this.renderer = renderer;
+    this.stars = new Stars({ band: GALAXY_POLE }); scene.add(this.stars.points);
 
     const sun = new THREE.DirectionalLight(0xfff1e0, 3.1); sun.position.copy(SUN_DIR).multiplyScalar(100); scene.add(sun);
     const fill = new THREE.HemisphereLight(0x8b6cff, 0x0b2a3a, 0.9); scene.add(fill);
@@ -66,6 +69,7 @@ export class SpaceWorld {
   resetPlanet() { this.oceanPlanet.position.copy(this.planetHome); this.oceanPlanet.scale.setScalar(1); }
   update(dt, camera) {
     this.t += dt;
+    this.stars.update(dt, camera, this.renderer.getPixelRatio());
     this.command.update(dt);
     this.fleet.forEach((s, i) => {
       s.update(dt);

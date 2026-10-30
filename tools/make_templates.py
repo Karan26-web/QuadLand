@@ -14,7 +14,7 @@ def font(sz):
 # cockpit: the canopy window (magenta) above, the dashboard band below with the instrument zones kept plain
 W, H = 2560, 1440; im = Image.new('RGB', (W, H), (22, 28, 70)); d = ImageDraw.Draw(im)
 dash = int(H * 0.69)
-win = [(240, dash), (300, 900), (420, 420), (560, 190), (680, 160), (1880, 160), (2000, 190), (2140, 420), (2260, 900), (2320, dash)]
+win = [(70, dash), (82, 900), (112, 420), (150, 200), (230, 150), (2330, 150), (2410, 200), (2448, 420), (2478, 900), (2490, dash)]
 d.polygon(win, fill=MAG)
 d.rectangle((0, dash, W, H), fill=(14, 18, 48)); d.line((0, dash, W, dash), fill=(120, 150, 255), width=6)
 zones = [(420, 'SPEED'), (720, 'LEVER'), (1280, 'AI SCREEN'), (1840, 'BUTTON'), (2140, 'ALT')]

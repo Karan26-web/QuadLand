@@ -2,7 +2,7 @@
 
 A 3D maths adventure that teaches the **area of quadrilaterals**: square, rectangle, parallelogram, rhombus and trapezium. It follows the LXD's 13-screen flow in `docs/spacecraft.docx`.
 
-The Space Commander is cruising through a colourful nebula. Through the cockpit window, they steer toward an ocean planet and push the thrust lever into hyperspace. They hold DESCEND through the re-entry fire and the cloud deck, and come out over a dark violet sea under a ringed giant. A survey drone scans the water, and five landing zones rise out of the sea, each a different shape. The Ship AI teaches the area of each shape. Then the commander flies five quad-shaped ships with a joystick and lands each one on the island whose area matches it exactly:
+The Space Commander is cruising through dark, starry space past glowing nebulae. Through the cockpit window, they steer toward an ocean planet and push the thrust lever into hyperspace. They hold DESCEND through the re-entry fire and the cloud deck, and come out over a dark violet sea under a ringed giant. A survey drone scans the water, and five landing zones rise out of the sea, each a different shape. The Ship AI teaches the area of each shape. Then the commander flies five quad-shaped ships with a joystick and lands each one on the island whose area matches it exactly:
 - **Too small:** the overhang glows, and the ship tips into the sea.
 - **Too large:** the empty rim glows, and the ship crashes onto the rock.
 - **Exact:** it locks in with confetti.
@@ -75,7 +75,8 @@ src/engine/
   input.js, labels.js, fx.js, assets.js, util.js
 src/world/
   ocean.js                      the living sea: Gerstner waves on a camera-centred polar grid, ripples, foam, subsurface glow, reflections, the scanner beam, giant waves
-  sky.js, planets.js            the baked skies (nebula, purple night), the ringed giant, the ocean planet, moons
+  sky.js, planets.js            the baked skies (dark space with a galactic band and four nebulae; purple night), the ringed giant, the ocean planet, moons
+  stars.js                      deep space's stars, drawn live: crisp points that twinkle, a few with four-point glints
   shapes.js                     the five quadrilaterals (the LXD's dimensions), area scaling, geometry helpers
   ships.js, islands.js, dims.js the craft, the landing zones, the dimension lines
   space.js, planet.js           the two worlds

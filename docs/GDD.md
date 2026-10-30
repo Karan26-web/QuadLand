@@ -6,7 +6,7 @@
 ## 1. The brief, and how the build answers it
 | Request (2026-10-29) | In the build |
 |---|---|
-| A space theme: a colourful nebula in dark space | A procedural nebula (domain-warped fbm in magenta, violet and teal, with warm knots, dust lanes and three layers of stars) is baked into an HDR cubemap. It surrounds deep space, and every hull and the sea reflect it. A sun, a ringed giant, the ocean planet and two moons hang in it. |
+| A space theme: a colourful nebula in dark space | Deep space is dark first: a navy sky with a soft blue-violet galactic band and dust lanes, and four nebulae (violet with a magenta heart, teal, lilac, rose-violet), each framing a part of the sky the camera dwells on (the title, the fleet, the water planet, the ringed giant). Pink lives only in their dense hearts and the gaps between them stay dark, so colour frames the subjects and the stars always show. It is baked into an HDR cubemap that every hull reflects. About 14,000 stars are drawn live on top: crisp points, densest along the band, that twinkle on their own clocks, now and then sparkle, and a few dozen carry four-point glints. A sun, a ringed giant, the ocean planet and two moons hang in it. |
 | The reference frames' style and the water planet's colour theme | A stylised 3D animated-series look. The water planet's night is the frames' purple: an indigo zenith, a violet horizon glowing toward a lavender ringed giant, and a pink nebula band over a dark violet sea. |
 | Camera work "more crazy than Sector Escape" | A new camera director (`src/engine/camera.js`), described in §5. |
 | Introduce everything first, with the camera work in space | The intro cinematic: an engine close-up, a banked flyby, a whip pan to each of the five quad ships, a vertigo dolly zoom with the planet looming, and a punch through the canopy glass. It can be skipped. |
@@ -119,7 +119,7 @@ The options stay open and are never struck out, as the earlier LXD reviews asked
   - Light through the thin crests (subsurface glow); reflections of the baked sky, sharp near the camera and blurred far away; a glitter path toward the ringed giant.
   - The scanner's beam is drawn on the water, and plankton sparkle after the scan.
   - **The giant waves** are separate 110-unit swells far out on the horizon. Each rises, rolls toward the field and sinks back long before it could reach it, so they read as mountains first and then you see them move.
-- **Skies** are baked once into HDR cubemaps (deep space: the nebula; the planet: the purple night with the ringed giant and a moon) and reused for reflections and PBR lighting.
+- **Skies** are baked once into HDR cubemaps (deep space: the dark sky and its nebulae; the planet: the purple night with the ringed giant and a moon) and reused for reflections and PBR lighting. Deep space's stars are not baked (a baked star is a two-texel blur and cannot twinkle): `src/world/stars.js` draws them as one batch of points that rides with the camera, so planets hide them and the warp streaks them.
 - **Post** (`src/engine/post.js`): HDR, MSAA, dual-Kawase bloom, chromatic aberration, zoom blur, directional blur, glitch, drone-feed scanlines, frosted background (the lesson), vignette, grain, ACES and a grade.
 - **Performance:** a locked 60 fps on the dev Mac's GPU at 1.5× resolution, in every world. The resolution adapts at runtime (0.6×–1.3× on touch devices) and the cubemaps are smaller on touch devices. Every shader is compiled during loading.
 

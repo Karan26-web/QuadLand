@@ -32,7 +32,8 @@ void main() {
   vec3 col = mix(uCore, uMid, smoothstep(0.0, 0.35, a));
   col = mix(col, uTip, smoothstep(0.35, 1.0, a));
   float facing = pow(abs(dot(normalize(vN), normalize(vV))), 0.7);
-  float alpha = pow(1.0 - a, 1.4) * facing * flick * stripes * uPower;
+  // max(): at the tip 1 - a can land a hair below zero, and pow() of a negative is NaN (a black hole in a white blob)
+  float alpha = pow(max(1.0 - a, 0.0), 1.4) * facing * flick * stripes * uPower;
   gl_FragColor = vec4(col * alpha * 2.2, alpha);
 }`;
 export function flameMaterial({ core = 0xffffff, mid = 0xffb347, tip = 0xff3ea5, seed = Math.random() * 10 } = {}) {
