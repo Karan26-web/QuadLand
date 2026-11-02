@@ -20,7 +20,7 @@ import { cleanFx } from './common.js';
 import { param } from '../engine/util.js';
 
 export const ORDER = ['intro', 'cockpit', 'survey', 'lesson', 'back', 'land0', 'land1', 'land2', 'land3', 'land4', 'complete'];
-const fresh = () => ({ landed: [false, false, false, false, false], misses: [0, 0, 0, 0, 0], hearts: 3, lessonMisses: 0, lessonSkipped: false });
+const fresh = () => ({ landed: [false, false, false, false, false], misses: [0, 0, 0, 0, 0], hearts: 3, lessonSkipped: false });
 
 export class Flow {
   constructor(G) { this.G = G; this.runner = new ScriptRunner(); this.state = fresh(); this.started = false; this.phase = 'boot'; }

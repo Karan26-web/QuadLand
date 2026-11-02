@@ -36,7 +36,7 @@ It plays best in landscape on a tablet or a laptop. Phones and portrait work too
 | (addition) Intro | An engine close-up, a banked hull flyby, whip pans across the five ships, the five lined up and seen from straight above as their sides trace on in light, a dolly zoom with the planet looming, then a punch through the canopy | `src/game/intro.js` |
 | 2 Cockpit | The welcome; steer the planet into the reticle; the thrust lever starts the hyperspace jump; hold DESCEND through the plasma and clouds; the LXD's lines; LAUNCH sends the drone and the feed glitches in | `src/game/cockpit.js`, `src/ui/cockpitUI.js` |
 | 3–5 Dark sea, scan, five zones, the hook | The drone feed over the dark sea; SCAN makes two beam passes and the lights come up; five sets of three zones rise one by one as the camera whips to each; straight above the whole field, every zone's sides trace on in light; a low banked loop; the area hook over a high glide, ending above the field again | `src/game/survey.js` |
-| 6 Learning section | The Ship AI's holo-board, one lesson per shape, each with a practice question; Skip lesson › (pressed twice) goes straight on to Screen 7 | `src/game/lesson.js` |
+| 6 Learning section | The team's learning module (`learning/`), framed full-screen: Swiftee teaches the area of each shape, with practice; its last page hands back to the mission. Skip lesson › (pressed twice) goes straight on to Screen 7 | `learning/`, `src/game/lesson.js` |
 | 7 Back to the mission | Fade back; the camera descends toward the first zone | `src/game/landing.js` (`back`) |
 | 8–12 Five landings | The camera descends to the set; the ship flies in; the playing view is straight down over the three islands; its dimensions draw on; the rule is said; the areas appear; the player flies and presses GO; one of three outcomes; 3 hearts; a hint ladder; the autopilot when the hearts run out; NEXT | `src/game/landing.js` |
 | 13 Mission complete | The five ships on their islands in deep space with their rules; the fanfare and confetti; RESTART returns to the cockpit | `src/game/complete.js` |
@@ -46,7 +46,7 @@ It plays best in landscape on a tablet or a laptop. Phones and portrait work too
 ## Dev and QA
 URL parameters:
 - `?screen=cockpit|survey|lesson|back|land0…land4|complete` starts there, with the world set up as it would be by then.
-- `?auto=1` plays itself: it steers, pulls the lever, holds DESCEND, presses LAUNCH and SCAN, flies to an island, answers the lessons (one deliberate miss each) and presses GO.
+- `?auto=1` plays itself: it steers, pulls the lever, holds DESCEND, presses LAUNCH and SCAN, flies to an island and presses GO. The learning module is played by hand.
 - `?plan=sle-e-l-e-s` scripts the autoplayer's landing choices, one group per landing: `s` too small, `l` too large, `e` exact. `sss` runs out of hearts and brings the autopilot.
 - `?fast=2` runs both clocks twice as fast.
 - `?dpr=1` fixes the render resolution; it adapts by default.
@@ -58,8 +58,8 @@ Console: `__ql` is the game context (`__ql.flow.phase`, `__ql.planet`, `__ql.spa
 Playtests (Python Playwright with Chromium; they use the Mac's GPU through ANGLE Metal, and `--soft` uses software GL):
 ```bash
 python3 playtest/mission.py                                  # the whole mission, autoplayed, screenshots on every phase
+                                                             # (it checks the learning module loads, then presses Skip lesson twice)
 python3 playtest/mission.py --from land0 --plan sle --to land1   # one landing through all three outcomes
-python3 playtest/mission.py --skip-lesson                    # as above, pressing Skip lesson twice as a player would
 python3 playtest/shot.py sea=view=sea islands=view=islands   # still views
 ```
 Screenshots go to `playtest/screens/`.
@@ -71,7 +71,7 @@ src/main.js                     boot (renderer, post, worlds, loading), the fram
 src/engine/
   camera.js                     the camera director: spline paths with banking, orbits, dolly zoom, chase, whip pans, trauma shake, FOV punch, lens shift, motion blur
   post.js                       the HDR pipeline: dual-Kawase bloom, chromatic aberration, warp zoom blur, whip smear, glitch, drone feed, ACES, grading
-  audio.js                      procedural sound: buses, reverb, 63 cues, 8 live loops, a generative score with 6 moods; recorded files override cues
+  audio.js                      procedural sound: buses, reverb, 57 cues, 8 live loops, a generative score with 5 moods; recorded files override cues
   voice.js                      the narrator: decoded lines through Web Audio (the waveform and the orb follow the real voice), subtitles, ducking
   clock.js, tween.js            game time and real time, slow motion, cancellable scripts
   input.js, labels.js, fx.js, assets.js, util.js
@@ -85,6 +85,7 @@ src/world/
   space.js, planet.js           the two worlds
   textures.js, glsl.js          procedural textures (stand-ins for the GPT art), shared GLSL
 src/game/                       one file per screen + flow.js (the order) + common.js + dev.js
+learning/                       Screen 6: the team's learning module, kept as delivered (its own page, css, js, voice-overs, Swiftee)
 src/ui/hud.js, cockpitUI.js     the HUD; the cockpit's vector frame and console (drawn at the screen's size) and its instruments
 assets/vo/                      lines.json (every line, LXD-marked), vo.json and the temp narration (.m4a)
 assets/art.json, assets/img/    the GPT art slots and the installed pictures

@@ -132,7 +132,7 @@ export async function back(s, G, flow) {
   const P = G.planet, d = G.director, A = G.audio;
   surveyPrepare(G);
   G.setWorld(P); cleanFx(G); G.post.fx.fade = 1;
-  G.ck.show(false); document.getElementById('lesson').hidden = true; document.body.classList.remove('lesson-on');
+  G.ck.show(false); document.getElementById('lesson').hidden = true;
   P.ocean.uniforms.uAmp.value = 0.62;
   for (const w of P.waves) w.centre.set(36, 0, -94);
   A.music.play('landing', { fade: 2.5 });

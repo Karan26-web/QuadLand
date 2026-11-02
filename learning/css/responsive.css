@@ -1,0 +1,121 @@
+/* ============================================================
+   RESPONSIVE
+   The board was drawn at 16:9 and is measured there: at 1366x768
+   and 1920x1080 every scene already sits inside its edges. This
+   sheet is what keeps that true on the other shapes of screen the
+   game is used on -- a 16:10 laptop, a 4:3 or 3:2 tablet -- where
+   the board is much narrower for the height it has.
+
+   It is loaded after style.css and only ever re-states tokens and
+   rules from it. Every value below is written so that it is INERT
+   at 16:9: the width terms tie or lose against the height terms
+   that style.css already uses, so nothing about the 16:9 board
+   moves. They bind only as the board narrows.
+   ============================================================ */
+
+/* ---------- the board's own size, restated ----------
+ * style.css sizes the board `min(1500px, 96vw)` wide. Naming that here lets
+ * the type below be measured against the room it actually has rather than
+ * against the viewport, which is what the height-only scale was doing.
+ * Keep it in step with .board's own width. */
+:root { --board-w: min(1500px, 96vw); }
+
+/* ---------- the board's column may not be pushed wider than the board ----
+ * .board is a grid with rows but no columns, so its single column is an
+ * implicit `auto` track -- and an auto track is floored at the MIN-CONTENT
+ * width of what sits in it. The bay, the working columns and the chip band
+ * are full of `white-space: nowrap` lines, so their min-content is wide; at
+ * 16:9 it happens to land just inside the board (1182px of content in
+ * 1182px of room at 1366x768) and at every narrower ratio it pushes straight
+ * out through the board's right edge -- 24px at 1280x800, 202px at 1024x768,
+ * carrying the heading, the shapes and the chips with it.
+ *
+ * An explicit `minmax(0, 1fr)` track is the whole fix: 1fr pins the column to
+ * the board's content box, and the 0 floor is what lets it, so the column
+ * resolves to the room available instead of to the text inside it. At 16:9
+ * the track already resolved to exactly this, so nothing there moves. */
+.board { grid-template-columns: minmax(0, 1fr); }
+
+/* ---------- type is measured against the board's width too ----------
+ * The scale in style.css is driven by `vh` alone. That is right while the
+ * board's width follows its height, and wrong the moment it does not: on a
+ * 4:3 tablet the board is as tall as a 16:9 one but 330px narrower, so the
+ * height-driven sizes stay big while the room for them shrinks, and the
+ * nowrap lines run off the board.
+ *
+ * Each token keeps its own rule from style.css untouched and gains a ceiling
+ * in the board's width. The coefficients are each token's own maximum over
+ * the 1500px design board (33/1500, 28.6/1500, 25.3/1500), so on a board at
+ * or near the design ratio the ceiling sits at or above the height-driven
+ * size and does nothing at all; as the board narrows it takes over and the
+ * whole scale closes up together, which is the shared-floor behaviour the
+ * sizes were given in the first place.
+ *
+ * The ceiling is applied OUTSIDE the clamp on purpose: --fs-min is a floor
+ * meant to stop the sizes fanning out on a short screen, but on a narrow one
+ * it would hold the text above what the width can take, so the width has the
+ * last word. */
+:root {
+  --fs-heading: min(clamp(var(--fs-min), 3.5vh, 33px),   calc(var(--board-w) * 0.0220));
+  --fs-body:    min(clamp(var(--fs-min), 3vh,   28.6px), calc(var(--board-w) * 0.01907));
+  --fs-chip:    min(clamp(var(--fs-min), 2.6vh, 25.3px), calc(var(--board-w) * 0.01687));
+}
+
+/* ---------- the same guard on every section's own grid ----------
+ * Each section root is laid out the way the board is -- rows declared, the
+ * single column left implicit -- so each one reproduces the board's fault
+ * inside itself: an `auto` column floored at the min-content width of a
+ * stage full of nowrap working lines. The board now holds its section to the
+ * board's width, but a section whose own column is auto still lets its
+ * children push out through its edge, which is the 106px the practice
+ * figure and the 36px the check panel were spilling at 1024x768.
+ *
+ * Their two-column states (.quad.wide, .para.wide, .rhom.wide, .rtrap.wide,
+ * .rtrap.cfu, ...) all declare real fr tracks already and outrank this by
+ * specificity, so this reaches the one-column states only -- which is where
+ * the fault is. */
+.lesson,
+.quad,
+.para,
+.rhom,
+.trap,
+.rtrap { grid-template-columns: minmax(0, 1fr); }
+
+/* ---------- lines that are kept on one row ----------
+ * A handful of lines are deliberately `white-space: nowrap`: they are meant
+ * to stand on a single row and shrink to fit rather than break at a word.
+ * Each is capped in the width of the column it sits in, and these are the
+ * three whose cap was either missing or too loose to hold the longest line
+ * they are ever given. Measured, line by line, at 1024x768 and 1920x1080. */
+
+/* The parallelogram's aside lost its cap altogether: `.para-text` sets one,
+ * but the `.say-text` rule in the font block is read after it and at the
+ * same weight, so the line was taking the body size whatever its column
+ * could hold -- which is why "The top side fits the bottom side exactly!"
+ * ran off the board at EVERY ratio, 30px even at 1920x1080. This restores
+ * the cap the rule intended and tightens it from 4.4cqw to 3.6cqw, which is
+ * what that sentence needs in the narrow half of a 4:3 board. */
+.para-text { font-size: min(clamp(15.4px, 2.6vh, 24.2px), 3.6cqw); }
+
+/* The facts stand beside Swiftee, so the room they have is their column
+ * less the bird and the gap -- but the cap is written against the column
+ * (the nearest container is `.para-foot`), so 5.6cqw overstated it and
+ * "Opposite sides are parallel to each other." spilled 44px at 1024x768.
+ * 4.6cqw is the same line inside the room the bird leaves it. */
+.para.sides .fact { font-size: max(var(--fs-min), min(clamp(var(--fs-min), 3vh, 28.6px), 4.6cqw)); }
+
+/* ---------- the shared floor comes down with the board ----------
+ * --fs-min is the one size none of the lesson's text may read smaller than.
+ * It was put there so the sizes close up together on a SHORT screen instead
+ * of fanning out, and as a height measure that is exactly right. On a narrow
+ * one it works against itself: a dozen rules are written
+ * `max(var(--fs-min), min(..., Ncqw))`, and the floor simply overrides the
+ * width cap the rule was given -- which is why the trapezium's "Our trapezium
+ * is exactly half of this parallelogram." sat at 19.8px and hung 25px past
+ * the board at 1024x768 with its cap doing nothing.
+ *
+ * So the floor is itself measured against the board's width, on the same
+ * 19.8/1500 proportion it already has at the design size. At 16:9 it is
+ * either the same value or below a size that was not binding anyway, so no
+ * line there moves; on a narrow board it steps back and lets the caps work. */
+:root { --fs-min: min(19.8px, calc(var(--board-w) * 0.0132)); }

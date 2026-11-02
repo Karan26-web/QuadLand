@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="pageTitle">Area of Quadrilaterals</title>
+<!-- The typeface is a single variable file every line of the board is set in,
+     so it is fetched alongside the stylesheet rather than after it. -->
+<link rel="preload" href="assets/fonts/baloo_2/baloo2-variablefont_wght.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="css/style.css" />
+<!-- Loaded after the stylesheet: it only re-states tokens and rules from it,
+     and does nothing at all at 16:9. See the head of the file. -->
+<link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <!-- ---------- arrowheads for the measuring lines ----------
+       One marker per colour a triangle's base or height (or a quadrilateral's
+       height) can be drawn in; the stylesheet picks one. Sized in the
+       drawing's own units, so they stay a dash long whatever the line's
+       width. Not display:none, which would stop the markers painting. -->
+  <svg id="dimArrows" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <marker id="dimArrow" class="dim-arrow" viewBox="0 0 6 6" refX="5" refY="3"
+              markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+        <path d="M1.2 .8 L5 3 L1.2 5.2" />
+      </marker>
+      <marker id="dimArrowBase" class="dim-arrow" viewBox="0 0 6 6" refX="5" refY="3"
+              markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+        <path d="M1.2 .8 L5 3 L1.2 5.2" />
+      </marker>
+      <marker id="dimArrowHeight" class="dim-arrow" viewBox="0 0 6 6" refX="5" refY="3"
+              markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+        <path d="M1.2 .8 L5 3 L1.2 5.2" />
+      </marker>
+      <marker id="dimArrowPurple" class="dim-arrow" viewBox="0 0 6 6" refX="5" refY="3"
+              markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+        <path d="M1.2 .8 L5 3 L1.2 5.2" />
+      </marker>
+      <marker id="dimArrowGreen" class="dim-arrow" viewBox="0 0 6 6" refX="5" refY="3"
+              markerWidth="6" markerHeight="6" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+        <path d="M1.2 .8 L5 3 L1.2 5.2" />
+      </marker>
+    </defs>
+  </svg>
+
+  <!-- ---------- icons ----------
+       Drawn once here and stamped wherever they are needed with <use>, so
+       every copy is the same artwork at any size. -->
+  <svg class="ico-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+    <symbol id="ico-next" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="icoNextFace" x1="50" y1="8" x2="50" y2="92" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="var(--next-face-1)" />
+          <stop offset=".55" stop-color="var(--next-face-2)" />
+          <stop offset="1" stop-color="var(--next-face-3)" />
+        </linearGradient>
+      </defs>
+      <!-- the rim, set a little low so it reads as the thickness of a disc -->
+      <circle cx="50" cy="51.5" r="45" fill="var(--next-rim)" />
+      <circle cx="50" cy="50" r="41.5" fill="url(#icoNextFace)" />
+      <!-- the arrow: drawn small and grown back by a round stroke, which is
+           what rounds every corner of it evenly. It is the only mark on the
+           face, so it is drawn large -- near the rim on every side. -->
+      <path d="M31.25 43.125 H52.5 V31.25 L77.5 50 L52.5 68.75 V56.875 H31.25 Z"
+            fill="var(--next-arrow)" stroke="var(--next-arrow)" stroke-width="8.75"
+            stroke-linejoin="round" stroke-linecap="round" />
+    </symbol>
+
+    <!-- the speech bubble's tail: filled first so it covers the box's border
+         where it joins, then stroked on its two free edges only. The edge
+         takes the colour of whatever box it hangs off, which is what lets a
+         verdict turn the whole box green or red. -->
+    <symbol id="ico-tail" viewBox="0 0 44 42">
+      <path d="M4 0 H42 V8 C36 20 24 30 2 42 C8 32 8 20 4 8 Z" fill="var(--bub-fill, var(--board-bg))" />
+      <path d="M42 8 C36 20 24 30 2 42 C8 32 8 20 4 8" fill="none"
+            stroke="var(--note-edge)" stroke-width="4"
+            stroke-linecap="round" stroke-linejoin="round"
+            vector-effect="non-scaling-stroke" />
+    </symbol>
+  </svg>
+  <!-- Swiftee's stand-in for the half of its jump that happens behind the
+       board: it sits before the stage in the document, so it paints under the
+       board, and script.js hands over to the in-board sprite at the top of the
+       arc. -->
+  <div class="hopper" id="hopper" aria-hidden="true"></div>
+
+  <div class="stage">
+  <main class="board" id="board">
+
+    <!-- The instruction is the board's heading, with Swiftee standing to its
+         left. It types itself out in step with the voice-over and then stays
+         for the rest of the round. -->
+    <header class="prompt-row">
+      <h1 class="prompt" id="prompt">
+        <!-- Swiftee's place for the whole mission: it jumps in here from
+             behind the board once the board has appeared, and stands at the
+             left end of whatever line the heading shows -->
+        <div class="mascot" id="mascot" aria-hidden="true"></div>
+        <span class="type-wrap">
+          <!-- invisible copy of the longest line the heading will ever show:
+               holds one width for the whole level, so neither the text nor
+               Swiftee beside it moves as characters are typed in -->
+          <span class="type-ghost" id="promptGhost"></span>
+          <span class="type" id="promptType" aria-live="polite"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+        </span>
+        <!-- Swiftee's reaction to an answer, for the screen reader only: on
+             the board the bird and the sound do the acknowledging -->
+        <span class="quip" id="quip" aria-live="polite"></span>
+      </h1>
+    </header>
+
+    <section class="bay" id="bay">
+      <!-- Cell 1 -->
+      <div class="cell">
+        <div class="shape-stage">
+          <div class="shape" data-shape="rect" role="img" aria-label="A rectangle" data-i18n-attr="aria-label:ariaRectangle">
+            <!-- overflow is visible, so the dimension labels sit outside the
+                 viewBox without changing the artwork's layout box -->
+            <svg viewBox="-40 0 320 170" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+              <defs>
+                <clipPath id="wipeRect"><rect class="wipe" x="0" y="0" width="240" height="132" /></clipPath>
+              </defs>
+              <g class="art">
+                <rect class="shape-fill" clip-path="url(#wipeRect)"
+                      x="4" y="4" width="232" height="124" />
+                <path class="shape-outline" d="M4 4 H236 V128 H4 Z" fill="none" stroke-width="5" />
+              </g>
+              <!-- shown in round 2, after the first wrong drop -->
+              <g class="labels">
+                <g class="wdim wdim-h"><line class="wdim-line" x1="4" y1="144" x2="236" y2="144" /><path class="wdim-head" d="M9.6 140.5 L4 144 L9.6 147.5 M230.4 140.5 L236 144 L230.4 147.5" /><text class="shape-label" x="120" y="160" font-size="13" text-anchor="middle" data-i18n="labelLength">length</text></g>
+                <g class="wdim wdim-v"><line class="wdim-line" x1="252" y1="4" x2="252" y2="128" /><path class="wdim-head" d="M248.5 9.6 L252 4 L255.5 9.6 M248.5 122.4 L252 128 L255.5 122.4" /><text class="shape-label" x="268" y="66" font-size="13" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 268 66)" data-i18n="labelBreadth">breadth</text></g>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <!-- both rounds' slots exist from the first frame so the bay never
+             changes height between levels -->
+        <div class="dock">
+          <div class="slot" data-round="1" data-accept="rect" aria-label="Name of the first shape" data-i18n-attr="aria-label:ariaNameFirst"></div>
+          <div class="slot" data-round="2" data-accept="rect" aria-label="Area of the first shape" data-i18n-attr="aria-label:ariaAreaFirst"></div>
+        </div>
+      </div>
+
+      <!-- Cell 2 -->
+      <div class="cell">
+        <div class="shape-stage">
+          <div class="shape" data-shape="square" role="img" aria-label="A square" data-i18n-attr="aria-label:ariaSquare">
+            <svg viewBox="-40 0 240 200" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+              <defs>
+                <clipPath id="wipeSquare"><rect class="wipe" x="0" y="0" width="160" height="160" /></clipPath>
+              </defs>
+              <g class="art">
+                <rect class="shape-fill" clip-path="url(#wipeSquare)"
+                      x="4" y="4" width="152" height="152" />
+                <path class="shape-outline" d="M4 4 H156 V156 H4 Z" fill="none" stroke-width="5" />
+              </g>
+              <g class="labels">
+                <g class="wdim wdim-h"><line class="wdim-line" x1="4" y1="170" x2="156" y2="170" /><path class="wdim-head" d="M9.6 166.5 L4 170 L9.6 173.5 M150.4 166.5 L156 170 L150.4 173.5" /><text class="shape-label" x="80" y="186" font-size="13" text-anchor="middle" data-i18n="labelSide">side</text></g>
+                <g class="wdim wdim-v"><line class="wdim-line" x1="172" y1="4" x2="172" y2="156" /><path class="wdim-head" d="M168.5 9.6 L172 4 L175.5 9.6 M168.5 150.4 L172 156 L175.5 150.4" /><text class="shape-label" x="188" y="80" font-size="13" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 188 80)" data-i18n="labelSide">side</text></g>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="dock">
+          <div class="slot" data-round="1" data-accept="square" aria-label="Name of the second shape" data-i18n-attr="aria-label:ariaNameSecond"></div>
+          <div class="slot" data-round="2" data-accept="square" aria-label="Area of the second shape" data-i18n-attr="aria-label:ariaAreaSecond"></div>
+        </div>
+      </div>
+
+      <!-- Cell 3 -->
+      <div class="cell">
+        <div class="shape-stage">
+          <div class="shape" data-shape="triangle" role="img" aria-label="A triangle" data-i18n-attr="aria-label:ariaTriangle">
+            <svg viewBox="-45 0 290 210" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+              <defs>
+                <clipPath id="wipeTri"><rect class="wipe" x="0" y="0" width="200" height="172" /></clipPath>
+              </defs>
+              <g class="art">
+                <polygon class="shape-fill" clip-path="url(#wipeTri)"
+                         points="100,6 195,166 5,166" />
+                <path class="shape-outline" d="M100 6 L195 166 L5 166 Z" fill="none" stroke-width="5" />
+              </g>
+              <g class="labels">
+                <line class="height-line" x1="100" y1="10" x2="100" y2="166" />
+                <g class="wdim wdim-h"><line class="wdim-line" x1="5" y1="182" x2="195" y2="182" /><path class="wdim-head" d="M10.6 178.5 L5 182 L10.6 185.5 M189.4 178.5 L195 182 L189.4 185.5" /><text class="shape-label" x="100" y="198" font-size="13" text-anchor="middle" data-i18n="labelBase">base</text></g>
+                <g class="wdim wdim-v"><line class="wdim-line" x1="-14" y1="6" x2="-14" y2="166" /><path class="wdim-head" d="M-17.5 11.6 L-14 6 L-10.5 11.6 M-17.5 160.4 L-14 166 L-10.5 160.4" /><text class="shape-label" x="-30" y="86" font-size="13" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -30 86)" data-i18n="labelHeight">height</text></g>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="dock">
+          <div class="slot" data-round="1" data-accept="triangle" aria-label="Name of the third shape" data-i18n-attr="aria-label:ariaNameThird"></div>
+          <div class="slot" data-round="2" data-accept="triangle" aria-label="Area of the third shape" data-i18n-attr="aria-label:ariaAreaThird"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- section 2: the triangle lesson ----------
+         Shares the bay's grid cell and is invisible until the warm-up has
+         cleared away. Each triangle is built like the warm-up shapes -- an
+         outline path that draws itself, a fill that pours in behind a clip --
+         plus a set of dotted dimension lines the script grows into place and
+         lights up as the formula names them. One viewBox for all three, so the
+         bases sit on one line. -->
+    <section class="lesson" id="lesson" aria-hidden="true">
+      <div class="tri-row" id="triRow">
+
+        <!-- acute (isosceles): the height stands inside it -->
+        <div class="tri-cell">
+          <div class="tri" data-tri="acute" role="img" aria-label="An acute triangle" data-i18n-attr="aria-label:ariaAcuteTriangle">
+            <svg viewBox="0 13 240 197" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <clipPath id="wipeTriA"><rect class="wipe" x="0" y="0" width="240" height="210" /></clipPath>
+              </defs>
+              <g class="art">
+                <polygon class="shape-fill" clip-path="url(#wipeTriA)" points="120,16 218,176 22,176" />
+                <path class="shape-outline" d="M120 16 L218 176 L22 176 Z" fill="none" stroke-width="5" />
+              </g>
+              <g class="dims">
+                <line class="dim dim-base"   x1="22"  y1="186" x2="218" y2="186" />
+                <line class="dim dim-height" x1="120" y1="16"  x2="120" y2="176" />
+                <path class="dim-mark" d="M132 176 V164 H120" />
+                <text class="dim-label lbl-base" x="120" y="203" font-size="13" text-anchor="middle" data-i18n="labelBaseCap">Base</text>
+                <text class="dim-label lbl-height" x="133" y="98" font-size="13" text-anchor="middle"
+                      dominant-baseline="middle" transform="rotate(-90 133 98)" data-i18n="labelHeightCap">Height</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- right-angled (scalene): the height is one of its own sides -->
+        <div class="tri-cell">
+          <div class="tri" data-tri="right" role="img" aria-label="A right-angled scalene triangle" data-i18n-attr="aria-label:ariaRightTriangle">
+            <svg viewBox="0 13 240 197" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <clipPath id="wipeTriB"><rect class="wipe" x="0" y="0" width="240" height="210" /></clipPath>
+              </defs>
+              <g class="art">
+                <polygon class="shape-fill" clip-path="url(#wipeTriB)" points="30,26 214,176 30,176" />
+                <path class="shape-outline" d="M30 26 L214 176 L30 176 Z" fill="none" stroke-width="5" />
+              </g>
+              <g class="dims">
+                <line class="dim dim-base"   x1="30" y1="186" x2="214" y2="186" />
+                <line class="dim dim-height" x1="20" y1="26"  x2="20"  y2="176" />
+                <path class="dim-mark" d="M42 176 V164 H30" />
+                <text class="dim-label lbl-base" x="122" y="203" font-size="13" text-anchor="middle" data-i18n="labelBaseCap">Base</text>
+                <text class="dim-label lbl-height" x="9" y="101" font-size="13" text-anchor="middle"
+                      dominant-baseline="middle" transform="rotate(-90 9 101)" data-i18n="labelHeightCap">Height</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- obtuse: the height falls outside it, onto the base extended -->
+        <div class="tri-cell">
+          <div class="tri" data-tri="obtuse" role="img" aria-label="An obtuse triangle" data-i18n-attr="aria-label:ariaObtuseTriangle">
+            <svg viewBox="0 13 240 197" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <clipPath id="wipeTriC"><rect class="wipe" x="0" y="0" width="240" height="210" /></clipPath>
+              </defs>
+              <g class="art">
+                <polygon class="shape-fill" clip-path="url(#wipeTriC)" points="40,22 226,176 118,176" />
+                <path class="shape-outline" d="M40 22 L226 176 L118 176 Z" fill="none" stroke-width="5" />
+              </g>
+              <g class="dims">
+                <line class="dim dim-base"   x1="118" y1="186" x2="226" y2="186" />
+                <!-- the base carried on to meet the height -->
+                <line class="dim dim-ext"    x1="118" y1="176" x2="40"  y2="176" />
+                <line class="dim dim-height" x1="40"  y1="22"  x2="40"  y2="176" />
+                <path class="dim-mark" d="M52 176 V164 H40" />
+                <text class="dim-label lbl-base" x="172" y="203" font-size="13" text-anchor="middle" data-i18n="labelBaseCap">Base</text>
+                <text class="dim-label lbl-height" x="29" y="100" font-size="13" text-anchor="middle"
+                      dominant-baseline="middle" transform="rotate(-90 29 100)" data-i18n="labelHeightCap">Height</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- the area formula, typed out word by word; script.js builds the word
+           spans in both the ghost and the live line so the box is sized to the
+           whole formula before the first character lands -->
+      <div class="formula-box" id="formulaBox" aria-live="polite">
+        <span class="type-wrap">
+          <span class="type-ghost" id="formulaGhost"></span>
+          <span class="type" id="formulaType"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+        </span>
+      </div>
+    </section>
+
+    <!-- ---------- section 3: the quadrilateral ----------
+         Shares the middle cell with the bay and the lesson, and is invisible
+         until the lesson has cleared away. One quadrilateral, built like every
+         other shape here (an outline that draws itself, a fill that pours in
+         behind a clip), plus everything the scene will add to it later: the
+         two triangles it splits into, the diagonal the learner draws, the
+         dotted heights, and the four corner dots. Under it, three things take
+         turns in one grid cell: the name quiz, Swiftee's aside, and the area
+         working. -->
+    <section class="quad" id="quad" aria-hidden="true">
+      <div class="quad-stage">
+        <div class="quad-shape" id="quadShape" role="img" aria-label="A quadrilateral" data-i18n-attr="aria-label:ariaQuadrilateral">
+          <svg class="quad-svg" id="quadSvg" viewBox="0 0 333 272" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wipeQuad"><rect class="wipe" x="0" y="0" width="333" height="272" /></clipPath>
+            </defs>
+            <!-- built by script.js from the scene's corners -->
+            <g class="art"></g>
+            <!-- the rings the working denotes a part with: over the colours,
+                 under every line and name, so nothing is crossed out -->
+            <g class="qrings"></g>
+            <!-- the learner's diagonal: left corner to right corner -->
+            <line class="join-line" id="joinLine" x1="10" y1="151" x2="10" y2="151" />
+            <g class="dims"></g>
+            <!-- each half's name, written clear of the shape, with a dashed
+                 curve looping in to the half it names -->
+            <g class="tnames"></g>
+            <!-- the hint: a dotted line and a finger travelling left to right -->
+            <g class="demo" id="demoJoin">
+              <line class="demo-line" id="demoLine" x1="10" y1="151" x2="10" y2="151" />
+              <g class="demo-hand" id="demoHand">
+                <path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z" />
+              </g>
+            </g>
+            <!-- the corners; the hit circle is bigger than the dot it serves -->
+            <g class="dots" id="dots"></g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- three occupants of one cell, so the shape above never moves -->
+      <div class="quad-foot">
+        <!-- the name quiz, on the right half: the room Swiftee drops into to
+             ask the question and answer each choice -- the bird on the left,
+             its box up and to its right, as the trapezium's name quiz has --
+             and under it the sentence, "This is a [ v ]" -->
+        <div class="quiz-block" id="quizBlock">
+          <!-- Swiftee's landing spot, above the three names. The
+               row is laid out from the first frame -- bird and box both
+               invisible until they are wanted -- so neither arrival moves
+               anything. -->
+          <div class="quiz-say">
+            <div class="mascot" id="quizMascot" aria-hidden="true"></div>
+            <p class="quiz-bubble msg" id="quizNote" aria-live="polite">
+              <span class="type-wrap">
+                <span class="type-ghost" id="noteGhost"></span>
+                <span class="type" id="noteType"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+              <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+            </p>
+          </div>
+          <!-- three names, tap the right one -->
+          <div class="quiz-tray" id="quizTray">
+            <button class="chip" type="button" data-answer="triangle"><span data-i18n="shapeTriangle">Triangle</span></button>
+            <button class="chip" type="button" data-answer="quadrilateral"><span data-i18n="shapeQuadrilateral">Quadrilateral</span></button>
+            <button class="chip" type="button" data-answer="pentagon"><span data-i18n="shapePentagon">Pentagon</span></button>
+          </div>
+        </div>
+
+        <!-- Swiftee's aside, standing to the left of what it says -->
+        <div class="say-row" id="sayRow">
+          <div class="mascot" id="sideMascot" aria-hidden="true"></div>
+          <p class="say-text" id="sayText" aria-live="polite">
+            <span class="type-wrap">
+              <span class="type-ghost" id="sayGhost"></span>
+              <span class="type" id="sayType"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+            </span>
+          </p>
+        </div>
+
+        <!-- the working, one line at a time; script.js builds each line -->
+        <div class="area-lines" id="areaLines" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ---------- section 4: the parallelogram ----------
+         The first of the special quadrilaterals. Shares the middle cell with
+         everything before it, and is invisible until the board comes back
+         after Swiftee's aside. The shape itself is built by script.js from
+         its four corners, along with everything the explanation draws over
+         it: a glowing copy of each side, the dotted lines that carry a pair
+         of sides on to show they never meet, the arrow marks that say
+         "parallel", the tick marks that say "equal", and the measuring copy
+         of a side that travels across to lie over its partner. Under it, two
+         things take turns in one cell: the two-chip name quiz, and the list
+         of facts Swiftee hops down to state. -->
+    <section class="para" id="para" aria-hidden="true">
+      <div class="para-stage">
+        <div class="para-shape" id="paraShape" role="img" aria-label="A parallelogram" data-i18n-attr="aria-label:ariaParallelogram">
+          <!-- room above and below the shape for the base arrows and their
+               labels, so switching them on moves nothing -->
+          <svg class="para-svg" id="paraSvg" viewBox="-44 -46 452 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wipePara"><rect class="wipe" x="-44" y="-46" width="452" height="300" /></clipPath>
+            </defs>
+            <!-- built by script.js from the shape's corners: the fill, the two
+                 triangles it will be cut into, and the outline -->
+            <g class="art"></g>
+            <!-- the base and height, the diagonal, and the second pair -->
+            <g class="para-dims" id="paraDims"></g>
+            <!-- the opposite-sides explanation -->
+            <g class="para-ex" id="paraEx"></g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Swiftee's own row across the top, and under it one cell the rest
+           take turns in, so the shape beside them never moves -->
+      <div class="para-foot">
+        <!-- Swiftee and everything it says, in a box of its own at the top of
+             the right half (user, 2026-09-18). The bird comes up here once
+             the shape has moved aside and stays for the whole scene: the
+             question, the reason a wrong name is wrong, the answer and the
+             three lines about the sides are all said from this one spot, so
+             the board's heading is never used and the parallelogram keeps
+             the full height of the left half. The row is laid out from the
+             first frame, empty, so the arrival moves nothing under it. -->
+        <div class="para-say room-row" id="paraSay">
+          <div class="mascot" id="paraMascot" aria-hidden="true"></div>
+          <p class="say-text para-text msg" id="paraText" aria-live="polite">
+            <span class="type-wrap">
+              <span class="type-ghost"></span>
+              <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+            </span>
+            <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+          </p>
+        </div>
+
+        <!-- the name quiz: two chips, tap the right one. The reason a wrong
+             one is wrong is not written under them any more (user,
+             2026-09-18): it is said in the box above, where every other line
+             of this scene is said. -->
+        <div class="para-ask" id="paraAsk">
+          <div class="para-tray" id="paraTray">
+            <button class="chip" type="button" data-answer="parallelogram"><span data-i18n="shapeParallelogram">Parallelogram</span></button>
+            <button class="chip" type="button" data-answer="trapezium"><span data-i18n="shapeTrapezium">Trapezium</span></button>
+          </div>
+        </div>
+
+        <!-- the area quiz: three formulas, tap the right one -->
+        <div class="para-tray area-tray" id="areaTray">
+          <button class="chip formula" type="button" data-answer="half"><span data-i18n-html="formulaHalfBaseHeight"><span class="frac"><span class="num">1</span><span class="den">2</span></span> &times; base &times; height</span></button>
+          <button class="chip formula" type="button" data-answer="bh"><span data-i18n-html="formulaBaseHeight">base &times; height</span></button>
+          <button class="chip formula" type="button" data-answer="double"><span data-i18n-html="formulaDoubleBaseHeight">2 &times; base &times; height</span></button>
+        </div>
+
+        <!-- the working, beside the shape once it has moved left; script.js
+             builds each line -->
+        <div class="area-lines" id="paraLines" aria-live="polite"></div>
+
+        <!-- the facts, stated one at a time with Swiftee standing beside them -->
+        <div class="facts" id="facts">
+          <div class="mascot" id="factMascot" aria-hidden="true"></div>
+          <div class="fact-list">
+            <p class="fact" id="factA" aria-live="polite">
+              <span class="fact-check" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              </span>
+              <span class="type-wrap">
+                <span class="type-ghost"></span>
+                <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+            </p>
+            <p class="fact" id="factB" aria-live="polite">
+              <span class="fact-check" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              </span>
+              <span class="type-wrap">
+                <span class="type-ghost"></span>
+                <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- section 5: the rhombus ----------
+         The special parallelogram. Shares the middle cell with everything
+         before it, and is invisible until the board comes back after
+         Swiftee's aside. A second parallelogram, in a colour of its own, is
+         built by script.js from its corners and then handed to the learner:
+         two of its corners carry points that can be dragged, and every
+         frame the shape, its two diagonals and the four angle marks at
+         their crossing are redrawn from the two side lengths. The marks are
+         arcs until the sides come out equal, when they morph into little
+         squares. Under it, one row: Swiftee, hopped down, and the line it
+         says about the rhombus. -->
+    <section class="rhom" id="rhom" aria-hidden="true">
+      <div class="rhom-stage">
+        <!-- the practice figures: built by script.js for each question and
+             shown in place of the rhombus once it has been worked through -->
+        <div class="rhom-practice" id="rhomPractice" aria-live="polite">
+          <div class="fig-row" id="figRow"></div>
+        </div>
+        <div class="rhom-shape" id="rhomShape" role="img" aria-label="A parallelogram that becomes a rhombus" data-i18n-attr="aria-label:ariaRhombus">
+          <svg class="rhom-svg" id="rhomSvg" viewBox="0 32 440 250" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wipeRhom"><rect class="wipe" x="0" y="14" width="440" height="268" /></clipPath>
+            </defs>
+            <!-- built by script.js from the shape's corners: the fill and the
+                 outline that draws itself -->
+            <g class="art"></g>
+            <!-- the two sides the points move, lit while they can be moved -->
+            <g class="rhom-live" id="rhomLive"></g>
+            <!-- the diagonals, and the four angles at their crossing -->
+            <g class="rhom-diag" id="rhomDiag"></g>
+            <g class="rhom-marks" id="rhomMarks"></g>
+            <!-- the showcase: the glow that runs round the equal sides, and
+                 the tick marks it leaves on them -->
+            <g class="rhom-ex" id="rhomEx"></g>
+            <!-- the area lesson, once the shape has been tilted: the two
+                 diagonals with their names, the right angle between them,
+                 and the two half-diagonals that are the triangles' heights -->
+            <g class="rhom-area" id="rhomArea"></g>
+            <!-- the two draggable points -->
+            <g class="rhom-handles" id="rhomHandles"></g>
+            <!-- the hint: a finger that takes hold of a point and nudges it -->
+            <g class="rhom-hint" id="rhomHint">
+              <path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z" />
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- the occupants of one cell, so the shape above never moves:
+           Swiftee's line about the rhombus, the working beside the shape
+           once it has moved left, and the numbers' formula -->
+      <div class="rhom-foot">
+        <div class="rhom-say" id="rhomSay">
+          <div class="mascot" id="rhomMascot" aria-hidden="true"></div>
+          <p class="say-text" id="rhomText" aria-live="polite">
+            <span class="type-wrap">
+              <span class="type-ghost"></span>
+              <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+            </span>
+          </p>
+        </div>
+
+        <!-- the working, beside the shape once it has moved left -->
+        <div class="area-lines" id="rhomLines" aria-live="polite"></div>
+
+        <!-- the numbers: the formula with two empty slots, and the lengths
+             to drag into them -->
+        <div class="rhom-quiz" id="rhomQuiz">
+          <div class="area-line len-formula" id="rhomFormula">
+            <span class="seg" data-i18n-fmt="{areaWord} = ½ ×">Area = <span class="frac"><span class="num">1</span><span class="den">2</span></span> ×</span>
+            <!-- either slot takes either diagonal: d₁ × d₂ is d₂ × d₁ -->
+            <span class="fslot" data-slot="1" role="button" tabindex="-1" aria-label="First diagonal" data-i18n-attr="aria-label:ariaFirstDiagonal"></span>
+            <span class="seg">×</span>
+            <span class="fslot" data-slot="2" role="button" tabindex="-1" aria-label="Second diagonal" data-i18n-attr="aria-label:ariaSecondDiagonal"></span>
+          </div>
+          <div class="para-tray len-tray" id="rhomTray3">
+            <button class="chip" type="button" data-len="16"><span data-i18n-fmt="16 {unitCm}">16 cm</span></button>
+            <button class="chip" type="button" data-len="12"><span data-i18n-fmt="12 {unitCm}">12 cm</span></button>
+            <button class="chip" type="button" data-len="28"><span data-i18n-fmt="28 {unitCm}">28 cm</span></button>
+            <button class="chip" type="button" data-len="8"><span data-i18n-fmt="8 {unitCm}">8 cm</span></button>
+          </div>
+        </div>
+
+        <!-- the practice questions' answers: chips built by script.js -->
+        <div class="para-tray practice-tray" id="practiceTray"></div>
+
+        <!-- page 16, the area of the measured rhombus: the shape keeps the
+             left half and this panel takes the right, page 4's way (user,
+             2026-09-30). Swiftee hops down from the heading to the left end
+             of the answers, its box up over its head, and asks from there;
+             every verdict is said in the same box, red for a wrong area
+             and green for the right one, and the box is refitted to each
+             line it says. The answers are built by script.js. -->
+        <div class="quiz-block rp-panel" id="rpPanel">
+          <div class="quiz-say rp-say">
+            <div class="mascot" id="rpMascot" aria-hidden="true"></div>
+            <p class="quiz-bubble msg rp-note" id="rpNote" aria-live="polite">
+              <span class="type-wrap">
+                <span class="type-ghost"></span>
+                <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+              <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+            </p>
+          </div>
+          <div class="para-tray quiz-tray rp-tray" id="rpTray"></div>
+        </div>
+
+        <!-- the area of the rhombus, asked of one figure (page 21): the
+             board halves, the rhombus keeps the left of it and this panel
+             the right. Swiftee comes down into the panel instead of staying
+             up at the heading, so the question sits beside the answers for
+             as long as the learner is choosing and nothing is ever said over
+             the drawing. Under it the formula the question wants, the four
+             answers, a nudge that only shows after a wrong pick, and the
+             working the right answer solves itself into. Everything inside
+             is built by script.js, so a replay clears it. -->
+        <div class="rc-panel" id="rcPanel">
+          <div class="rc-say" id="rcSay">
+            <div class="mascot" id="rcMascot" aria-hidden="true"></div>
+            <p class="say-text rc-text" id="rcText" aria-live="polite">
+              <span class="type-wrap">
+                <span class="type-ghost"></span>
+                <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+            </p>
+          </div>
+          <!-- the formula, held back until a wrong pick asks for it: a
+               reminder of what to do, said in words rather than in d1 and
+               d2, and never up while the question is still open -->
+          <div class="area-line rc-formula" id="rcFormula">
+            <span class="seg" data-i18n-html="rhomFormulaWords">Area of rhombus = <span class="frac"><span class="num">1</span><span class="den">2</span></span> &#215; product of diagonals</span>
+          </div>
+          <div class="para-tray rc-tray" id="rcTray"></div>
+          <p class="tn-hint rc-hint" id="rcHint" aria-live="polite"></p>
+          <div class="area-lines rc-work" id="rcWork" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- section 6: the trapezium ----------
+         The third special quadrilateral. Shares the middle cell with
+         everything before it, and is invisible until the board comes back
+         after Swiftee's aside. Level 1: one trapezium, built by script.js
+         from its corners, with the pair of "parallel" marks it takes once it
+         has been named from the drop-down under it. Level 2: six cards in
+         the same cell, built by script.js, three of them trapeziums; the
+         learner picks those out, each tap answered at once, then the three
+         line up and each takes a slot under it for its name to be dragged
+         into. -->
+    <section class="trap" id="trap" aria-hidden="true">
+      <div class="trap-stage">
+        <div class="trap-shape" id="trapShape" role="img" aria-label="A trapezium" data-i18n-attr="aria-label:ariaTrapezium">
+          <svg class="trap-svg" id="trapSvg" viewBox="0 0 420 260" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wipeTrap"><rect class="wipe" x="0" y="0" width="420" height="260" /></clipPath>
+            </defs>
+            <!-- built by script.js from the shape's corners: the fill and the
+                 outline that draws itself -->
+            <g class="art"></g>
+            <!-- the marks that say "parallel", on the top and the bottom -->
+            <g class="trap-marks" id="trapMarks"></g>
+          </svg>
+        </div>
+        <!-- the cards of level 2, built by script.js -->
+        <div class="trap-cards" id="trapCards">
+          <div class="card-grid" id="cardGrid" role="group" aria-label="Shapes to choose from" data-i18n-attr="aria-label:ariaCards"></div>
+        </div>
+      </div>
+
+      <!-- two occupants of one cell, so the shape above never moves: the
+           name quiz of level 1, and the names to drag once the trapeziums
+           have lined up -->
+      <div class="trap-foot">
+        <!-- the name quiz, page 4's way (user, 2026-09-29): the room Swiftee
+             jumps into to ask and to answer -- the bird on the left, its box
+             up over its head -- and under it the three names, one to tap.
+             The bird is above the names, as the quadrilateral's own name
+             quiz has it: the remark is read before the next choice. -->
+        <div class="quiz-block" id="trapQuiz">
+          <div class="trap-say">
+            <div class="mascot" id="trapMascot" aria-hidden="true"></div>
+            <p class="quiz-note trap-note msg" id="trapNote" aria-live="polite">
+              <span class="type-wrap">
+                <span class="type-ghost"></span>
+                <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+              <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+            </p>
+          </div>
+          <!-- three names, tap the right one -->
+          <div class="quiz-tray" id="trapNames">
+            <button class="chip" type="button" data-answer="kite"><span data-i18n="shapeKite">Kite</span></button>
+            <button class="chip" type="button" data-answer="parallelogram"><span data-i18n="shapeParallelogram">Parallelogram</span></button>
+            <button class="chip" type="button" data-answer="trapezium"><span data-i18n="shapeTrapezium">Trapezium</span></button>
+          </div>
+        </div>
+
+        <!-- the three names, dragged onto the three trapeziums -->
+        <div class="trap-tray" id="trapTray">
+          <button class="chip" type="button" data-kind="iso"><span data-i18n="shapeIsoTrapezium">Isosceles Trapezium</span></button>
+          <button class="chip" type="button" data-kind="right"><span data-i18n="shapeRightTrapezium">Right-angled Trapezium</span></button>
+          <button class="chip" type="button" data-kind="scalene"><span data-i18n="shapeScaleneTrapezium">Scalene Trapezium</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- section 7: the area of a trapezium ----------
+         One continuous derivation, with Swiftee narrating every beat from
+         the heading and then from beside the working, played once for each
+         kind of trapezium: right-angled, scalene, isosceles. A trapezium
+         draws itself in the middle of the board, moves to the left and
+         takes its side names (a, b and h); a copy of it lifts off and turns
+         half a circle about the middle of its right-hand side to land
+         beside it, so the two make one rectangle (right-angled) or one
+         parallelogram (the others). The equal sides are shown equal, the
+         two top sides become one length a + b, and the whole's area is
+         worked out beside the shape; then the copy fades to a dashed
+         outline -- the trapezium is exactly half -- and the formula
+         follows. Everything in the svg is built by script.js from the
+         shape's corners. -->
+    <section class="rtrap" id="rtrap" aria-hidden="true">
+      <div class="rtrap-stage">
+        <div class="rtrap-shape" id="rtrapShape" role="img"
+             aria-label="A trapezium, and a copy of it turned around to make a rectangle or a parallelogram with it" data-i18n-attr="aria-label:ariaTrapeziumCopy">
+          <svg class="rtrap-svg" id="rtrapSvg" viewBox="-80 -60 680 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wipeRtrap"><rect class="wipe" x="-80" y="-60" width="680" height="280" /></clipPath>
+            </defs>
+            <!-- the whole drawing slides as one: centred while the trapezium
+                 is alone, then over to the left of the board once the copy
+                 has joined it -->
+            <g class="rt-scene" id="rtScene">
+              <!-- the copy: popped out of the trapezium, carried across into
+                   the right half of the board and flipped upside down there,
+                   then carried back against the trapezium's right side,
+                   where it settles under it -->
+              <g class="rt-copy" id="rtCopy"></g>
+              <!-- the trapezium: the fill, the outline that draws itself,
+                   and its two right-angle marks -->
+              <g class="art" id="rtArt"></g>
+              <!-- the side names, each on a two-headed arrow -->
+              <g class="rt-dims" id="rtDims"></g>
+            </g>
+          </svg>
+        </div>
+        <!-- the practice: figures built by script.js for each question,
+             shown in place of the derivation's drawing -->
+        <div class="rhom-practice rtrap-practice" id="rtrapPractice" aria-live="polite">
+          <div class="fig-row" id="rtFigRow"></div>
+        </div>
+      </div>
+
+      <!-- Swiftee hops down here for the working: its box, up beside its
+           head (page 4's way, user, 2026-09-30) and fitted to each line it
+           says, and the lines of working under both. The row keeps its box
+           from the first frame, so its arrival moves nothing. -->
+      <div class="rtrap-foot">
+        <div class="rtrap-say" id="rtrapSay">
+          <div class="mascot" id="rtrapMascot" aria-hidden="true"></div>
+          <p class="quiz-note rtrap-text msg" id="rtrapText" aria-live="polite">
+            <span class="type-wrap">
+              <span class="type-ghost"></span>
+              <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+            </span>
+            <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+          </p>
+          <div class="area-lines rtrap-lines fit-lines" id="rtrapLines" aria-live="polite"></div>
+        </div>
+
+        <!-- the practice's other occupants of the same cell, one at a time:
+             the formula with three empty boxes and the values to drag into
+             them; two questions with drop-downs; the answers to a question;
+             and the banner Swiftee hops down to for the comparison -->
+        <div class="rhom-quiz rtrap-quiz" id="rtrapQuiz">
+          <div class="area-line len-formula" id="rtrapFormula">
+            <span class="seg" data-i18n-fmt="{areaAbbrev} = ½ × (">A = <span class="frac"><span class="num">1</span><span class="den">2</span></span> × (</span>
+            <span class="fslot" data-accept="a" role="button" tabindex="-1" aria-label="First parallel side" data-i18n-attr="aria-label:ariaFirstParallel"><i class="hint">a</i></span>
+            <span class="seg">+</span>
+            <span class="fslot" data-accept="b" role="button" tabindex="-1" aria-label="Second parallel side" data-i18n-attr="aria-label:ariaSecondParallel"><i class="hint">b</i></span>
+            <span class="seg">) ×</span>
+            <span class="fslot" data-accept="h" role="button" tabindex="-1" aria-label="Height" data-i18n-attr="aria-label:ariaHeight"><i class="hint">h</i></span>
+          </div>
+          <div class="para-tray len-tray" id="rtrapTray">
+            <button class="chip" type="button" data-len="8"><span data-i18n-fmt="8 {unitCm}">8 cm</span></button>
+            <button class="chip" type="button" data-len="14"><span data-i18n-fmt="14 {unitCm}">14 cm</span></button>
+            <button class="chip" type="button" data-len="6"><span data-i18n-fmt="6 {unitCm}">6 cm</span></button>
+          </div>
+        </div>
+        <div class="area-lines rtrap-qs" id="rtrapQs" aria-live="polite"></div>
+        <!-- the values scene (page 25): the trapezium keeps the left half of
+             the board and this panel the right, page 15's way (user,
+             2026-09-30). The formula is revealed a piece at a time and its
+             a, b and h ARE the drop slots; the three measurements sit in
+             the tray under it to be dragged in, in order, and every drop is
+             answered in a sentence in the heading. Once the formula holds
+             all three, the same tray deals the three areas to choose from,
+             and the working the right one solves itself into goes under.
+             Everything inside is built by script.js, so a replay clears it. -->
+        <div class="tn-panel" id="tnPanel">
+          <div class="tn-formula" id="tnFormula" aria-live="polite"></div>
+          <!-- the three measurements, to be dragged into the formula's boxes;
+               then the three areas, one to tap -->
+          <div class="para-tray tn-tray" id="tnTray"></div>
+          <div class="area-lines tn-work" id="tnWork" aria-live="polite"></div>
+        </div>
+        <!-- pages 26 to 28, the practice: the board is halved the way the
+             values scene halves it -- the trapezium keeps the left half --
+             and this panel is page 16's over again (user, 2026-09-30): the
+             bird hops down into it, its box up over its head and refitted
+             to every line it says, and asks from there; the answers come up
+             one by one under it, every verdict is said in the same box, red
+             for a wrong pick and green for the right one, and the working
+             the right answer solves itself into goes under the answers.
+             Everything inside is built by script.js, so a replay clears it. -->
+        <div class="quiz-block tc-panel" id="tcPanel">
+          <div class="quiz-say tc-say">
+            <div class="mascot" id="tcMascot" aria-hidden="true"></div>
+            <p class="quiz-bubble msg tc-note" id="tcNote" aria-live="polite">
+              <span class="type-wrap">
+                <span class="type-ghost"></span>
+                <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+              </span>
+              <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+            </p>
+          </div>
+          <div class="para-tray quiz-tray tc-tray" id="tcTray"></div>
+          <div class="area-lines tc-work" id="tcWork" aria-live="polite"></div>
+        </div>
+        <div class="para-tray practice-tray" id="rtrapPTray"></div>
+        <div class="practice-say" id="rtrapPSay">
+          <div class="mascot" id="rtrapPMascot" aria-hidden="true"></div>
+          <p class="say-text" id="rtrapPText" aria-live="polite">
+            <span class="type-wrap">
+              <span class="type-ghost"></span>
+              <span class="type"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+            </span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- One console band, two decks of cards stacked in it: round 2's deck is
+         laid over round 1's, so the band is the same height all level long. -->
+    <div class="tray-area" id="trayArea">
+      <div class="tray" id="tray" data-round="1">
+        <button class="chip" type="button" data-round="1" data-word="rect"><span data-i18n="shapeRectangle">Rectangle</span></button>
+        <button class="chip" type="button" data-round="1" data-word="triangle"><span data-i18n="shapeTriangle">Triangle</span></button>
+        <button class="chip" type="button" data-round="1" data-word="square"><span data-i18n="shapeSquare">Square</span></button>
+      </div>
+      <div class="tray" id="tray2" data-round="2">
+        <button class="chip formula" type="button" data-round="2" data-word="rect"><span data-i18n-html="formulaRectangle">Length &times; Breadth</span></button>
+        <button class="chip formula" type="button" data-round="2" data-word="triangle"><span data-i18n-html="formulaTriangle"><span class="frac"><span class="num">1</span><span class="den">2</span></span> &times; Base &times; Height</span></button>
+        <button class="chip formula" type="button" data-round="2" data-word="square"><span data-i18n-html="formulaSquare">(Side)<sup>2</sup></span></button>
+      </div>
+    </div>
+
+    <!-- Next: sits in the board's bottom right corner once a section is
+         over, clear of the (by then empty) card decks. -->
+    <button class="next-btn" id="nextBtn" type="button" hidden>
+      <span class="sr-only" data-i18n="nextButton">Next</span>
+      <svg class="next-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#ico-next" /></svg>
+    </button>
+
+  </main>
+
+  <!-- ---------- a card, taken to the middle of the board ----------
+       A tapped card of section 6 lifts off its grid and comes here, blown up
+       over a darkened board, where the shape on it shows what was asked of
+       it: the two sides of a pair light up, a glowing copy of the first
+       slides across onto the second, and either it lies flush -- the two run
+       the same way, so they are parallel -- or it lands across it and has to
+       turn, and the turn is the proof that they do not. Then the card glides
+       back to its place. Built, and emptied again, by script.js; nothing is
+       said in words, the picture is the whole explanation. -->
+  <div class="card-zoom" id="cardZoom" aria-hidden="true">
+    <div class="card-zoom-scrim"></div>
+    <svg class="card-zoom-box" id="cardZoomBox" viewBox="0 0 320 200"
+         preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+  </div>
+  </div>
+
+  <!-- Swiftee's stand-in for a hop from one spot on the board to another: it
+       sits after the stage, so it paints over the board, and script.js hands
+       the sprite to it for the length of the arc. -->
+  <div class="flyer" id="flyer" aria-hidden="true"></div>
+
+  <!-- Next, for a scene with no board under it (Swiftee's asides between
+       sections): fixed to the viewport, centred low, over the intro layer -->
+  <div class="free-next" id="freeNext">
+    <button class="next-btn" id="nextBtnFree" type="button" hidden>
+      <span class="sr-only" data-i18n="nextButton">Next</span>
+      <svg class="next-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#ico-next" /></svg>
+    </button>
+  </div>
+
+  <!-- ---------- intro ----------
+       Between the Start button and the board: Swiftee hops to the middle of
+       the landscape and greets the learner from a speech bubble, then jumps
+       away off the bottom of the screen before the board arrives. -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-mascot" id="introMascot"></div>
+
+    <div class="bubble" id="bubble">
+      <span class="type-wrap">
+        <span class="type-ghost" id="bubbleGhost"></span>
+        <span class="type" id="bubbleType" aria-live="polite"><span class="txt"></span><i class="caret" aria-hidden="true"></i></span>
+      </span>
+      <svg class="bubble-tail" viewBox="0 0 44 42" aria-hidden="true"><use href="#ico-tail" /></svg>
+    </div>
+  </div>
+
+  <!-- confetti / particle layer -->
+  <div class="fx-layer" id="fx" aria-hidden="true"></div>
+
+  <!-- swallows every pointer event while an intro or a voice-over is running -->
+  <div class="input-lock" id="inputLock" aria-hidden="true"></div>
+
+  <!-- The two scene tools, bottom-right. Siblings of the input lock and
+       stacked above it, because the lock is what makes every other control
+       dead while a scene is playing -- and these are the two that have to stay
+       live exactly then. Anchored to the viewport rather than to the board, so
+       they keep the same corner during the intro, when there is no board on
+       screen yet.
+         Back    -- go back to the scene before this one
+         Skip    -- take me to the end of this scene
+         Replay  -- play this scene again from its first frame -->
+  <!-- Jump straight to a section. Bottom-left, opposite the scene tools, and
+       stacked above the input lock for the same reason they are: while a scene
+       is playing is exactly when it is wanted. Its list is built from the
+       mission order in script.js, so it cannot drift out of step with it, and
+       it opens upward because the button sits on the floor of the screen. -->
+  <div class="jump" id="jump" hidden>
+    <button class="jump-btn" id="jumpBtn" type="button"
+            aria-haspopup="listbox" aria-expanded="false"
+            aria-label="Jump to a section" title="Jump to a section"
+            data-i18n-attr="aria-label:jumpTitle;title:jumpTitle">
+      <svg class="jump-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h10" />
+      </svg>
+      <span class="jump-label" id="jumpLabel" data-i18n="jumpLabel">Section</span>
+      <svg class="jump-caret" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 15l6-6 6 6" />
+      </svg>
+    </button>
+    <div class="jump-menu" id="jumpMenu" role="listbox" aria-label="Sections" data-i18n-attr="aria-label:jumpMenuAria"></div>
+  </div>
+
+  <div class="hud-tools">
+    <button class="tool-btn" id="backBtn" type="button" hidden
+            aria-label="Back to the previous section" title="Back to the previous section"
+            data-i18n-attr="aria-label:backTitle;title:backTitle">
+      <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18 5l-7 7 7 7" />
+        <path d="M10 5l-7 7 7 7" />
+      </svg>
+      <span data-i18n="backButton">Back</span>
+    </button>
+    <button class="tool-btn" id="skipBtn" type="button" hidden
+            aria-label="Skip this section" title="Skip this section"
+            data-i18n-attr="aria-label:skipTitle;title:skipTitle">
+      <span data-i18n="skipButton">Skip</span>
+      <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 5l7 7-7 7" />
+        <path d="M14 5l7 7-7 7" />
+      </svg>
+    </button>
+    <!-- Sound off. The catalog asks for one global mute, remembered between
+         sittings; it sits with the other tools because it is the same kind of
+         thing: a way around what the game is doing, not part of it. The two
+         icons are both in the markup and the class decides which shows, so
+         toggling it never touches the DOM. -->
+    <button class="tool-btn" id="muteBtn" type="button" hidden
+            aria-label="Sound off" title="Sound off" aria-pressed="false"
+            data-i18n-attr="aria-label:soundOff;title:soundOff">
+      <svg class="tool-icon tool-icon-on" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M16.5 8.5a5 5 0 0 1 0 7" />
+        <path d="M19 6a8.5 8.5 0 0 1 0 12" />
+      </svg>
+      <svg class="tool-icon tool-icon-off" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9v6h4l5 4V5L8 9H4z" />
+        <path d="M17 9.5l4 5" />
+        <path d="M21 9.5l-4 5" />
+      </svg>
+      <span data-i18n="soundButton">Sound</span>
+    </button>
+    <button class="tool-btn" id="resetBtn" type="button" hidden
+            aria-label="Replay this section" title="Replay this section"
+            data-i18n-attr="aria-label:replayTitle;title:replayTitle">
+      <svg class="tool-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <polyline points="2 4 2 10 8 10" />
+        <path d="M4.6 15a8.5 8.5 0 1 0 2-8.8L2 10" />
+      </svg>
+      <span data-i18n="replayButton">Replay</span>
+    </button>
+  </div>
+
+  <!-- only shown if the browser refuses to auto-play the briefing audio -->
+  <div class="tap-start" id="tapStart" hidden>
+    <button class="tap-start-btn" type="button" data-i18n="tapToBegin">Tap to begin</button>
+  </div>
+
+  <!-- ---------- welcome screen ----------
+       Sits over everything until the learner launches the mission. It doubles
+       as the gesture the browser wants before it will play the voice-overs,
+       and as the cover for the preload, so the first briefing never stalls. -->
+  <div class="welcome" id="welcome">
+    <div class="welcome-art" aria-hidden="true"></div>
+    <div class="welcome-scrim" aria-hidden="true"></div>
+    <div class="welcome-mascot" id="welcomeMascot" aria-hidden="true"></div>
+
+    <div class="welcome-body">
+      <div class="welcome-slot">
+        <div class="loader" id="loader">
+          <p class="loader-label"><span data-i18n="loaderLabel">Preparing mission</span><span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></p>
+          <div class="loader-track" id="loadTrack" role="progressbar"
+               aria-label="Loading mission" data-i18n-attr="aria-label:loaderAria" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="loader-fill" id="loadFill"></div>
+          </div>
+          <p class="loader-pct" id="loadPct">0%</p>
+        </div>
+
+        <button class="start-btn" id="startBtn" type="button" hidden>
+          <span data-i18n="startButton">Start</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- The motion system, in the one order it can load in: GSAP, then the Flip
+       plugin it registers, then js/motion.js which holds every duration and
+       easing in the game, then the game itself. All three are in the repo --
+       nothing here reaches the network, at load or at any point after. -->
+  <script src="js/libs/gsap.min.js"></script>
+  <script src="js/libs/Flip.min.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/swiftee-sheets.js"></script>
+  <!-- The words come last. i18n.js reads ?lan=xx from the URL, loads the
+       locale (locales/locales-quadrilaterals.json, or the generated
+       locales/locales-quadrilaterals.js when a file:// page cannot fetch it), fills
+       every data-i18n* attribute above, and only then loads the game -- so
+       every line script.js builds is already in the chosen language. -->
+  <script src="js/i18n.js"></script>
+  <script>
+    I18n.load(function () {
+      I18n.applyStatic(document);
+      var s = document.createElement('script');
+      s.src = 'js/script.js';
+      document.body.appendChild(s);
+    });
+  </script>
+</body>
+</html>

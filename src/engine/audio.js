@@ -170,8 +170,6 @@ export class AudioEngine {
 SFX['ui.hover'] = (A) => A.tone({ f0: 1500, f1: 1800, dur: 0.05, vol: 0.02, env: { a: 0.003, d: 0.02, s: 0.2, r: 0.03 } });
 SFX['ui.click'] = (A) => { A.tone({ type: 'triangle', f0: 880, f1: 520, dur: 0.08, vol: 0.12, env: { a: 0.002, d: 0.03, s: 0.2, r: 0.05 } }); A.burst({ dur: 0.03, vol: 0.1, type: 'highpass', f0: 3000 }); };
 SFX['ui.confirm'] = (A) => A.seq([[76, 0, 0.1, 1], [83, 0.08, 0.22, 1]], { vol: 0.13, type: 'sine', verb: 0.3 });
-SFX['ui.correct'] = (A) => { const t = A.now; A.bell(84, { t0: t, vol: 0.12 }); A.bell(91, { t0: t + 0.09, vol: 0.11 }); A.bell(96, { t0: t + 0.18, vol: 0.1, dur: 2 }); A.burst({ t0: t + 0.1, dur: 0.6, vol: 0.05, type: 'highpass', f0: 7000, verb: 0.5 }); };
-SFX['ui.wrong'] = (A) => { const t = A.now; A.tone({ type: 'triangle', f0: 330, f1: 260, dur: 0.22, vol: 0.12, t0: t }); A.tone({ type: 'triangle', f0: 262, f1: 196, dur: 0.32, vol: 0.12, t0: t + 0.16 }); };
 SFX['ui.hint'] = (A) => { const t = A.now; A.bell(79, { t0: t, vol: 0.08 }); A.bell(86, { t0: t + 0.12, vol: 0.07 }); };
 SFX['ui.heart'] = (A) => { const t = A.now; A.burst({ t0: t, dur: 0.12, vol: 0.3, type: 'highpass', f0: 1800, env: { a: 0.001, d: 0.04, s: 0.2, r: 0.07 } }); A.tone({ type: 'sine', f0: 523, f1: 392, dur: 0.3, vol: 0.12, t0: t + 0.08 }); A.tone({ type: 'sine', f0: 392, f1: 330, dur: 0.45, vol: 0.1, t0: t + 0.3 }); };
 
@@ -269,11 +267,6 @@ SFX['fanfare'] = (A) => {
   A.burst({ t0: t + 3.1, dur: 2.5, vol: 0.12, type: 'highpass', f0: 5000, verb: 0.6, env: { a: 0.01, d: 0.8, s: 0.4, r: 1.6 } });
 };
 
-// the lesson
-SFX['tile'] = (A, o) => { const sc = [72, 74, 76, 79, 81, 84, 86, 88, 91, 93]; const m = sc[(o.i ?? 0) % sc.length]; A.tone({ f0: NOTE(m), dur: 0.16, vol: 0.07, env: { a: 0.002, d: 0.05, s: 0.2, r: 0.1 } }); A.tone({ f0: NOTE(m) * 4, dur: 0.05, vol: 0.02 }); };
-SFX['cut'] = (A) => { A.tone({ type: 'sawtooth', f0: 1800, f1: 500, dur: 0.35, vol: 0.05, dest: A.filter('bandpass', 2400, 3, A.sfxBus) }); A.burst({ dur: 0.3, vol: 0.08, type: 'highpass', f0: 4000 }); };
-SFX['move'] = (A) => A.burst({ dur: 0.6, vol: 0.09, type: 'bandpass', f0: 400, f1: 1500, Q: 1.5, env: { a: 0.15, d: 0.25, s: 0.4, r: 0.2 } });
-SFX['snap'] = (A) => { A.tone({ f0: 1400, dur: 0.05, vol: 0.12 }); A.tone({ f0: 2100, dur: 0.08, vol: 0.08, t0: A.now + 0.04 }); };
 
 /* ======================================================================= */
 /* loops                                                                   */
@@ -353,7 +346,6 @@ const MODES = {
   title: { bpm: 64, bars: [[48, 55, 64, 71, 74], [50, 57, 66, 69, 74], [52, 59, 67, 71, 74], [45, 52, 64, 67, 72]], pad: 0.05, bell: 0.05, arp: 'bell8', bass: 0.08, kick: 0, hat: 0 },
   cockpit: { bpm: 84, bars: [[48, 55, 64, 71], [50, 57, 66, 69], [52, 59, 67, 71], [50, 57, 66, 69]], pad: 0.04, bell: 0.04, arp: 'pulse16', bass: 0.07, kick: 0, hat: 0.012 },
   planet: { bpm: 56, bars: [[45, 52, 59, 64, 71], [41, 48, 55, 64, 67], [48, 55, 59, 64, 67], [43, 50, 55, 62, 69]], pad: 0.055, bell: 0.05, arp: 'sparse', bass: 0.07, kick: 0, hat: 0, whale: true },
-  lesson: { bpm: 86, bars: [[48, 55, 64, 67], [45, 52, 60, 64], [41, 48, 57, 60], [43, 50, 59, 62]], pad: 0.03, bell: 0.035, arp: 'pluck8', bass: 0.05, kick: 0, hat: 0.008 },
   landing: { bpm: 96, bars: [[48, 55, 64, 67, 71], [45, 52, 60, 64, 67], [41, 48, 57, 60, 64], [43, 50, 59, 62, 67]], pad: 0.035, bell: 0.04, arp: 'pluck8', bass: 0.08, kick: 0.1, hat: 0.016 },
   complete: { bpm: 100, bars: [[48, 55, 64, 67, 72], [53, 60, 65, 69, 72], [55, 62, 67, 71, 74], [48, 55, 64, 67, 76]], pad: 0.05, bell: 0.06, arp: 'bell8', bass: 0.1, kick: 0.14, hat: 0.02 },
 };

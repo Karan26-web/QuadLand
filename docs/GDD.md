@@ -14,11 +14,11 @@
 | A water planet with living waves, inspired by Interstellar's water planet | A living sea: six Gerstner waves, ripples, foam, subsurface glow, a moon-glitter path, plankton sparkles after the scan. Mountain-sized waves roll on the horizon: they read first as mountains, then you see them move. §6. |
 | Land quad ships on lands that rise from the water | Screens 3–12 (§3). |
 | Optional: a landing simulation like the airplane game's | Used for the trip to the planet: steer, thrust, hold to descend, in the cockpit with the airplane game's guided, unfailable rhythm. The five landings keep the LXD's joystick + GO, so a miss is always a wrong area, never a shaky thumb (§4). |
-| Proper SFX and audio throughout | 63 synthesised cues, 8 live loops and a generative score with 6 moods; temp narration for all 110 lines. Recordings can replace any of them (§7). |
+| Proper SFX and audio throughout | 57 synthesised cues, 8 live loops and a generative score with 5 moods; temp narration for all 55 lines. Recordings can replace any of them (§7). |
 | Asset MD files for GPT | `docs/assets/00-README.md` to `08-voice.md`: 19 picture slots with ready-to-paste prompts and acceptance checks, an audio upgrade list and the voice script. |
 | Fifteen landing zones in five sets (user, 2026-10-30) | The survey raises all fifteen zones: five sets of three, each set one shape in the LXD's three sizes, kept together in its own part of the sea. The field is compact, so the camera ends straight above it with every zone's sides traced in light (Screens 4 and 5). The LXD's Screen 4 says five zones, and Screens 8–12 raise two more islands at each landing; both are superseded. The two Screen 4 lines say "sets" (§10). |
 | A skip for the learning part (user, 2026-11-01) | Skip lesson › on Screen 6, pressed twice (§3, §8). |
-| No Swiftee (user, mid-brief) | The Ship AI presents the lesson: the same narrator as the cockpit, shown as a pulsing orb (§4.3). The LXD's Screen 6 says Swiftee greets the learner; this is the one place the build departs from the LXD's text on the user's instruction. |
+| The team's learning module as Screen 6 (user, 2026-11-02) | The learning section is now the team's own module, *spacecraft landing mission learning* (`learning/`). Swiftee teaches the area of each quadrilateral in it, with its own voice-overs (English and Hindi), practice and tools. The game frames it full-screen and keeps Skip lesson › above it (§3, §4.3). This replaces the Ship AI lesson the build had, and with it the earlier "no Swiftee" decision for this section; the rest of the game is still narrated by the Ship AI. |
 
 ## 2. Learning objective
 Given a quadrilateral's dimensions, the learner chooses the right area rule, computes the area exactly, and understands area as the space a shape covers. A ship fits a zone only when the two areas are equal: not too small, not too big (LXD Screen 5).
@@ -28,13 +28,13 @@ LXD lines are spoken word for word (`assets/vo/lines.json`, `"lxd": true`). The 
 
 | # | LXD | Built as | Notes |
 |---|---|---|---|
-| 1 | Title, a ship under thrust, loading bar → PLAY; PLAY starts sound | The command ship's honeycomb engines blaze toward a slow drifting camera; the bar follows real loading (art, 110 voice lines, two sky bakes, shader compilation) and morphs into PLAY; a click, then the theme music, softly | Nothing loads after PLAY, so nothing stalls mid-mission |
+| 1 | Title, a ship under thrust, loading bar → PLAY; PLAY starts sound | The command ship's honeycomb engines blaze toward a slow drifting camera; the bar follows real loading (art, 55 voice lines, two sky bakes, shader compilation) and morphs into PLAY; a click, then the theme music, softly | Nothing of the mission loads after PLAY, so nothing stalls mid-flight. The learning module loads when Screen 6 begins, behind its own loading bar. |
 | — | **(add.)** Intro | §1; Skip › | No narration: picture, music, sound |
 | 2 | Cockpit, stars drifting past, a voice waveform; three lines; LAUNCH rises; "Press LAUNCH when you are ready." | All of it. The waveform is the narrator's real signal. The thrust lever, DESCEND and the reticle are added (§1). LAUNCH rises with a servo whir. The caption appears after 6 s of waiting. The drone flies out with a barrel roll, then the glitch cuts to its feed. | Added lines: `s2.planet`, `s2.align`, `s2.locked`, `s2.arrive`, `s2.descend`. "Click the LAUNCH button" is kept as written (see §10). |
 | 3 | The drone over a dark sea; two lines; the scanner sweeps twice; the lights come up | The drone feed (corner brackets, REC, altitude, compass, scanlines). **(add.)** A SCAN button, because the line asks the player to start the scanner. The beam is drawn on the water in two passes, with "SCANNING n%". On the second pass the night lifts and plankton wake cyan in the foam. | |
 | 4 | Five zones rise one after another, each in its own part of the sea, with a ripple and a glow, all different shapes, no labels; two lines; the zones pulse as the camera glides past | **(user)** Five sets of three rise one after another. The camera whips to each set as its three zones come up a beat apart (rumble panned to its side, ripples, spray, water pouring off the edges). Then it climbs to straight above the field: every zone's four sides trace on in light, and the swell calms. "Great!…" plays there, and "Look!…" lights the sets one by one, left to right. Then a low, banked loop round the field, each set pulsing as the gaze passes it. | No labels anywhere, as the LXD asks: the shapes speak for themselves. The two lines say "sets" (§10). |
 | 5 | Only the sea and the zones; four lines; each zone glows as the camera passes; fade out | A slow, high glide; each set glows as it passes; on the last line the camera rises straight above the field again and all fifteen glow; fade to black | |
-| 6 | The learning section, from the greeting to the last trapezium practice question | §4.3. Presented by the Ship AI. **(user)** Skip lesson › at the top right ends it at any point. The first press asks ("Press again to skip"), so a stray tap cannot throw the learning away. Screen 7 then leaves out "Now you know how to find the area…". | The LXD names the span, not the script: the content is ours, for review |
+| 6 | The learning section, from the greeting to the last trapezium practice question | **(user)** The team's learning module (`learning/`), framed full-screen: Swiftee's welcome and Start, then its own sections, practice and tools (§4.3). When its last page is done it hands back to the mission. Skip lesson › at the top right ends it at any point: the first press asks ("Press again to skip"), so a stray tap cannot throw the learning away, and Screen 7 then leaves out "Now you know how to find the area…". | The module is the team's own content |
 | 7 | Fade back; two lines; the camera descends toward the first zone | As written | |
 | 8–12 | Per landing: the camera descends; two more islands rise (three sizes); the ship flies in and hovers; the "Here comes…" line; dimension lines; the rule; each island shows its area; the ask; the caption; fly + GO | As written, with every LXD number (§4.1), except that the set's three islands are already up (they rose in the survey: §1). The ship streaks in from the sky; the camera meets it, orbits it, then looks down as the dimensions draw on. The formula chip appears with the rule; then the camera rises to straight above the set (§4.2) and the area tags pop up one by one, beside their islands. | The "Drag the joystick…" caption shows on the first landing, and on later ones after 9 s idle |
 | every landing | Controls; 3 hearts; exact / too small / too large with their lines; autopilot when out of hearts; NEXT | All of it (§4.2). **(add.)** The difference made visible, a hint ladder, the drone's rescue. | |
@@ -75,22 +75,14 @@ The LXD's distractors are classic misconceptions, so a miss can be named (§4.2)
 - **Three hearts per landing**, refilled on each new one (LXD).
 
 ### 4.3 The lesson (Screen 6)
-Each rule is shown before it is said, on a holo-board over the frosted planet. The Ship AI's orb swells with its voice, and the step chips show the five shapes.
+The learning section is the team's module *spacecraft landing mission learning*, kept as delivered in `learning/` (its own page, styles, scripts, GSAP, voice-overs in English and Hindi, Swiftee's sprite sheets). Swiftee welcomes the learner (Start), warms up with shape names and their area formulas, then works through the quadrilateral split into two triangles, the parallelogram, the rhombus and the trapezium, each with practice. The module has its own tools along its bottom edge: a section menu, Back, Skip (one page), Sound and Replay.
 
-| Shape | Shown | Practice question (distractors) |
-|---|---|---|
-| What is area? | The five shapes; a 6 × 3 shape fills; one unit square, "1 square unit"; the grid | — |
-| Square | A 4 × 4 square fills with 16 counted unit squares → 4 × 4 = 16 | side 6 → **36** (24 = perimeter, 12 = 6 + 6) |
-| Rectangle | 5 × 3, 15 counted squares → 5 × 3 = 15 | 7 × 4 → **28** (22 = perimeter, 11 = 7 + 4) |
-| Parallelogram | base 6, height 4 (right angle); "the slanted side is not the height"; a triangle is cut off and slides across, making a 6 × 4 rectangle | base 9, height 4, slant 5 → **36** (45 = base × slant, 28 = perimeter) |
-| Rhombus | diagonals 10 and 4 crossing at a right angle; the 10 × 4 rectangle round it; its four corner pieces flip in onto the rhombus, so the rhombus is half → 20 | diagonals 12 and 5 → **30** (60 = forgot the half, 17 = 12 + 5) |
-| Trapezium | parallel sides 3 and 7, height 4; a copy turned upside down joins it to make a parallelogram of base 3 + 7 = 10 → 40 → one is half → 20 | parallel sides 5 and 9, height 4 → **28** (56 = forgot the half, 36 = one side × h) |
-
-The practice numbers differ from the landing numbers, so the landings test the rule, not the memory of an answer. A practice question can't be failed:
-1. First miss: the hint for that exact mistake.
-2. Second miss: the working is spoken (and, for the square and rectangle, drawn as tiles), and the right answer glows.
-
-The options stay open and are never struck out, as the earlier LXD reviews asked.
+How the game frames it (`src/game/lesson.js`):
+- An iframe over the whole screen, created when Screen 6 begins, so the module loads only then. Its page keeps its own styles and scripts, so nothing of it can touch the game's.
+- **The hand-off:** when its last page (the third trapezium practice) is done, it posts `learning:done` to the game, and the mission carries on to Screen 7. This is the one line the game adds to the module (`learning/js/script.js`).
+- **Skip lesson ›** stays at the top right, above the module (two presses). Skipping takes the frame out of the page, which also silences it.
+- While it plays, the 3D world stops drawing and the game's music and sea fade: the module has its own sound.
+- Language: English by default; the module reads `?lan=hi` for Hindi if its page is opened with it.
 
 ## 5. The camera language
 `src/engine/camera.js` composes these moves, all on real time so it can swing round a slow-motion moment:
@@ -129,12 +121,12 @@ The options stay open and are never struck out, as the earlier LXD reviews asked
 ## 7. Audio
 `src/engine/audio.js`:
 - **Buses:** SFX, music, ambience and voice, through a limiter, plus a generated reverb.
-- **63 one-shot cues.** Every learner-facing event has a sound, and each outcome has its own sound family.
+- **57 one-shot cues.** Every learner-facing event has a sound, and each outcome has its own sound family.
 - **8 live loops** that follow the game: the engine with the thrust lever, the hover jets with the ship's speed, the warp tunnel, re-entry plasma, the sea, the drone, the tractor beam.
-- **A generative score**, one mood per part: title, cockpit, planet, lesson, landing, complete.
+- **A generative score**, one mood per part: title, cockpit, planet, landing, complete. The learning module has its own sound, so the music fades for it.
 - **The narrator ducks the music.**
 - **Recorded overrides:** any cue or mood can be replaced by a recording (`docs/assets/07-audio.md`).
-- **Temp narration:** all 110 lines, so every device sounds the same and the waveform is the real voice.
+- **Temp narration:** all 55 lines, so every device sounds the same and the waveform is the real voice.
 
 ## 8. UX
 - **Input:** a thumb stick that appears where the thumb lands, W A S D / arrows, and Enter/Space for every primary button. Every button is at least 70 px. Waiting always brings a hint: a caption, a demo hand on the stick, or a pulse on the control.
@@ -151,12 +143,11 @@ The options stay open and are never struck out, as the earlier LXD reviews asked
 The last full run (2026-10-29) passed every phase, through the autopilot and RESTART, with no errors.
 
 ## 10. Open questions for the LXD
-1. **The lesson script (Screen 6)** is ours (§4.3), because the brief names the section but not its content. Please review the lines (`docs/assets/08-voice.md`, lines starting `l.`) and the practice numbers.
-2. **The hint ladder** after a landing miss (the idea, then the working) is an addition, in the spirit of the earlier LXD reviews. Should the second rung show the multiplication?
-3. **"Click the LAUNCH button"**: the game is played on tablets. Should it be "Tap"?
-4. **The SCAN button**: "Start the scanner to search the area" reads as an instruction, so the learner presses SCAN. Is that intended, or should the scan start by itself?
-5. **The trip to the planet** (steer, thrust, descend) adds five short lines before "We need to find a safe place for it to land" (`s2.planet` … `s2.descend`).
-6. **Too large = "crashes onto the oversized rock"**: interpreted as no corner lock, so no guided landing, so a hard drop and a bounce. Does that read right for the age group?
-7. **Island order**: the LXD lists the correct area last in every set. The build deals positions randomly (§4.2). Is that acceptable?
-8. **Swiftee** is not used, on the user's instruction (§1).
-9. **Fifteen zones from the start** (the user's instruction, §1): every shape's three islands rise in the survey, so Screens 8–12 no longer raise "two more islands". The two Screen 4 lines now say "Great! The scanner found five sets of landing zones." and "Look! Each set of landing zones has a different shape." Is that wording right?
+1. **The hint ladder** after a landing miss (the idea, then the working) is an addition, in the spirit of the earlier LXD reviews. Should the second rung show the multiplication?
+2. **"Click the LAUNCH button"**: the game is played on tablets. Should it be "Tap"?
+3. **The SCAN button**: "Start the scanner to search the area" reads as an instruction, so the learner presses SCAN. Is that intended, or should the scan start by itself?
+4. **The trip to the planet** (steer, thrust, descend) adds five short lines before "We need to find a safe place for it to land" (`s2.planet` … `s2.descend`).
+5. **Too large = "crashes onto the oversized rock"**: interpreted as no corner lock, so no guided landing, so a hard drop and a bounce. Does that read right for the age group?
+6. **Island order**: the LXD lists the correct area last in every set. The build deals positions randomly (§4.2). Is that acceptable?
+7. **Swiftee** appears in the learning section only (the team's module, §4.3); the rest of the game is narrated by the Ship AI.
+8. **Fifteen zones from the start** (the user's instruction, §1): every shape's three islands rise in the survey, so Screens 8–12 no longer raise "two more islands". The two Screen 4 lines now say "Great! The scanner found five sets of landing zones." and "Look! Each set of landing zones has a different shape." Is that wording right?

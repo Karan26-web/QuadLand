@@ -1,6 +1,6 @@
 # 07 · Sound effects and music (optional upgrades)
 
-The game already has a full sound design, synthesised live by `src/engine/audio.js`: 63 cues, 8 continuous loops and a generative score with 6 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
+The game already has a full sound design, synthesised live by `src/engine/audio.js`: 57 cues, 8 continuous loops and a generative score with 5 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
 
 **To install a recording:**
 1. Save it as `assets/sfx/<anything>.m4a` (AAC, which plays in every browser including iPad Safari), or `.mp3`.
@@ -20,8 +20,6 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `ui.click` | Any button press | soft futuristic UI click, glassy, friendly | 0.1 s |
 | `ui.confirm` | NEXT, confirm | bright two-note sci-fi confirm chime, rising | 0.4 s |
 | `ui.hover` | Pointer over a button (desktop) | tiny soft tick, high | 0.05 s |
-| `ui.correct` | A right practice answer | sparkly magical bell arpeggio, happy, kid-friendly | 1.2 s |
-| `ui.wrong` | A wrong practice answer | gentle descending two-note "oops" tone, soft, not harsh | 0.5 s |
 | `ui.hint` | A hint appears | soft curious two-bell chime | 0.6 s |
 | `ui.heart` | A heart is lost | small glass crack, then a soft sad two-note tone | 0.7 s |
 | `whoosh` | Camera whip pans, fast moves | fast cinematic camera whoosh, airy, stereo | 0.5 s |
@@ -76,10 +74,6 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `rescue` | The drone's tractor beam lifts the ship | sci-fi tractor beam hum rising, magical lift | 1.8 s |
 | `autopilot` | Out of hearts: autopilot engages | friendly computer autopilot-engaged jingle | 0.8 s |
 | `fanfare` | Mission complete | triumphant orchestral-synth fanfare, kids' adventure, 5 seconds | 5 s |
-| `tile` | Unit squares appear (the lesson) | soft marimba note, short | 0.2 s |
-| `cut` | The lesson's laser cut | laser cutting swish | 0.35 s |
-| `move` | A lesson piece slides | soft whoosh slide | 0.6 s |
-| `snap` | A lesson piece clicks in | satisfying snap click | 0.15 s |
 
 ## Moods for the music (`music.<mood>`)
 Each mood should loop seamlessly, last 60 to 120 s, and stay quiet under narration (the game ducks it while the Ship AI speaks).
@@ -89,7 +83,6 @@ Each mood should loop seamlessly, last 60 to 120 s, and stay quiet under narrati
 | `title` | Screen 1, the intro | wondrous slow space-adventure theme for kids, warm synth pads, twinkling bells, Lydian, 64 bpm, cinematic but gentle, instrumental, seamless loop |
 | `cockpit` | Screen 2 | light mission-briefing theme, soft pulsing synth arpeggio, warm pads, curious and hopeful, 84 bpm, instrumental loop |
 | `planet` | Screens 3–5 | mysterious calm night ocean, deep drones, distant whale-like synth glides, sparse bells, 56 bpm, instrumental loop |
-| `lesson` | Screen 6 | calm focused learning music, soft marimba and warm pad, gentle and steady, 86 bpm, low energy, instrumental loop |
 | `landing` | Screens 7–12 | upbeat light space-adventure groove, plucky synth, soft percussion, hopeful, 96 bpm, instrumental loop |
 | `complete` | Screen 13 | triumphant celebration theme for kids, brass-like synths, timpani, bright major key, 100 bpm, 40 seconds |
 
