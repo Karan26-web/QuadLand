@@ -36,8 +36,8 @@ Every line the game speaks, with the ID that names its file. The game ships with
 
 | ID | LXD | Line |
 |---|---|---|
-| `s4.found` | ✓ | Great! The scanner found five landing zones. |
-| `s4.shapes` | ✓ | Look! Each landing zone has a different shape. |
+| `s4.found` | ✓ | Great! The scanner found five sets of landing zones. *(LXD line worded for the fifteen zones in five sets, on the user's instruction)* |
+| `s4.shapes` | ✓ | Look! Each set of landing zones has a different shape. *(likewise)* |
 
 ## Screen 5 · The area hook
 

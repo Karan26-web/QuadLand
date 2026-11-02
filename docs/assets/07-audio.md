@@ -1,6 +1,6 @@
 # 07 · Sound effects and music (optional upgrades)
 
-The game already has a full sound design, synthesised live by `src/engine/audio.js`: 62 cues, 8 continuous loops and a generative score with 6 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
+The game already has a full sound design, synthesised live by `src/engine/audio.js`: 63 cues, 8 continuous loops and a generative score with 6 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
 
 **To install a recording:**
 1. Save it as `assets/sfx/<anything>.m4a` (AAC, which plays in every browser including iPad Safari), or `.mp3`.
@@ -52,6 +52,7 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `splash` | A zone breaks the surface; a ship falls in | big water splash with droplets | 1 s |
 | `zone.pulse` | A zone pulses as the camera passes | soft glassy bell note, magical | 1 s |
 | `zone.glow` | All zones glow | airy sparkle shimmer | 1.5 s |
+| `edge.trace` | A shape's four sides trace on in light (the fleet and the zones seen from above) | four soft rising bell notes, one per side, over a faint shimmer | 1 s |
 | `ship.arrive` | A quad ship flies in | small spaceship arriving: doppler jet whoosh settling into a hover hum | 2.5 s |
 | `dim.draw` | A dimension line draws on | holographic laser pen drawing a line, rising shimmer | 0.5 s |
 | `dim.label` | A dimension number appears | small hologram pop with a chime | 0.3 s |

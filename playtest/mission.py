@@ -2,6 +2,7 @@
 """Play the whole mission headless with the autoplayer and screenshot it.
     python3 playtest/mission.py                       # intro → … → complete
     python3 playtest/mission.py --from land0 --plan sle-e-e-e-e --every 6
+    python3 playtest/mission.py --skip-lesson         # press Skip twice (as a player would) when the lesson starts
 Screenshots: playtest/screens/m_<n>_<phase>.png. Exit code 1 if a page error happened."""
 import sys, os, time, subprocess, socket, argparse
 from playwright.sync_api import sync_playwright
@@ -23,6 +24,7 @@ def main():
     ap.add_argument('--dpr', default='1')
     ap.add_argument('--tag', default='m')
     ap.add_argument('--soft', action='store_true', help='software GL (no GPU)')
+    ap.add_argument('--skip-lesson', action='store_true', help="press the lesson's Skip twice, with real clicks")
     a = ap.parse_args()
     w, h = map(int, a.size.split('x'))
     port = free_port()
@@ -39,7 +41,7 @@ def main():
             q = f'auto=1&fast={a.fast}&dpr={a.dpr}&plan={a.plan}&screen={a.frm}&seed=7'
             pg.goto(f'http://127.0.0.1:{port}/index.html?{q}')
             pg.wait_for_function('window.__ql && window.__ql.flow', timeout=120000)
-            t0 = time.time(); last_phase = None; last_shot = 0; n = 0
+            t0 = time.time(); last_phase = None; last_shot = 0; n = 0; skipped = False
             while time.time() - t0 < a.timeout:
                 st = pg.evaluate("() => ({ phase: __ql.flow.phase, sub: document.getElementById('subLine').textContent, cap: document.getElementById('caption').hidden ? '' : document.getElementById('caption').textContent })")
                 now = time.time() - t0
@@ -50,6 +52,13 @@ def main():
                     if st['phase'] != last_phase: print(f"[{now:6.1f}s] phase -> {st['phase']}")
                     print(f"           shot {n:02d}  sub: {st['sub'][:70]!r}  cap: {st['cap'][:50]!r}")
                     last_phase = st['phase']
+                if a.skip_lesson and not skipped and st['phase'] == 'lesson' and pg.evaluate("() => !document.getElementById('btnSkip').hidden"):
+                    pg.wait_for_timeout(1500)                       # the button fades in
+                    pg.click('#btnSkip'); pg.wait_for_timeout(400)
+                    pg.screenshot(path=os.path.join(OUT, f'{a.tag}_skip_confirm.png'))
+                    label = pg.evaluate("() => document.getElementById('btnSkip').textContent")
+                    print(f"[{time.time() - t0:6.1f}s] Skip pressed once: {label!r}")
+                    pg.click('#btnSkip'); skipped = True
                 if st['phase'] == a.to and a.to != 'complete': break
                 if st['phase'] == 'complete' and pg.evaluate("() => !document.getElementById('btnRestart').hidden"):
                     pg.screenshot(path=os.path.join(OUT, f'{a.tag}_end.png')); print(f'[{now:6.1f}s] RESTART is showing: done'); break

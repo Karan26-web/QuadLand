@@ -2,7 +2,8 @@
 // The craft, all procedural (GPT paints images, not models):
 //  * QuadShip     one of the five: a bevelled slab whose footprint is EXACTLY its
 //                 LXD shape, a glass canopy, two rear engines, four hover jets at the
-//                 corners (blue flames while hovering), landing legs, corner beacons
+//                 corners (blue flames while hovering), landing legs, corner beacons,
+//                 and its sides in light (edges.js)
 //  * CommandShip  the commander's ship (the reference frame's Stellosphere): long
 //                 lathe hull, swept wings, three pods with glowing honeycomb nozzles
 //  * Drone        the survey drone: a round body with one big eye
@@ -10,6 +11,7 @@
 import * as THREE from '../../vendor/three.module.js';
 import { Tex } from './textures.js';
 import { inset, threeShape, centroid, bounds, toWorld } from './shapes.js';
+import { EdgeGlow } from './edges.js';
 import { damp, clamp } from '../engine/util.js';
 
 /* ------------------------------------------------------------- flame + glow */
@@ -100,6 +102,8 @@ export class QuadShip extends THREE.Group {
     const hull = new THREE.Mesh(geo, [top, side]);
     this.hull = hull; this.body = new THREE.Group(); this.add(this.body); this.body.add(hull);
     this.materials = [top, side];
+    // its four sides in light, round the exact footprint (the intro's view from above)
+    this.edges = new EdgeGlow(shape.verts, { y: this.hullTop + 0.1, width: 1.0 }); this.body.add(this.edges);
 
     // a raised spine along the middle, the way the reference fleet is built in layers
     const deckPts = inset(shape.verts, Math.min(b.w, b.h) * 0.3);

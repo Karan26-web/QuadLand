@@ -33,18 +33,25 @@ uniform sampler2D tNormal, tNoise;
 uniform float uTime, uEnvI, uBio, uFogDensity, uDetail, uSpecK, uFoamK;
 uniform vec3 uDeep, uShallow, uSSS, uFoam, uLightDir, uLightColor;
 uniform vec4 uScan; uniform vec2 uScanFan;
-uniform vec4 uSegs[24]; uniform vec2 uSegW[24]; uniform int uSegCount;
+uniform vec4 uIsl[16];      // each zone in the water: centre (x, z), how far its foam reaches, its strength
+uniform vec4 uIslV[32];     // its four corners, two to a vec4
+uniform float uIslO[16];    // how far out its rock flares at the waterline
+uniform int uIslCount;
 varying vec3 vWorld; varying vec3 vNormal; varying float vCrest; varying float vJ; varying float vRipFoam;
 
 float sdSeg(vec2 p, vec2 a, vec2 b) { vec2 pa = p - a, ba = b - a; float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0); return length(pa - ba * h); }
 
 void main() {
   vec3 V = cameraPosition - vWorld; float dist = length(V); V /= dist;
+  // lace foam where the zones meet the water (a zone too far away to matter costs one distance)
   float contact = 0.0;
-  for (int i = 0; i < 24; i++) {
-    if (i >= uSegCount) break;
-    vec4 s = uSegs[i]; float d = sdSeg(vWorld.xz, s.xy, s.zw) - uSegW[i].y;
-    contact = max(contact, uSegW[i].x * exp(-max(d, 0.0) * 2.4));
+  for (int k = 0; k < 16; k++) {
+    if (k >= uIslCount) break;
+    vec4 c = uIsl[k];
+    if (distance(vWorld.xz, c.xy) > c.z) continue;
+    vec4 a = uIslV[k * 2], b = uIslV[k * 2 + 1];
+    float d = min(min(sdSeg(vWorld.xz, a.xy, a.zw), sdSeg(vWorld.xz, a.zw, b.xy)), min(sdSeg(vWorld.xz, b.xy, b.zw), sdSeg(vWorld.xz, b.zw, a.xy))) - uIslO[k];
+    contact = max(contact, c.w * exp(-max(d, 0.0) * 2.4));
   }
   vec2 uv1 = vWorld.xz * 0.043 + vec2(uTime * 0.011, uTime * 0.006);
   vec2 uv2 = vWorld.xz * 0.117 + vec2(-uTime * 0.016, uTime * 0.012);
@@ -191,8 +198,8 @@ export class Ocean {
       uSSS: { value: new THREE.Color(0x0e86a6) }, uFoam: { value: new THREE.Color(0xc9c0f2) },
       uLightDir: { value: new THREE.Vector3(-0.35, 0.42, -0.84).normalize() }, uLightColor: { value: new THREE.Color(0xffd9f0) },
       uScan: { value: new THREE.Vector4(0, 0, 0, 0) }, uScanFan: { value: new THREE.Vector2(0.9, 260) },
-      uSegs: { value: Array.from({ length: 24 }, () => new THREE.Vector4()) }, uSegW: { value: Array.from({ length: 24 }, () => new THREE.Vector2()) },
-      uSegCount: { value: 0 },
+      uIsl: { value: Array.from({ length: 16 }, () => new THREE.Vector4()) }, uIslV: { value: Array.from({ length: 32 }, () => new THREE.Vector4()) },
+      uIslO: { value: new Float32Array(16) }, uIslCount: { value: 0 },
     };
     this.u = shared;
     this.uniforms = {
@@ -216,20 +223,23 @@ export class Ocean {
   }
   /** the foam where risen islands meet the sea: every visible island's top outline, pushed out to its waterline */
   setIslands(islands) {
-    const segs = this.u.uSegs.value, w = this.u.uSegW.value; let n = 0;
-    const p = new THREE.Vector3(), q = new THREE.Vector3();
+    const C = this.u.uIsl.value, Vs = this.u.uIslV.value, O = this.u.uIslO.value, p = this._p || (this._p = new THREE.Vector3());
+    let n = 0;
     for (const isl of islands) {
-      if (!isl.visible || isl.position.y < -0.5) continue;
+      if (n >= 16 || !isl.visible || isl.position.y < -0.5 || isl.verts.length !== 4) continue;
       const above = Math.max(0, isl.position.y), t = Math.min(1, above / 9);
       const off = 0.1 + Math.pow(t, 1.5) * 1.5;
       const strength = Math.min(1, above / 1.2) * (0.75 + 0.25 * isl.k);
-      for (let i = 0; i < isl.verts.length && n < 24; i++) {
-        const a = isl.verts[i], b = isl.verts[(i + 1) % isl.verts.length];
-        p.set(a.x, 0, -a.y).applyMatrix4(isl.matrixWorld); q.set(b.x, 0, -b.y).applyMatrix4(isl.matrixWorld);
-        segs[n].set(p.x, p.z, q.x, q.z); w[n].set(strength, off); n++;
-      }
+      let reach = 0;
+      isl.verts.forEach((a, i) => {
+        p.set(a.x, 0, -a.y).applyMatrix4(isl.matrixWorld);
+        const v = Vs[n * 2 + (i >> 1)];
+        if (i & 1) { v.z = p.x; v.w = p.z; } else { v.x = p.x; v.y = p.z; }
+        reach = Math.max(reach, Math.hypot(p.x - isl.position.x, p.z - isl.position.z));
+      });
+      C[n].set(isl.position.x, isl.position.z, reach + off + 2.6, strength); O[n] = off; n++;
     }
-    this.u.uSegCount.value = n;
+    this.u.uIslCount.value = n;
   }
   /** the sea's height at a point (CPU twin of the vertex shader, for floating things and touchdowns) */
   heightAt(x, z) {

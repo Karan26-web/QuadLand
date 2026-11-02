@@ -21,7 +21,7 @@ export class HUD {
     this.goHandler = null; this.nextResolve = null; this.skipHandler = null;
     this.goEl.addEventListener('click', () => this._go());
     this.nextEl.addEventListener('click', () => this._next());
-    this.skipEl.addEventListener('click', () => { if (this.skipHandler) { audio.play('ui.click'); const h = this.skipHandler; this.skipHandler = null; this.skipEl.hidden = true; h(); } });
+    this.skipEl.addEventListener('click', () => this._skip());
     G.input.on_('confirm', () => { if (!this.nextEl.hidden) this._next(); else if (!this.goEl.disabled && this.goHandler) this._go(); });
     for (const b of document.querySelectorAll('button')) b.addEventListener('pointerenter', () => { if (matchMedia('(hover: hover)').matches && !b.disabled) audio.play('ui.hover', { minGap: 0.08 }); });
 
@@ -77,8 +77,29 @@ export class HUD {
   }
   _next() { if (this.nextEl.hidden) return; audio.play('ui.confirm'); this.nextEl.hidden = true; const r = this.nextResolve; this.nextResolve = null; if (r) r(true); }
   hideNext() { this.nextEl.hidden = true; if (this.nextResolve) { const r = this.nextResolve; this.nextResolve = null; r(false); } }
-  /* skip */
-  skip(fn) { this.skipHandler = fn; this.skipEl.hidden = !fn; }
+  /* skip: one press for a cinematic; with confirm (the lesson), the first press asks and only a second press within
+     3 s skips, so a stray tap cannot throw the learning away */
+  skip(fn, { label = 'Skip', confirm = null, short = [label, confirm] } = {}) {
+    this.skipHandler = fn; this.skipConfirm = confirm; this.skipLabel = label; this.skipShort = short;
+    this._skipLabel(false); this.skipEl.hidden = !fn;
+  }
+  _skipLabel(armed) {
+    clearTimeout(this._skipT); this._skipArmed = armed;
+    this.skipEl.classList.toggle('confirm', armed);
+    // a long label and a short one for narrow screens (CSS shows one)
+    const long = armed ? this.skipConfirm : this.skipLabel, short = this.skipShort[armed ? 1 : 0] || long;
+    this.skipEl.innerHTML = `<b class="sk-l">${long}</b><b class="sk-s">${short}</b> <span>›</span>`;
+  }
+  _skip() {
+    if (!this.skipHandler) return;
+    if (this.skipConfirm && !this._skipArmed) {
+      audio.play('ui.hint'); this._skipLabel(true);
+      this._skipT = setTimeout(() => this._skipLabel(false), 3000);
+      return;
+    }
+    audio.play('ui.click');
+    const h = this.skipHandler; this.skipHandler = null; this._skipLabel(false); this.skipEl.hidden = true; h();
+  }
   /* pause */
   pause(on) {
     if (on === clock.paused) return;

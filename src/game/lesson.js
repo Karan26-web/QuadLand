@@ -10,6 +10,7 @@
 //   trapezium          a copy turned upside down: together, a parallelogram
 // Each ends with a practice question; a miss gets the idea of the mistake, a
 // second the working, then the answer glows. A practice question cannot be failed.
+// Skip lesson › (the user's brief) ends it at any point; it asks once more first.
 // ---------------------------------------------------------------------------
 import { V, say, fadeIn, fadeOut } from './common.js';
 import { Ease, shuffle, clamp } from '../engine/util.js';
@@ -86,11 +87,17 @@ export async function run(s, G, flow) {
   G.post.fx.blurMix = 0.88; G.post.fx.blurDim = 0.5;
   G.director.cut({ pos: V(10, 70, 140), target: V(36, 0, -96), fov: 50 });
   G.director.orbit({ center: V(36, 0, -96), radius: 220, height: 80, from: 0, to: 40, dur: 600, ease: Ease.linear });
-  root.hidden = false; document.body.classList.add('lesson-on');
-  s.onKill(() => { root.hidden = true; document.body.classList.remove('lesson-on'); G.post.fx.blurMix = 0; });
+  clearTimeout(root._hideT); root.hidden = false; root.classList.remove('leaving'); document.body.classList.add('lesson-on');
+  // ended early (Skip, Restart): the board fades away while the mission fades in behind it
+  s.onKill(() => {
+    root.classList.add('leaving'); document.body.classList.remove('lesson-on'); G.post.fx.blurMix = 0;
+    root._hideT = setTimeout(() => { root.hidden = true; root.classList.remove('leaving'); }, 400);
+  });
   A.music.play('lesson', { fade: 2 });
   const orb = orbLoop(G); s.onKill(orb);
   await fadeIn(G, 0.8);
+  // the learner may skip the lesson (the user's brief); a second press confirms
+  G.hud.skip(() => { flow.state.lessonSkipped = true; G.voice.stop(); s.kill(); }, { label: 'Skip lesson', confirm: 'Press again to skip', short: ['Skip', 'Sure?'] });
   const ctx = { s, G, board, A, setTitle, setRule, flow };
 
   /* -- what is area */

@@ -5,12 +5,14 @@
 //  * below the top the violet rock flares outward into the water
 //  * a beacon on each corner (the ship's corner beacons lock onto these)
 //  * the rim glows: idle (cool), hot (the ship is over it), good, bad
+//  * its sides can trace on in light (edges), so the shape reads from far above
 // The sea draws the foam where an island meets it (ocean.setIslands).
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 import { Tex } from './textures.js';
 import { scaledVerts, threeShape, inset, toWorld, centroid } from './shapes.js';
 import { glowSprite } from './ships.js';
+import { EdgeGlow } from './edges.js';
 import { Ease, mulberry32, damp } from '../engine/util.js';
 import { tweens } from '../engine/tween.js';
 
@@ -89,6 +91,7 @@ export class Island extends THREE.Group {
     rimGeo.rotateX(-Math.PI / 2); rimGeo.translate(0, -0.06, 0);
     this.rimMat = new THREE.MeshStandardMaterial({ color: 0x3a3060, roughness: 0.4, metalness: 0.4, emissive: COLORS.idle.clone(), emissiveIntensity: 0.9 });
     this.add(new THREE.Mesh(rimGeo, this.rimMat));
+    this.edges = new EdgeGlow(this.verts, { y: 0.16, width: 1.5 }); this.add(this.edges);
 
     const rockMat = new THREE.MeshStandardMaterial({ map: Tex.rock(), vertexColors: true, color: 0xf0e4ff, roughness: 0.55, metalness: 0.05, emissive: 0x1a0f3a, emissiveIntensity: 0.6 });
     this.rockMat = rockMat;
@@ -135,7 +138,7 @@ export class Island extends THREE.Group {
     }).promise;
   }
   sink(duration = 1.6) {
-    this.risen = false;
+    this.risen = false; this.edges.off();
     return tweens.add({ duration, ease: Ease.inCubic, onUpdate: (e) => { this.position.y = TOP + (SUNK - TOP) * e; }, onComplete: () => { this.visible = false; } }).promise;
   }
   placeRisen() { this.visible = true; this.risen = true; this.k = 1; this.position.y = TOP; }

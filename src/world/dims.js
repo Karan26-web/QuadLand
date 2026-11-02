@@ -73,9 +73,10 @@ export class Dims {
       } else if (d.type === 'diag') {
         const a = v[d.i], b = v[d.j];
         parts.push(ribbon(a, b, y, 0.12, { color: 0xffd27a, dash: 0.42 }));
-        // the two diagonals cross in the middle: one label up its far end, the other out along its own, on opposite sides
+        // the two diagonals cross in the middle: one label up its far end on one side, the other out along its own on
+        // the other, both clear of the side's label even from high above (the playing view)
         const dir = unit(sub(b, a)), n = { x: dir.y, y: -dir.x };
-        labelAt = add(lerp2(a, b, k === 0 ? 0.8 : 0.17), mul(n, 0.8));
+        labelAt = k === 0 ? sub(lerp2(a, b, 0.75), mul(n, 1.4)) : add(lerp2(a, b, 0.17), mul(n, 0.8));
       }
       for (const p of parts) { p.visible = false; this.group.add(p); }
       this.items.push({ d, parts, id, labelAt });

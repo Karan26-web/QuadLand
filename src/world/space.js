@@ -76,6 +76,7 @@ export class SpaceWorld {
       if (this.drift && s.home) {
         s.position.x = s.home.x + Math.sin(this.t * 0.4 + i * 1.7) * 0.8;
         s.position.y = s.home.y + Math.sin(this.t * 0.55 + i) * 0.6;
+        s.position.z = s.home.z;
       }
     });
     this.oceanPlanet.update(dt); this.ringed.update(dt);

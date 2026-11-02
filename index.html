@@ -25,27 +25,33 @@
         </div>
         <div class="ck-marker" hidden><div class="mk-box"></div><div class="mk-arrow"></div></div>
       </div>
-      <div class="ck-frame"><img class="ck-art" alt="" hidden /><svg class="ck-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg></div>
+      <div class="ck-frame"><img class="ck-art" alt="" hidden /><svg class="ck-svg" aria-hidden="true"></svg></div>
+      <svg class="ck-svg ck-dash-svg" aria-hidden="true"></svg>
       <div class="ck-dash">
-        <div class="ck-gauge ck-gauge-l">
-          <div class="g-label">SPEED</div><div class="g-val" id="ckSpeed">0.4</div><div class="g-unit">LY/H</div>
-        </div>
-        <div class="ck-lever" id="ckLever" aria-label="Thrust lever" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
-          <div class="lv-label">THRUST</div>
-          <div class="lv-slot"><div class="lv-fill"></div><div class="lv-ticks"></div><div class="lv-handle"><span></span></div></div>
-          <div class="lv-hint"></div>
+        <div class="ck-mod ck-mod-l">
+          <div class="ck-gauge">
+            <div class="g-label">SPEED</div><div class="g-val" id="ckSpeed">0.4</div><div class="g-unit">LY/H</div>
+          </div>
+          <div class="ck-lever" id="ckLever" aria-label="Thrust lever" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+            <div class="lv-label">THRUST</div>
+            <div class="lv-slot"><div class="lv-fill"></div><div class="lv-ticks"></div><div class="lv-handle"><span></span></div></div>
+            <div class="lv-hint"></div>
+          </div>
         </div>
         <div class="ck-screen">
           <div class="sc-head"><span class="sc-dot"></span><span id="ckWho">SHIP AI</span></div>
           <canvas id="ckWave" width="480" height="120"></canvas>
           <div class="sc-status" id="ckStatus">CRUISING</div>
         </div>
-        <div class="ck-buttons">
-          <button class="ck-btn ck-descend" id="ckDescend" hidden><span class="b-ring"></span><span class="b-label">HOLD<br />DESCEND</span></button>
-          <button class="ck-btn ck-launch" id="ckLaunch" hidden><span class="b-ring"></span><span class="b-label">LAUNCH</span></button>
-        </div>
-        <div class="ck-gauge ck-gauge-r">
-          <div class="g-label">ALTITUDE</div><div class="g-val" id="ckAlt">——</div><div class="g-unit">KM</div>
+        <div class="ck-mod ck-mod-r">
+          <div class="ck-gauge">
+            <div class="g-label">ALTITUDE</div><div class="g-val" id="ckAlt">——</div><div class="g-unit">KM</div>
+          </div>
+          <div class="ck-socket">
+            <div class="ck-radar"></div>
+            <button class="ck-btn ck-descend" id="ckDescend" hidden><span class="b-ring"></span><span class="b-label">HOLD<br />DESCEND</span></button>
+            <button class="ck-btn ck-launch" id="ckLaunch" hidden><span class="b-ring"></span><span class="b-label">LAUNCH</span></button>
+          </div>
         </div>
       </div>
     </div>

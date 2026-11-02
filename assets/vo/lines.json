@@ -14,8 +14,8 @@
     { "id": "s3.dark", "lxd": true, "text": "It is too dark to see the landing zones." },
     { "id": "s3.scan", "lxd": true, "text": "Start the scanner to search the area." },
 
-    { "id": "s4.found", "lxd": true, "text": "Great! The scanner found five landing zones." },
-    { "id": "s4.shapes", "lxd": true, "text": "Look! Each landing zone has a different shape." },
+    { "id": "s4.found", "lxd": true, "text": "Great! The scanner found five sets of landing zones." },
+    { "id": "s4.shapes", "lxd": true, "text": "Look! Each set of landing zones has a different shape." },
 
     { "id": "s5.ships", "lxd": true, "text": "Five spaceships are on their way to this planet, and each one has a different shape." },
     { "id": "s5.match", "lxd": true, "text": "Each spaceship must land on the zone that matches it perfectly, not too small and not too big." },

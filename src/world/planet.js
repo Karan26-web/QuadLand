@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // The water planet: a violet night sea under a ringed giant (baked sky), the
-// living ocean, two mountain-sized waves rolling far out, the five landing sites
-// (three islands each: the LXD's three areas), the five ships, the survey drone,
+// living ocean, two mountain-sized waves rolling far out, the five sets of landing
+// zones (three islands each: the LXD's three areas), the five ships, the survey drone,
 // the cloud deck the ship comes down through, and the effects.
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
@@ -17,8 +17,9 @@ import { mulberry32, shuffle } from '../engine/util.js';
 
 export const MOON_DIR = new THREE.Vector3(-0.42, 0.36, -0.83).normalize();   // the ringed giant, low in the north-west
 
-/** the five sites, each in its own part of the sea (x, z) */
-export const SITES = [[-62, -38], [8, -96], [70, -34], [128, -112], [38, -178]];
+/** the five sets of three, each in its own part of the sea but close enough for one view from above to hold all
+    fifteen zones: the two small sets in front, the three large ones behind (x, z) */
+export const SITES = [[6, -70], [-21, -112], [33, -112], [62, -70], [89, -112]];
 
 export class PlanetWorld {
   constructor(renderer, { cubeSize = 1024, seed = (Math.random() * 1e9) | 0 } = {}) {
@@ -50,12 +51,14 @@ export class PlanetWorld {
     this.waves[1].dir.set(-0.5, 1).normalize(); this.waves[1].phase = 0.78; this.waves[1].peak = 80;
     this.waves.forEach((w) => scene.add(w.mesh));
 
-    // the sites: three islands each, in a triangle; which slot the scanner finds first and which slot holds the
-    // right area are dealt per run, so "the one that was there first" and "the one on the right" mean nothing
+    // the sets: three islands each, in a triangle; which slot holds the right area is dealt per run, so "the one
+    // on the right" means nothing
     const rng = mulberry32(seed);
     this.sites = SHAPES.map((shape, i) => {
       const [sx, sz] = SITES[i];
-      const big = bounds(shape.verts), s = Math.max(big.w, big.h) * Math.sqrt(Math.max(...shape.islands) / shape.area) + 6.5;
+      // spaced so that, seen from above, the ship waits in clear water between the back island and the front two
+      const big = bounds(shape.verts), grow = Math.sqrt(Math.max(...shape.islands) / shape.area);
+      const s = Math.max(Math.max(big.w, big.h) * grow + 6.5, (big.h * 1.22 + 3.4 + big.h * grow) / 0.92);
       const slots = [[-s * 0.62, s * 0.3], [s * 0.62, s * 0.3], [0, -s * 0.62]];
       const areas = shuffle(shape.islands, rng);
       const islands = areas.map((area, k) => {
@@ -64,8 +67,7 @@ export class PlanetWorld {
         isl.rotation.y = 0; scene.add(isl);
         return isl;
       });
-      const first = (rng() * 3) | 0;
-      return { shape, centre: new THREE.Vector3(sx, 0, sz), islands, first, spacing: s, landed: false };
+      return { shape, centre: new THREE.Vector3(sx, 0, sz), islands, spacing: s, landed: false };
     });
     this.allIslands = this.sites.flatMap((s) => s.islands);
 

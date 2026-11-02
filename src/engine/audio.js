@@ -230,6 +230,12 @@ SFX['island.rise'] = (A, o) => {
 SFX['splash'] = (A, o) => { const t = A.now, v = o.vol ?? 0.45, out = A.pan(o.pan ?? 0, A.sfxBus); A.burst({ t0: t, dur: 0.9, vol: v, f0: 2400, f1: 300, dest: out, verb: 0.3, env: { a: 0.004, d: 0.25, s: 0.35, r: 0.6 } }); A.tone({ f0: 110, f1: 40, dur: 0.35, vol: v * 0.7, t0: t, dest: out }); for (let i = 0; i < 10; i++) A.burst({ t0: t + 0.1 + Math.random() * 0.6, dur: 0.05, vol: v * 0.2, type: 'bandpass', f0: rnd(1500, 4500), Q: 3, dest: out }); };
 SFX['zone.pulse'] = (A, o) => { const scale = [72, 74, 76, 79, 81]; A.bell(scale[(o.i ?? 0) % 5] + 12, { vol: 0.09, verb: 0.6, pan: o.pan ?? 0 }); };
 SFX['zone.glow'] = (A) => A.burst({ dur: 1.4, vol: 0.06, type: 'highpass', f0: 5000, verb: 0.7, env: { a: 0.5, d: 0.4, s: 0.5, r: 0.5 } });
+// a shape's sides tracing on in light: one bell per side as it completes, rising, over a faint shimmer (up: transpose)
+SFX['edge.trace'] = (A, o) => {
+  const d = o.dur ?? 1.2, t = A.now, up = o.up ?? 0;
+  [72, 76, 79, 84].forEach((n, k) => A.bell(n + up, { t0: t + (d * (k + 0.9)) / 4, vol: 0.05, verb: 0.5, pan: o.pan ?? 0 }));
+  A.burst({ dur: d, vol: 0.025, type: 'bandpass', f0: 6000, Q: 2, verb: 0.5, env: { a: d * 0.4, d: d * 0.3, s: 0.4, r: d * 0.3 } });
+};
 
 // landing
 SFX['ship.arrive'] = (A, o) => { SFX.flyby(A, { dur: o.dur ?? 2.2, vol: 0.4, from: o.from ?? -0.9, to: o.to ?? 0.2 }); A.tone({ type: 'sine', f0: 300, f1: 90, dur: 1.6, vol: 0.06, t0: A.now + 0.6, verb: 0.2 }); };

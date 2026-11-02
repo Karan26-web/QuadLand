@@ -14,12 +14,12 @@ def font(sz):
 # cockpit: the canopy window (magenta) above, the dashboard band below with the instrument zones kept plain
 W, H = 2560, 1440; im = Image.new('RGB', (W, H), (22, 28, 70)); d = ImageDraw.Draw(im)
 dash = int(H * 0.69)
-win = [(70, dash), (82, 900), (112, 420), (150, 200), (230, 150), (2330, 150), (2410, 200), (2448, 420), (2478, 900), (2490, dash)]
+win = [(240, dash), (141, 835), (180, 187), (269, 98), (2291, 98), (2380, 187), (2419, 835), (2320, dash)]   # the vector cockpit's glass (cockpitUI.js)
 d.polygon(win, fill=MAG)
 d.rectangle((0, dash, W, H), fill=(14, 18, 48)); d.line((0, dash, W, dash), fill=(120, 150, 255), width=6)
-zones = [(420, 'SPEED'), (720, 'LEVER'), (1280, 'AI SCREEN'), (1840, 'BUTTON'), (2140, 'ALT')]
+zones = [(560, 'SPEED + THRUST'), (1280, 'AI SCREEN'), (2000, 'ALT + RADAR')]
 for x, t in zones:
-    w = 520 if t == 'AI SCREEN' else 220
+    w = 820 if t == 'AI SCREEN' else 560
     d.rounded_rectangle((x - w // 2, dash + 70, x + w // 2, H - 60), radius=28, outline=(255, 255, 255), width=4)
     d.text((x, dash + 40), t, fill=(255, 255, 255), font=font(30), anchor='mm')
 d.text((W // 2, 520), 'CANOPY WINDOW = FLAT MAGENTA #F805F9', fill=(255, 255, 255), font=font(64), anchor='mm')

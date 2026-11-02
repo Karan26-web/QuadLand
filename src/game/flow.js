@@ -3,8 +3,8 @@
 //   1 title → (intro cinematic) → 2 cockpit (+ the trip to the water planet) →
 //   3 dark sea + scan → 4 five zones → 5 the area hook → 6 the lesson →
 //   7 back to the mission → 8–12 five landings → 13 mission complete
-// One script runs the mission; a cinematic runs as a child script, so Skip cuts
-// the cinematic and the mission carries on. Restart (Screen 13) goes back to the
+// One script runs the mission; the intro and the lesson run as child scripts, so
+// Skip ends just them and the mission carries on. Restart (Screen 13) goes back to the
 // cockpit, as the LXD asks.
 // ---------------------------------------------------------------------------
 import { ScriptRunner, Script, Cancelled, clock } from '../engine/clock.js';
@@ -20,7 +20,7 @@ import { cleanFx } from './common.js';
 import { param } from '../engine/util.js';
 
 export const ORDER = ['intro', 'cockpit', 'survey', 'lesson', 'back', 'land0', 'land1', 'land2', 'land3', 'land4', 'complete'];
-const fresh = () => ({ landed: [false, false, false, false, false], misses: [0, 0, 0, 0, 0], hearts: 3, lessonMisses: 0 });
+const fresh = () => ({ landed: [false, false, false, false, false], misses: [0, 0, 0, 0, 0], hearts: 3, lessonMisses: 0, lessonSkipped: false });
 
 export class Flow {
   constructor(G) { this.G = G; this.runner = new ScriptRunner(); this.state = fresh(); this.started = false; this.phase = 'boot'; }
@@ -38,7 +38,7 @@ export class Flow {
       if (step === 'intro') await this.sub(s, 'intro', (c) => Intro.run(c, this.G, this));
       else if (step === 'cockpit') await Cockpit.run(s, this.G, this);
       else if (step === 'survey') await Survey.run(s, this.G, this);
-      else if (step === 'lesson') await Lesson.run(s, this.G, this);
+      else if (step === 'lesson') await this.sub(s, 'lesson', (c) => Lesson.run(c, this.G, this));
       else if (step === 'back') await Landing.back(s, this.G, this);
       else if (step.startsWith('land')) await Landing.run(s, this.G, this, +step.slice(4));
       else if (step === 'complete') await Complete.run(s, this.G, this);
