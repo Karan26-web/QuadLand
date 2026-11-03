@@ -64,6 +64,12 @@ python3 playtest/shot.py sea=view=sea islands=view=islands   # still views
 ```
 Screenshots go to `playtest/screens/`.
 
+Both scripts take `--size` (default `1280x800`). Test on phone sizes too, upright and in landscape, because most layout bugs only show up there:
+```bash
+python3 playtest/mission.py --from cockpit --size 390x844 --tag P   # a phone held upright (try 360x740 and 320x568 too)
+python3 playtest/mission.py --from cockpit --size 844x390 --tag S   # the same phone in landscape
+```
+
 ## Project layout
 ```
 index.html, styles/main.css     the page, its layers and the UI theme
