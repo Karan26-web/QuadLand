@@ -354,6 +354,9 @@ body.ck-painted .ck-svg { display: none; }
   .ck-gauge { width: clamp(76px, 10vw, 104px); padding: 4px 6px; } .g-label, .g-unit { font-size: 10px; } .g-val { font-size: 22px; }
   .ck-lever { padding: 4px 10px; gap: 3px; } .lv-label { font-size: 10px; } .lv-slot { width: 40px; } .lv-handle { width: 64px; height: 28px; margin-left: -32px; }
   .ck-screen { padding: 6px 12px 8px; }
+  /* Mission complete: the title on one line, so it clears the ships, and the rule cards a size smaller so they don't touch */
+  .cp-title { width: max-content; }
+  .rule-tag { padding: 5px 11px 7px; } .rule-tag b { font-size: 11px; } .rule-tag span { font-size: 13px; }
 }
 @media (max-width: 760px) {
   .tt-pct { display: none; }
@@ -377,4 +380,8 @@ body.ck-painted .ck-svg { display: none; }
   .ck-dash { grid-template-columns: 1fr 1fr; grid-template-rows: 104px minmax(0, 1fr); grid-template-areas: "screen screen" "l r"; row-gap: 22px; padding-top: calc(var(--dash-h) * 0.1); }
   .ck-screen { grid-area: screen; width: min(86vw, 420px); margin-bottom: 0; }
   .ck-mod-l { grid-area: l; } .ck-mod-r { grid-area: r; }
+  /* Mission complete: five rule cards don't fit side by side across a phone, so every other one drops a row, and they
+     scale with the screen's width, as the row of ships does */
+  .rule-tag { padding: 4px min(8px, 2vw) 5px; } .rule-tag b { font-size: clamp(9px, 2.7vw, 11px); letter-spacing: 0.02em; } .rule-tag span { font-size: clamp(9.5px, 2.9vw, 12px); }
+  .rule-tag.low { translate: 0 calc(100% + 16px); }
 }

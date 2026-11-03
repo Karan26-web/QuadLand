@@ -51,8 +51,9 @@ export async function run(s, G, flow) {
   A.music.play('complete', { fade: 1.5 });
   // along the line, close, then back to see all five. The row is wide and the FOV is vertical, so the view of all five
   // is framed by its width: it comes closer on a wide phone and pulls back on a narrower screen (a tablet, a phone
-  // held upright) so no ship is cut off. At a laptop's 16:10, k = 1.
-  const mid = V(0, -4, -44), k = THREE.MathUtils.clamp(1.6 / G.camera.aspect, 0.74, 4);
+  // held upright) so no ship is cut off. At a laptop's 16:10, k = 1. On a phone held upright the rule cards are wide
+  // for the screen, so it pulls back a little more to keep the outer two inside the edges.
+  const mid = V(0, -4, -44), aspect = G.camera.aspect, k = THREE.MathUtils.clamp(1.6 / aspect, 0.74, 4) * (aspect < 0.65 ? 1.16 : 1);
   d.cut({ pos: V(-60, 6, -22), target: V(-38, 0, -46), fov: 44, roll: 0.1 });
   d.handheld(0.2);
   fadeIn(G, 1.2);
@@ -62,7 +63,7 @@ export async function run(s, G, flow) {
   for (const g of F.items) {
     const { i } = g.userData, shape = SHAPES[i];
     await s.wait(1.1);
-    G.labels.add(`rule-${i}`, `<div class="rule-tag"><b>${shape.name.toUpperCase()}</b><span>${ruleOf(shape)}</span></div>`, { worldPos: () => g.position.clone().add(V(0, -7.6, 0)), anchor: 'center' });
+    G.labels.add(`rule-${i}`, `<div class="rule-tag${i % 2 ? ' low' : ''}"><b>${shape.name.toUpperCase()}</b><span>${ruleOf(shape)}</span></div>`, { worldPos: () => g.position.clone().add(V(0, -7.6, 0)), anchor: 'center' });
     A.play('zone.pulse', { i }); g.userData.isl.pulse();
   }
   await s.run(sweep);
