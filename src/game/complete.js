@@ -49,11 +49,14 @@ export async function run(s, G, flow) {
   S.fleet.forEach((f) => (f.visible = false));
   S.dust.speed = 4; F.group.visible = true;
   A.music.play('complete', { fade: 1.5 });
-  // along the line, close, then back to see all five
+  // along the line, close, then back to see all five. The row is wide and the FOV is vertical, so the view of all five
+  // is framed by its width: it comes closer on a wide phone and pulls back on a narrower screen (a tablet, a phone
+  // held upright) so no ship is cut off. At a laptop's 16:10, k = 1.
+  const mid = V(0, -4, -44), k = THREE.MathUtils.clamp(1.6 / G.camera.aspect, 0.74, 4);
   d.cut({ pos: V(-60, 6, -22), target: V(-38, 0, -46), fov: 44, roll: 0.1 });
   d.handheld(0.2);
   fadeIn(G, 1.2);
-  const sweep = d.path({ points: [V(-34, 6, -16), V(-8, 7, -14), V(22, 6, -16), V(16, 16, 4), V(0, 21, 9)], target: [V(-21, -1, -48), V(0, -1, -42), V(21, -1, -48), V(6, -1, -42), V(0, -4, -44)], fov: [44, 52], roll: 'bank', bank: 0.8, dur: 7.5, ease: Ease.inOutSine, blendIn: 0.1 });
+  const sweep = d.path({ points: [V(-34, 6, -16), V(-8, 7, -14), V(22, 6, -16), V(16, 16, 4), mid.clone().add(V(0, 25, 53).multiplyScalar(k))], target: [V(-21, -1, -48), V(0, -1, -42), V(21, -1, -48), V(6, -1, -42), mid], fov: [44, 52], roll: 'bank', bank: 0.8, dur: 7.5, ease: Ease.inOutSine, blendIn: 0.1 });
   // the rules beneath, one by one as the camera passes
   const ruleOf = (sh) => sh.rule.replace('diagonal 1', 'd₁').replace('diagonal 2', 'd₂').replace('(sum of the parallel sides)', '(a + b)');
   for (const g of F.items) {
@@ -71,7 +74,7 @@ export async function run(s, G, flow) {
   await s.wait(1.6);
   await say(s, G, 's13.done', { after: 0.4 });
   const btn = document.getElementById('btnRestart'); btn.hidden = false;
-  d.orbit({ center: V(0, -4, -44), radius: 52, height: 24, from: 0, to: 14, fov: 52, dur: 40, ease: Ease.inOutSine });
+  d.orbit({ center: mid, radius: 52 * k, height: 24 * k, from: 0, to: 14, fov: 52, dur: 40, ease: Ease.inOutSine });
   await s.event(btn, 'click');
   A.play('ui.confirm');
   btn.hidden = true; cp.hidden = true; G.labels.clear(true); F.group.visible = false; S.command.position.set(0, 0, 0);
