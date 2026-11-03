@@ -16,6 +16,8 @@ export class HUD {
     this.G = G;
     this.el = $('hud'); this.heartsEl = $('hearts'); this.fleetEl = $('fleet'); this.formulaEl = $('formula');
     this.captionEl = $('caption'); this.goEl = $('btnGo'); this.nextEl = $('btnNext'); this.skipEl = $('btnSkip');
+    // a long caption wraps to several lines on a narrow screen: the formula chip moves down by its real height (--cap-h)
+    new ResizeObserver(() => document.body.style.setProperty('--cap-h', `${this.captionEl.offsetHeight}px`)).observe(this.captionEl);
     this.fleetEl.innerHTML = SHAPES.map((s) => `<div class="fs" data-k="${s.key}">${shapeIcon(s, { stroke: '#8ee8ff' })}</div>`).join('');
     this.hearts = 3; this.renderHearts();
     this.goHandler = null; this.nextResolve = null; this.skipHandler = null;

@@ -119,7 +119,7 @@ body.no-subs .sub-line { display: none; }
 /* ---------------------------------------------------- caption (instructions) */
 .caption {
   position: fixed; left: 50%; top: calc(var(--pad) * 0.8 + var(--sat) + 62px); translate: -50% 0; z-index: 31; pointer-events: none;
-  max-width: min(88vw, 760px); padding: 10px 22px; border-radius: 999px; text-align: center;
+  width: max-content; max-width: min(88vw, 760px); padding: 10px 22px; border-radius: 999px; text-align: center;
   font-family: var(--body); font-weight: 800; font-size: clamp(15px, 1.8vw, 21px); color: #2a1300;
   background: linear-gradient(180deg, #ffe3a6, var(--amber)); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 200, 110, 0.25);
   animation: popIn 0.4s ease-out both;
@@ -151,7 +151,8 @@ body.cockpit-on .caption { top: calc(var(--pad) + var(--sat)); }
 }
 .formula .fx-k { color: var(--holo); }
 .formula .fx-n { color: var(--amber); }
-body.caption-on .formula { top: calc(var(--pad) * 0.8 + var(--sat) + 122px); }
+/* below the caption, however many lines it wraps to (--cap-h is its measured height, set by hud.js) */
+body.caption-on .formula { top: calc(var(--pad) * 0.8 + var(--sat) + 62px + var(--cap-h, 48px) + 12px); }
 .go-btn { position: absolute; right: calc(var(--pad) * 1.4 + var(--sar)); bottom: calc(var(--pad) * 1.4 + var(--sab)); }
 .go-btn.ready { animation: goReady 0.35s ease-out; }
 @keyframes goReady { 0% { transform: scale(0.85); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
@@ -348,7 +349,7 @@ body.ck-painted .ck-svg { display: none; }
   .formula { font-size: 15px; padding: 6px 16px 7px; } .caption { font-size: 14px; padding: 7px 16px; }
   .area-tag { padding: 3px 9px 5px; min-width: 56px; } .area-tag b { font-size: 20px; } .area-tag small { font-size: 10px; }
   .dim-tag { font-size: 15px; }
-  body.caption-on .formula { top: calc(var(--pad) * 0.6 + var(--sat) + 96px); }
+  body.caption-on .formula { top: calc(var(--pad) * 0.6 + var(--sat) + 48px + var(--cap-h, 34px) + 12px); }
   .ck-dash { padding-top: calc(var(--dash-h) * 0.13); }
   .ck-gauge { width: clamp(76px, 10vw, 104px); padding: 4px 6px; } .g-label, .g-unit { font-size: 10px; } .g-val { font-size: 22px; }
   .ck-lever { padding: 4px 10px; gap: 3px; } .lv-label { font-size: 10px; } .lv-slot { width: 40px; } .lv-handle { width: 64px; height: 28px; margin-left: -32px; }
