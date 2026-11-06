@@ -1,0 +1,53 @@
+{
+  "about": "The voice lab's catalogue: every voice it can speak in, by language. sample_lines: the keys (in strings.json) every voice reads for the showcase. id = <language>-<engine>-<speaker>. pace (Indic-TTS) < 1 speaks faster; rate (MMS, macOS) > 1 speaks faster. A voice with 'requires' needs that environment variable (Indic Parler-TTS is gated on Hugging Face). Pick the game's narrator for each language in assets/vo/voices.json.",
+  "project": "Spaceship Mission",
+  "narrator": "The game's Ship AI",
+  "sample_lines": [{ "key": "vo.s2.welcome", "label": "Greeting" }, { "key": "vo.s12.rule", "label": "A maths rule" }, { "key": "vo.h.re.40", "label": "A hint with numbers" }, { "key": "vo.o.perfect", "label": "Celebration" }],
+  "engines": {
+    "indic": { "name": "AI4Bharat Indic-TTS", "model": "FastPitch + HiFi-GAN, 22 kHz", "licence": "MIT", "commercial": "Yes", "source": "https://github.com/AI4Bharat/Indic-TTS", "credit": "AI4Bharat, IIT Madras (Indic-TTS)" },
+    "syspin": { "name": "SYSPIN (IISc / ARTPARK)", "model": "VITS, 22 kHz", "licence": "CC-BY-4.0", "commercial": "Yes, with credit", "source": "https://huggingface.co/SYSPIN", "credit": "SYSPIN project, IISc Bangalore and ARTPARK" },
+    "mms": { "name": "Meta MMS-TTS", "model": "VITS, 16 kHz", "licence": "CC-BY-NC-4.0", "commercial": "No (non-commercial only)", "source": "https://huggingface.co/facebook/mms-tts", "credit": "Meta AI, Massively Multilingual Speech" },
+    "macos": { "name": "macOS system voice", "model": "Apple", "licence": "macOS licence", "commercial": "No (prototypes only)", "source": "System Settings › Accessibility › Spoken Content", "credit": "Apple" },
+    "parler": { "name": "AI4Bharat Indic Parler-TTS", "model": "Parler-TTS, 0.9B, steered by a description", "licence": "Apache-2.0", "commercial": "Yes", "source": "https://huggingface.co/ai4bharat/indic-parler-tts", "credit": "AI4Bharat and Hugging Face" }
+  },
+  "voices": [
+    { "id": "hi-indic-female", "lang": "hi", "engine": "indic", "model": "hi", "speaker": "female", "gender": "female", "label": "Indic-TTS female", "pace": 0.9 },
+    { "id": "hi-indic-male", "lang": "hi", "engine": "indic", "model": "hi", "speaker": "male", "gender": "male", "label": "Indic-TTS male", "pace": 0.9 },
+    { "id": "hi-syspin-female", "lang": "hi", "engine": "syspin", "model": "HindiFemale", "speaker": "female", "gender": "female", "label": "SYSPIN female" },
+    { "id": "hi-syspin-male", "lang": "hi", "engine": "syspin", "model": "HindiMale", "speaker": "male", "gender": "male", "label": "SYSPIN male" },
+    { "id": "hi-mms", "lang": "hi", "engine": "mms", "model": "hin", "speaker": "mms", "gender": "male", "label": "MMS" },
+    { "id": "hi-macos-lekha", "lang": "hi", "engine": "macos", "speaker": "Lekha", "gender": "female", "label": "macOS Lekha", "rate": 165 },
+
+    { "id": "mr-indic-female", "lang": "mr", "engine": "indic", "model": "mr", "speaker": "female", "gender": "female", "label": "Indic-TTS female", "pace": 0.72 },
+    { "id": "mr-indic-male", "lang": "mr", "engine": "indic", "model": "mr", "speaker": "male", "gender": "male", "label": "Indic-TTS male", "pace": 0.77 },
+    { "id": "mr-syspin-female", "lang": "mr", "engine": "syspin", "model": "MarathiFemale", "speaker": "female", "gender": "female", "label": "SYSPIN female" },
+    { "id": "mr-syspin-male", "lang": "mr", "engine": "syspin", "model": "MarathiMale", "speaker": "male", "gender": "male", "label": "SYSPIN male" },
+    { "id": "mr-mms", "lang": "mr", "engine": "mms", "model": "mar", "speaker": "mms", "gender": "female", "label": "MMS" },
+
+    { "id": "gu-indic-female", "lang": "gu", "engine": "indic", "model": "gu", "speaker": "female", "gender": "female", "label": "Indic-TTS female", "pace": 0.75 },
+    { "id": "gu-indic-male", "lang": "gu", "engine": "indic", "model": "gu", "speaker": "male", "gender": "male", "label": "Indic-TTS male", "pace": 0.75 },
+    { "id": "gu-mms", "lang": "gu", "engine": "mms", "model": "guj", "speaker": "mms", "gender": "male", "label": "MMS" },
+
+    { "id": "te-indic-female", "lang": "te", "engine": "indic", "model": "te", "speaker": "female", "gender": "female", "label": "Indic-TTS female", "pace": 0.9 },
+    { "id": "te-indic-male", "lang": "te", "engine": "indic", "model": "te", "speaker": "male", "gender": "male", "label": "Indic-TTS male", "pace": 0.9 },
+    { "id": "te-syspin-female", "lang": "te", "engine": "syspin", "model": "TeluguFemale", "speaker": "female", "gender": "female", "label": "SYSPIN female" },
+    { "id": "te-syspin-male", "lang": "te", "engine": "syspin", "model": "TeluguMale", "speaker": "male", "gender": "male", "label": "SYSPIN male" },
+    { "id": "te-mms", "lang": "te", "engine": "mms", "model": "tel", "speaker": "mms", "gender": "female", "label": "MMS" },
+    { "id": "te-macos-geeta", "lang": "te", "engine": "macos", "speaker": "Geeta", "gender": "female", "label": "macOS Geeta", "rate": 165 },
+
+    { "id": "od-indic-female", "lang": "od", "engine": "indic", "model": "or", "speaker": "female", "gender": "female", "label": "Indic-TTS female", "pace": 0.76 },
+    { "id": "od-indic-male", "lang": "od", "engine": "indic", "model": "or", "speaker": "male", "gender": "male", "label": "Indic-TTS male", "pace": 0.84 },
+    { "id": "od-mms", "lang": "od", "engine": "mms", "model": "ory", "speaker": "mms", "gender": "male", "label": "MMS" },
+
+    { "id": "hi-parler-divya", "lang": "hi", "engine": "parler", "speaker": "Divya", "gender": "female", "label": "Parler Divya", "requires": "HF_TOKEN" },
+    { "id": "hi-parler-rohit", "lang": "hi", "engine": "parler", "speaker": "Rohit", "gender": "male", "label": "Parler Rohit", "requires": "HF_TOKEN" },
+    { "id": "mr-parler-sunita", "lang": "mr", "engine": "parler", "speaker": "Sunita", "gender": "female", "label": "Parler Sunita", "requires": "HF_TOKEN" },
+    { "id": "mr-parler-sanjay", "lang": "mr", "engine": "parler", "speaker": "Sanjay", "gender": "male", "label": "Parler Sanjay", "requires": "HF_TOKEN" },
+    { "id": "gu-parler-neha", "lang": "gu", "engine": "parler", "speaker": "Neha", "gender": "female", "label": "Parler Neha", "requires": "HF_TOKEN" },
+    { "id": "gu-parler-yash", "lang": "gu", "engine": "parler", "speaker": "Yash", "gender": "male", "label": "Parler Yash", "requires": "HF_TOKEN" },
+    { "id": "te-parler-lalitha", "lang": "te", "engine": "parler", "speaker": "Lalitha", "gender": "female", "label": "Parler Lalitha", "requires": "HF_TOKEN" },
+    { "id": "te-parler-prakash", "lang": "te", "engine": "parler", "speaker": "Prakash", "gender": "male", "label": "Parler Prakash", "requires": "HF_TOKEN" },
+    { "id": "od-parler-debjani", "lang": "od", "engine": "parler", "speaker": "Debjani", "gender": "female", "label": "Parler Debjani", "requires": "HF_TOKEN" },
+    { "id": "od-parler-manas", "lang": "od", "engine": "parler", "speaker": "Manas", "gender": "male", "label": "Parler Manas", "requires": "HF_TOKEN" }
+  ]
+}

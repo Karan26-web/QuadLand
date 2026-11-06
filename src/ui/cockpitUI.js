@@ -8,6 +8,7 @@
 import { audio } from '../engine/audio.js';
 import { voice } from '../engine/voice.js';
 import { clamp, noise1 } from '../engine/util.js';
+import { t } from '../engine/i18n.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -328,5 +329,5 @@ export class CockpitUI {
     });
   }
   hideLaunch() { this.launch.hidden = true; if (this._cancelLaunch) { this._cancelLaunch(); this._cancelLaunch = null; } }
-  reset() { this.leverReset(); this.leverEnable(false); this.showDescend(false); this.launch.hidden = true; this.showReticle(false); this.plasmaK(0); this.status('CRUISING'); this.speed('0.4'); this.alt('——'); }
+  reset() { this.leverReset(); this.leverEnable(false); this.showDescend(false); this.launch.hidden = true; this.showReticle(false); this.plasmaK(0); this.status(t('ck.cruising')); this.speed('0.4'); this.alt('——'); }
 }

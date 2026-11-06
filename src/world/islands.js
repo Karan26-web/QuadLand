@@ -18,6 +18,7 @@ import { glowSprite } from './ships.js';
 import { EdgeGlow } from './edges.js';
 import { Ease, mulberry32, damp } from '../engine/util.js';
 import { tweens } from '../engine/tween.js';
+import { t } from '../engine/i18n.js';
 
 export const TOP = 2.4;          // a risen island's top above the mean sea level
 const DEPTH = 9;                 // how far its rock reaches down
@@ -27,16 +28,33 @@ const COLORS = { idle: new THREE.Color(0x8ee8ff), hot: new THREE.Color(0xffb547)
 
 const WHITE = new THREE.Color(0xffffff), _c = new THREE.Color();
 
-/** the area written on a pad: the number over "sq units", white with a dark edge (the zone's state tints it) */
-function areaCanvas(area) {
-  const H = 300, NUM = '800 190px "Exo 2", system-ui, sans-serif', UNIT = '800 62px Nunito, system-ui, sans-serif';
-  const m = document.createElement('canvas').getContext('2d');
-  m.font = NUM; const wn = m.measureText(String(area)).width; m.font = UNIT; const wu = m.measureText('sq units').width;
-  const c = document.createElement('canvas'); c.width = Math.ceil(Math.max(wn, wu) + 48); c.height = H;
+/** the area written on a pad: the number and "sq units" in the player's language and its fonts (main.css --head,
+    --body), white with a dark edge (the zone's state tints it). stacked: the unit under the number; else on one line
+    beside it (a long, low pad: the rectangle's, the parallelogram's, the trapezium's), which lets both be drawn larger.
+    The second review asked for a bigger "units": stacked, its line is 0.42 of the number's size (it was 0.33); on one
+    line, 0.55. num: the number's size over the canvas's height (to compare the two) */
+function areaCanvas(area, stacked = true) {
+  const css = getComputedStyle(document.documentElement), font = (v, fb) => css.getPropertyValue(v).trim() || fb;
+  const NUM = `800 190px ${font('--head', '"Exo 2", sans-serif')}`, unit = t('unit.sq'), U = stacked ? 80 : 104;
+  const m = document.createElement('canvas').getContext('2d'), unitFont = (px) => `800 ${px}px ${font('--body', 'Nunito, sans-serif')}`;
+  m.font = NUM; const wn = m.measureText(String(area)).width;
+  // the unit's line is never much wider than the number (చదరపు యూనిట్లు is three times "sq units"), or the whole
+  // block would shrink to fit the pad and the number with it
+  m.font = unitFont(U); const px = Math.max(34, Math.round(U * Math.min(1, ((stacked ? 1.55 : 2.4) * wn) / m.measureText(unit).width)));
+  const UNIT = unitFont(px); m.font = UNIT; const wu = m.measureText(unit).width;
+  const c = document.createElement('canvas'), H = stacked ? 330 : 236;
+  c.width = Math.ceil(stacked ? Math.max(wn, wu) + 48 : wn + 34 + wu + 48); c.height = H;
   const g = c.getContext('2d'), W = c.width;
-  g.textAlign = 'center'; g.lineJoin = 'round'; g.strokeStyle = 'rgba(6, 4, 26, 0.6)';
-  g.font = NUM; g.lineWidth = 16; g.strokeText(String(area), W / 2, 178); g.fillStyle = '#fff'; g.fillText(String(area), W / 2, 178);
-  g.font = UNIT; g.lineWidth = 10; g.strokeText('sq units', W / 2, 268); g.fillText('sq units', W / 2, 268);
+  g.lineJoin = 'round'; g.strokeStyle = 'rgba(6, 4, 26, 0.6)'; g.fillStyle = '#fff';
+  const draw = (text, f, lw, x, y) => { g.font = f; g.lineWidth = lw; g.strokeText(text, x, y); g.fillText(text, x, y); };
+  if (stacked) {
+    g.textAlign = 'center';
+    draw(String(area), NUM, 16, W / 2, 178); draw(unit, UNIT, 11, W / 2, 178 + 34 + px * 0.86);
+  } else {
+    g.textAlign = 'left';
+    draw(String(area), NUM, 16, 24, 188); draw(unit, UNIT, 11, 24 + wn + 34, 188);
+  }
+  c.num = 190 / H;
   return c;
 }
 
@@ -148,7 +166,15 @@ export class Island extends THREE.Group {
   /** world position of corner i on the top (for lock beams) */
   cornerWorld(i, out = new THREE.Vector3()) { this.beacons[i].g.getWorldPosition(out); out.y += 0.55; return out; }
   topWorld(out = new THREE.Vector3()) { this.getWorldPosition(out); return out; }
-  setState(s) { this.state = s; this.want.copy(COLORS[s] || COLORS.idle); }
+  /** a revealed zone rests green (idle means good), so the ship passing over others never puts it out */
+  setState(s) { if (s === 'idle' && this.revealed) s = 'good'; this.state = s; this.want.copy(COLORS[s] || COLORS.idle); }
+  /** the LXD's last hint (second review): this zone turns green and is lit up, its sides traced in green and beating,
+      so the learner knows it is the one that fits */
+  reveal(on = true) {
+    this.revealed = on;
+    this.edges.u.uColor.value.set(on ? COLORS.good : 0x5cf2ff);
+    if (on) { this.setState('good'); this.edges.trace(0.9); this.pulse(); this._beat = 0; } else { this.edges.off(); if (this.state === 'good') this.setState('idle'); }
+  }
   /** write the area on the pad (pop: it springs up) or wipe it off */
   showArea(on = true, pop = true) {
     if (on && !this.areaMark) this._buildAreaMark();
@@ -157,13 +183,19 @@ export class Island extends THREE.Group {
     this.areaMark.visible = on; this.areaMark.scale.setScalar(1);
     if (on && pop) this._areaTw = tweens.add({ duration: 0.45, ease: Ease.outBack, onUpdate: (e) => this.areaMark.scale.setScalar(Math.max(0.001, e)) });
   }
-  /** the largest block of text that fits on the pad, inside its coloured frame (the rhombus's middle is its widest) */
+  /** the largest block of text that fits on the pad, inside its coloured frame (the rhombus's middle is its widest):
+      stacked or on one line, whichever draws the number larger */
   _buildAreaMark() {
-    const c = areaCanvas(this.area), aspect = c.width / c.height;
     const room = inset(this.verts, 0.75);
-    const fits = (h) => { const w = h * aspect; return [[-1, -1], [1, -1], [1, 1], [-1, 1]].every(([x, y]) => inside(room, (x * w) / 2, (y * h) / 2)); };
-    let lo = 0.2, hi = 2.3;
-    for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (fits(m)) lo = m; else hi = m; }
+    const fit = (c) => {
+      const aspect = c.width / c.height;
+      const fits = (h) => { const w = h * aspect; return [[-1, -1], [1, -1], [1, 1], [-1, 1]].every(([x, y]) => inside(room, (x * w) / 2, (y * h) / 2)); };
+      let lo = 0.2, hi = 2.6;
+      for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (fits(m)) lo = m; else hi = m; }
+      return { c, lo, aspect, num: lo * c.num };
+    };
+    const a = fit(areaCanvas(this.area, true)), b = fit(areaCanvas(this.area, false));
+    const { c, lo, aspect } = b.num > a.num * 1.08 ? b : a;
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
     const mat = new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
     const mark = new THREE.Mesh(new THREE.PlaneGeometry(lo * aspect, lo), mat);
@@ -179,12 +211,13 @@ export class Island extends THREE.Group {
     }).promise;
   }
   sink(duration = 1.6) {
-    this.risen = false; this.edges.off();
+    this.risen = false; if (this.revealed) this.reveal(false); this.edges.off();
     return tweens.add({ duration, ease: Ease.inCubic, onUpdate: (e) => { this.position.y = TOP + (SUNK - TOP) * e; }, onComplete: () => { this.visible = false; } }).promise;
   }
   placeRisen() { this.visible = true; this.risen = true; this.k = 1; this.position.y = TOP; }
   update(dt) {
     this._t += dt;
+    if (this.revealed && (this._beat = (this._beat || 0) + dt) > 1.4) { this._beat = 0; this.pulse(); this.edges.flash(1, 0.9); }
     this.color.lerp(this.want, 1 - Math.exp(-6 * dt));
     this.pulseT = Math.max(0, this.pulseT - dt * 0.8);
     const breathe = 0.85 + 0.15 * Math.sin(this._t * 2.2);

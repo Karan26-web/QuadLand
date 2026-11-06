@@ -14,6 +14,7 @@ import { param, isTouch, clamp, nextFrame } from './engine/util.js';
 import { audio } from './engine/audio.js';
 import { voice } from './engine/voice.js';
 import { art } from './engine/assets.js';
+import { i18n, t } from './engine/i18n.js';
 import { SpaceWorld } from './world/space.js';
 import { PlanetWorld } from './world/planet.js';
 import { HUD } from './ui/hud.js';
@@ -33,7 +34,7 @@ const labels = new LabelLayer(document.getElementById('labels'), camera);
 
 /** The shared context every screen works through. */
 export const G = {
-  THREE, renderer, camera, post, director, labels, input, audio, voice, art, clock,
+  THREE, renderer, camera, post, director, labels, input, audio, voice, art, clock, i18n,
   space: null, planet: null, world: null, hud: null, ck: null, flow: null,
   frameHooks: new Set(), touch, dev: param('dev') === '1', auto: param('auto') === '1', plan: (param('plan') || '').split('-'),
   /** switch the world being drawn (space ↔ the water planet) */
@@ -98,11 +99,19 @@ function progress(p) {
   bar.style.width = `${(p * 100).toFixed(1)}%`; pct.textContent = `${Math.round(p * 100)}%`;
 }
 
+/** the font each script is drawn in (main.css): it must be in before a canvas draws text (the areas on the zones) */
+const SCRIPT_FONT = { deva: 'Baloo 2', gujr: 'Baloo Bhai 2', telu: 'Baloo Tammudu 2', orya: 'Baloo Bhaina 2' };
+
 async function boot() {
   progress(0.02);
+  // the player's language first (?lan=xx): every word on the page, then the voice, comes from it
+  await i18n.load(); i18n.apply();
   const steps = [];
   // fonts and the GPT art (optional files; procedural stand-ins otherwise)
-  steps.push(document.fonts ? Promise.all([document.fonts.load('800 32px "Exo 2"'), document.fonts.load('800 20px Nunito')]).catch(() => {}) : Promise.resolve());
+  const fonts = ['800 32px "Exo 2"', '800 20px Nunito'];
+  const indic = SCRIPT_FONT[i18n.meta.script];
+  if (indic) fonts.push(`800 32px "${indic}"`, `600 20px "${indic}"`);
+  steps.push(document.fonts ? Promise.all(fonts.map((f) => document.fonts.load(f))).catch(() => {}) : Promise.resolve());
   const artP = art.load((p) => progress(0.05 + p * 0.25));
   const voP = Promise.all([voice.load((p) => progress(0.3 + p * 0.25)), audio.loadFiles()]);
   await Promise.all([...steps, artP]);
@@ -133,7 +142,7 @@ async function boot() {
 
 boot().catch((e) => {
   console.error(e);
-  const p = document.getElementById('ttPct'); if (p) p.textContent = 'error';
+  const p = document.getElementById('ttPct'); if (p) p.textContent = t('ui.error');
   const d = document.getElementById('dev'); if (d) { d.hidden = false; d.textContent = String(e && e.stack || e); d.style.cssText = 'position:fixed;left:8px;bottom:8px;right:8px;color:#ff9;font:12px monospace;white-space:pre-wrap;z-index:999'; }
 });
 

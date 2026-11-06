@@ -16,6 +16,7 @@ import { V, say, fx, fadeOut, cleanFx, topView } from './common.js';
 import { Ease, clamp, lerp, DEG } from '../engine/util.js';
 import { tweens } from '../engine/tween.js';
 import { TOP } from '../world/islands.js';
+import { t } from '../engine/i18n.js';
 
 const FIELD = V(36, 0, -94);           // the middle of the five sets
 const ORDER = [1, 0, 2, 3, 4];         // the sets as they rise: left to right across the field, back and front in turn
@@ -34,18 +35,24 @@ function fieldBox(P) {
 export function prepare(G) {
   const P = G.planet;
   G.setWorld(P);
-  for (const isl of P.allIslands) { isl.placeRisen(); isl.edges.off(); isl.showArea(false); }
+  for (const isl of P.allIslands) { isl.revealed = false; isl.edges.u.uColor.value.set(0x5cf2ff); isl.placeRisen(); isl.edges.off(); isl.showArea(false); }
   P.clouds.visible = false;
   lit(G, 1);
   if (!G.flow.sea) G.flow.sea = G.audio.loop('sea', { vol: 0.42 });
 }
 export function resetWorld(G) {
   const P = G.planet;
-  for (const isl of P.allIslands) { isl.visible = false; isl.position.y = -2.2; isl.risen = false; isl.setState('idle'); isl.edges.off(); isl.showArea(false); }
+  for (const isl of P.allIslands) { isl.revealed = false; isl.edges.u.uColor.value.set(0x5cf2ff); isl.visible = false; isl.position.y = -2.2; isl.risen = false; isl.setState('idle'); isl.edges.off(); isl.showArea(false); }
   P.clouds.visible = true;
   P.ocean.u.uScan.value.w = 0; lit(G, 0);
   document.getElementById('feed').hidden = true; G.post.fx.feed = 0;
   if (G.flow.sea) { G.flow.sea.stop(0.5); G.flow.sea = null; }
+  stopDrone(G);
+}
+/** the drone's buzz ends with its survey: it used to run on under the learning section (the second review heard it as
+    "the background music in the learning section looking weird") and through every landing */
+export function stopDrone(G, fade = 1.2) {
+  if (G.flow.droneLoop) { G.flow.droneLoop.stop(fade); G.flow.droneLoop = null; }
 }
 /** how lit the night is: 0 = the dark the drone arrives in, 1 = after the scan */
 function lit(G, k) {
@@ -77,15 +84,15 @@ export async function run(s, G, flow) {
   const eye = V(0, 24, 92);
   d.cut({ pos: eye, target: V(0, 3, -40), fov: 58, roll: 0 });
   d.handheld(0.45);
-  let t = 0;
+  let hov = 0;                                          // the drone's hover clock
   const altEl = document.getElementById('fdAlt');
-  d.follow((p, dt) => { t += dt; p.pos.set(eye.x + Math.sin(t * 0.5) * 0.5, eye.y + Math.sin(t * 0.8) * 0.35, eye.z); p.target.set(Math.sin(t * 0.21) * 4, 3, -40); p.fov = 58; p.roll = Math.sin(t * 0.4) * 0.015; altEl.textContent = `ALT ${(eye.y + Math.sin(t * 0.8) * 0.35).toFixed(1)} m`; }, 4);
+  d.follow((p, dt) => { hov += dt; p.pos.set(eye.x + Math.sin(hov * 0.5) * 0.5, eye.y + Math.sin(hov * 0.8) * 0.35, eye.z); p.target.set(Math.sin(hov * 0.21) * 4, 3, -40); p.fov = 58; p.roll = Math.sin(hov * 0.4) * 0.015; altEl.textContent = t('feed.alt', { n: (eye.y + Math.sin(hov * 0.8) * 0.35).toFixed(1) }); }, 4);
   await s.wait(0.9);
   await say(s, G, 's3.dark');
   await say(s, G, 's3.scan', { after: 0 });
   const btn = document.getElementById('btnScan'); btn.hidden = false; btn.classList.add('pulse');
   const offKey = G.input.on_('confirm', () => btn.click()); s.onKill(offKey); s.onKill(() => (btn.hidden = true));
-  let waited = 0; const cap = G.onFrame((dt) => { waited += dt; if (waited > 7) { hud.caption('Press SCAN to start the scanner.', { cool: true }); cap(); } }); s.onKill(cap);
+  let waited = 0; const cap = G.onFrame((dt) => { waited += dt; if (waited > 7) { hud.caption('cap.scan', { cool: true }); cap(); } }); s.onKill(cap);
   if (G.auto) setTimeout(() => btn.click(), 1200);
   await s.event(btn, 'click');
   offKey(); cap(); hud.caption(null); btn.hidden = true;
@@ -95,7 +102,7 @@ export async function run(s, G, flow) {
   /* ---- Screen 4: five sets rise, the camera whipping to each as its three zones come up out of the water */
   d.handheld(0.25);
   // the drone's altimeter follows the camera from here (it climbs high over the field)
-  const alt = G.onFrame(() => { altEl.textContent = `ALT ${G.camera.position.y.toFixed(1)} m`; }); s.onKill(alt);
+  const alt = G.onFrame(() => { altEl.textContent = t('feed.alt', { n: G.camera.position.y.toFixed(1) }); }); s.onKill(alt);
   for (const [n, i] of ORDER.entries()) {
     const site = P.sites[i], c = site.centre, sp = site.spacing, side = n % 2 ? 1 : -1, size = sp * 1.55;
     const cam = c.clone().add(V(side * size * 0.95, size * 0.95, size * 1.75));
@@ -152,6 +159,7 @@ export async function run(s, G, flow) {
   A.play('zone.glow');
   await learnP;
   await s.wait(1.0);
+  stopDrone(G, 1.0);                                   // its feed is off: the drone's work is done
   await fadeOut(G, 1.0);
   d.stop();
   for (const isl of P.allIslands) { isl.setState('idle'); isl.edges.off(); }

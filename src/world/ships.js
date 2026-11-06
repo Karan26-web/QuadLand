@@ -89,9 +89,14 @@ const GLASS = () => new THREE.MeshPhysicalMaterial({ color: 0x46d9ff, roughness:
 
 /* ================================================================== QuadShip */
 // The LXD's review (2026-11-05): from above, nothing may stick out of the ship's shape. So the jets are built into
-// the hull (nozzles set into its back wall, vents glowing on its deck) instead of pods and flames behind it, the canopy
-// is sized to sit inside the outline, and the corner lights are small. Under it, the hover jets fire straight down,
-// inside the outline, so the view from above never sees them.
+// the hull (nozzles set into its back wall, vents glowing on its deck) instead of pods behind it, the canopy is sized
+// to sit inside the outline, and the corner lights are small. Under it, the hover jets fire straight down, inside the
+// outline, so the view from above never sees them.
+// The second review (2026-11-06): the fire must show, though the exhaust pods stay off. So flames come out of the walls,
+// lying flat so the view from above sees them: out of the back nozzles with the engines' thrust, and out of the side
+// facing away from the way the ship moves (it moves right: fire from its left side; it moves up the screen: fire from
+// its back, and the other way round).
+const FIRE = { core: 0xfff3d0, mid: 0xff9a3c, tip: 0xff3ea5 };
 const SIDE_FRAG_UNIFORMS = 'varying float vLy;\nuniform vec3 uTrim; uniform float uTrimK, uTrimY;';
 export class QuadShip extends THREE.Group {
   constructor(shape) {
@@ -162,6 +167,18 @@ export class QuadShip extends THREE.Group {
         this.body.add(v); vents.push(v);
       }
       this.engines.push({ nozzle, vents });
+      this._addFire(mount, 'rear', 0.4, 4.4);                      // the main fire, straight out of the nozzle
+    }
+    // the steering fire: out of the left, right and front walls (the back's is the engines' own)
+    for (const e of this._sideVents(shape.verts)) {
+      const mount = new THREE.Group();
+      mount.position.set(e.at.x + e.n.x * 0.004, midY, -(e.at.y + e.n.y * 0.004));
+      mount.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), new THREE.Vector3(e.n.x, 0, -e.n.y));
+      const vent = honeycombDisc(0.15); vent.material.uniforms.uPower.value = 0.4; mount.add(vent);   // its nozzle, flush in the wall
+      this.body.add(mount);
+      // the flame leaves along the way it pushes (straight left, right or forward), not along a slanted wall's normal
+      const dir = new THREE.Vector3(e.dir.x, 0, -e.dir.y).applyQuaternion(mount.quaternion.clone().invert());
+      this._addFire(mount, e.side, 0.32, 3.4, dir, vent);
     }
 
     // hover jets + legs near each corner (well inside the outline); small beacons on the corners
@@ -191,6 +208,32 @@ export class QuadShip extends THREE.Group {
     this.thrust = 0.15; this.hover = 1; this.legK = 0; this._t = Math.random() * 10;
     this.vel = new THREE.Vector3(); this.tilt = new THREE.Vector2();
     this.bob = 1;
+    this._q = new THREE.Quaternion(); this._lv = new THREE.Vector3();
+  }
+  /** a flame lying flat out of a wall mount (its +z: out of the wall), with a glow at its root. dir: the way it points,
+      in the mount's frame (straight out of the wall if not given) */
+  _addFire(mount, side, radius, length, dir = null, vent = null) {
+    const holder = new THREE.Group();
+    if (dir) holder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir.clone().normalize());
+    const flame = flameCone(radius, flameMaterial(FIRE)); flame.rotation.x = -Math.PI / 2; flame.position.z = 0.04; flame.visible = false;
+    const glow = glowSprite(0xff9a3c, radius * 4.6, 0); glow.position.z = 0.16;
+    holder.add(flame, glow); mount.add(holder);
+    (this.fires || (this.fires = [])).push({ side, flame, glow, vent, len: length, k: 0, seed: Math.random() * 10 });
+  }
+  /** where the steering flames leave: on the walls facing most nearly left, right and forward (two on a long straight
+      wall, one on each of two equal slanted walls, as at the rhombus's points), at the middle of the wall's height */
+  _sideVents(verts) {
+    const n = verts.length, out = [];
+    const normals = verts.map((a, i) => { const b = verts[(i + 1) % n], dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy); return { x: dy / l, y: -dx / l }; });
+    for (const [side, dir] of [['left', { x: -1, y: 0 }], ['right', { x: 1, y: 0 }], ['front', { x: 0, y: 1 }]]) {
+      const dots = normals.map((m) => m.x * dir.x + m.y * dir.y), best = Math.max(...dots);
+      verts.forEach((a, i) => {
+        if (dots[i] < best - 0.05 || dots[i] < 0.3) return;
+        const b = verts[(i + 1) % n], len = Math.hypot(b.x - a.x, b.y - a.y);
+        for (const t of len > 4.2 && dots[i] > 0.9 ? [0.3, 0.7] : [0.5]) out.push({ side, dir, n: normals[i], at: { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t } });
+      });
+    }
+    return out;
   }
   /** the largest canopy (radius r, centre y forward of the middle) whose glass and frame lie inside the outline */
   _fitCanopy(verts, r0, y0) {
@@ -249,6 +292,20 @@ export class QuadShip extends THREE.Group {
       const p = this.hover * (0.85 + 0.15 * Math.sin(this._t * 17 + j.jet.position.x));
       j.flame.material.uniforms.uPower.value = p; j.flame.scale.set(1, 0.3 + p * 1.5, 1);
       j.glow.material.opacity = 0.2 + p * 0.45;
+    }
+    // the fire: the back burns with the engines' thrust and with any push up the screen; a side burns with a push the
+    // other way (the velocity in the ship's own frame: +x its right, -z its front)
+    this.getWorldQuaternion(this._q); this._lv.copy(this.vel).applyQuaternion(this._q.invert());
+    const sx = this._lv.x / 6, sz = this._lv.z / 6;
+    const want = { left: clamp(sx, 0, 1), right: clamp(-sx, 0, 1), front: clamp(sz, 0, 1), rear: Math.max(this.thrust, clamp(-sz, 0, 1)) };
+    for (const f of this.fires) {
+      f.k = damp(f.k, want[f.side], 9, dt);
+      const p = f.k * (0.86 + 0.14 * Math.sin(this._t * 37 + f.seed) * Math.sin(this._t * 23 + f.seed * 3));
+      const u = f.flame.material.uniforms;
+      f.flame.visible = p > 0.03; u.uTime.value = this._t; u.uPower.value = Math.min(1, 0.45 + p * 0.7);
+      f.flame.scale.set(1, 0.35 + p * f.len, 1);
+      f.glow.material.opacity = Math.min(0.6, p * 0.7);
+      if (f.vent) { f.vent.material.uniforms.uTime.value = this._t; f.vent.material.uniforms.uPower.value = 0.35 + p * 0.65; }
     }
     for (const b of this.beacons) {
       b.color.lerp(b.want, 1 - Math.exp(-8 * dt));
@@ -309,8 +366,9 @@ export class CommandShip extends THREE.Group {
     can.scale.set(2.2, 1.2, 4.4); can.position.set(0, 2.0, -11.2); this.add(can);
     this.canopy = can;
 
-    // swept wings
-    const wing = new THREE.Shape(); wing.moveTo(0, 0); wing.lineTo(9.5, -6.5); wing.lineTo(10.6, -9.6); wing.lineTo(1, -8.2); wing.closePath();
+    // swept wings. Each tip ends inside its engine pod, short of the nozzle: it used to reach 1.6 past the pod's back
+    // and cross the glowing nozzle (the LXD's second review: "the piece inside the exhaust jet")
+    const wing = new THREE.Shape(); wing.moveTo(0, 0); wing.lineTo(9.5, -6.5); wing.lineTo(10.6, -7.2); wing.lineTo(1, -8.2); wing.closePath();
     const wgeo = new THREE.ExtrudeGeometry(wing, { depth: 0.5, bevelEnabled: true, bevelThickness: 0.15, bevelSize: 0.2, bevelSegments: 2 });
     wgeo.rotateX(-Math.PI / 2);
     for (const s of [-1, 1]) {

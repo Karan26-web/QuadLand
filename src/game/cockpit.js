@@ -11,6 +11,7 @@ import * as THREE from '../../vendor/three.module.js';
 import { V, say, fx, cleanFx } from './common.js';
 import { Ease, clamp, damp, DEG, smoothstep, lerp } from '../engine/util.js';
 import { tweens } from '../engine/tween.js';
+import { t } from '../engine/i18n.js';
 
 const P0 = new THREE.Vector3(0, 3.0, -12);      // the pilot's eye, in the command ship (space)
 const HOVER = new THREE.Vector3(0, 46, 150);     // where the ship hovers over the sea (the planet)
@@ -86,7 +87,7 @@ export async function run(s, G, flow) {
     if (G.auto) { const pl2 = S.oceanPlanet.position.clone().sub(P0).normalize(); G.input.auto = { x: clamp(-(Math.atan2(-pl2.x, -pl2.z) - look.yaw) * 4, -1, 1), y: clamp((Math.asin(pl2.y) - look.pitch) * 4, -1, 1) }; }
     ck.lockState(a < 3.6 ? 'locked' : a < 9 ? 'near' : 'none');
     const dt = 1 / 60; inside = a < 3.6 ? inside + dt : 0;
-    if (G.input.read().mag === 0) { idle += dt; if (idle > 7 && !hud.captionEl.textContent.startsWith('Drag')) { hud.caption('Drag the joystick to turn the ship toward the planet.'); G.input.demo(true); } } else { idle = 0; }
+    if (G.input.read().mag === 0) { idle += dt; if (idle > 7 && hud.captionKey !== 'cap.steer') { hud.caption('cap.steer'); G.input.demo(true); } } else { idle = 0; }
     return inside > 0.5;
   });
   await sayAlign.catch(() => {});
@@ -94,7 +95,7 @@ export async function run(s, G, flow) {
   hud.caption(null);
   steer = false; G.input.enable(false);
   A.play('ck.lock');
-  ck.lockState('locked'); ck.status('TARGET LOCKED');
+  ck.lockState('locked'); ck.status(t('ck.targetLocked'));
   marker(); ck.marker.hidden = true;
   // settle exactly on it
   const pl = S.oceanPlanet.position.clone().sub(P0).normalize(), ty = Math.atan2(-pl.x, -pl.z), tp = Math.asin(pl.y);
@@ -108,7 +109,7 @@ export async function run(s, G, flow) {
   s.onKill(leverFx);
   let idleL = 0;
   if (G.auto) setTimeout(() => ck._leverTap(), 1200);
-  await s.until(() => { idleL += 1 / 60; if (idleL > 8 && lv < 0.1 && !hud.captionEl.textContent.startsWith('Push')) hud.caption('Push the THRUST lever up. You can also tap it.'); return lv >= 0.995; });
+  await s.until(() => { idleL += 1 / 60; if (idleL > 8 && lv < 0.1 && hud.captionKey !== 'cap.thrust') hud.caption('cap.thrust'); return lv >= 0.995; });
   hud.caption(null);
   leverFx(); ck.leverEnable(false); ck.leverDone(); ck.showReticle(false);
   ck.onLever = null;
@@ -127,7 +128,7 @@ export async function run(s, G, flow) {
   const launchP = ck.showLaunch();
   await say(s, G, 's2.launch', { after: 0 });
   let waited = 0;
-  const idleCap = G.onFrame((dt) => { waited += dt; if (waited > 6) { hud.caption('Press LAUNCH when you are ready.'); idleCap(); } });
+  const idleCap = G.onFrame((dt) => { waited += dt; if (waited > 6) { hud.caption('cap.launch'); idleCap(); } });
   s.onKill(idleCap); s.onKill(() => ck.hideLaunch());
   if (G.auto) setTimeout(() => ck.launch.click(), 1500);
   await s.run(launchP);
@@ -139,7 +140,7 @@ export async function run(s, G, flow) {
 /* -------------------------------------------------------------- the jump */
 async function warp(s, G, { look, dirOf, setFov, getFov, engine }) {
   const S = G.space, d = G.director, A = G.audio, ck = G.ck, f = G.post.fx;
-  ck.status('HYPERDRIVE'); A.play('ck.chatter');
+  ck.status(t('ck.hyperdrive')); A.play('ck.chatter');
   // build-up: the lens draws in, the dust lengthens, the whine climbs
   A.play('warp.charge', { dur: 1.5 });
   const t0 = getFov();
@@ -169,7 +170,7 @@ async function warp(s, G, { look, dirOf, setFov, getFov, engine }) {
   f.zoomBlur = 0; f.ca = 0.003; fx(G, 'ca', 0, 1.2);
   setFov(84); tweens.add({ duration: 1.6, ease: Ease.outBack, onUpdate: (e) => setFov(84 - e * 30) });
   d.trauma = 0.3; A.duckMusic(false); engine.set('power', 0.3, 0.8);
-  ck.status('ORBIT'); ck.speed('0.2'); ck.alt('1200');
+  ck.status(t('ck.orbit')); ck.speed('0.2'); ck.alt('1200');
   await s.wait(1.2);
 }
 
@@ -179,12 +180,12 @@ async function descend(s, G, { look, dirOf, setFov, engine, eye }) {
   const start = S.oceanPlanet.position.clone(), toward = start.clone().sub(P0).normalize(), d0 = start.distanceTo(P0);
   let prog = 0, idle = 0, switched = false, plasma = null, k = 0;
   const startYaw = look.yaw, startPitch = look.pitch;
-  ck.status('DESCENT');
+  ck.status(t('ck.descent'));
   await s.until(() => {
     if (G.auto) ck.held = true;
     const dt = 1 / 60, held = ck.held;
     if (held) { prog = Math.min(1, prog + dt / 5.2); idle = 0; if (!plasma) { plasma = A.loop('plasma', { vol: 0.42 }); s.onKill(() => plasma && plasma.stop(0.3)); } }
-    else { idle += dt; if (idle > 4.5 && !hud.captionEl.textContent.startsWith('Hold')) { hud.caption('Hold DESCEND to fly down.', { cool: true }); ck.descend.classList.add('ready'); } }
+    else { idle += dt; if (idle > 4.5 && hud.captionKey !== 'cap.descend') { hud.caption('cap.descend', { cool: true }); ck.descend.classList.add('ready'); } }
     if (held) hud.caption(null);
     k = damp(k, held ? 1 : 0.35, 3, dt);
     if (!switched) {
@@ -212,7 +213,7 @@ async function descend(s, G, { look, dirOf, setFov, engine, eye }) {
   });
   hud.caption(null); if (G.auto) ck.held = false;
   if (plasma) plasma.stop(1.2); ck.plasmaK(0);
-  ck.status('HOVERING'); A.play('ck.chatter');
+  ck.status(t('ck.hovering')); A.play('ck.chatter');
   engine.set('power', 0.18, 1.2);
   G.audio.music.play('planet', { fade: 3 });
 }

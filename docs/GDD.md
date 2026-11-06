@@ -1,7 +1,7 @@
 # Game Design Document: Spaceship Mission (QuadLand)
 *Skill: area of quadrilaterals. Square = side × side · rectangle = length × width · parallelogram = base × height · rhombus = ½ × d₁ × d₂ · trapezium = ½ × (a + b) × h*
 
-> Written for the LXD and the production team. The game follows the LXD's integrated flow (`docs/spacecraft.docx`, 13 screens) line by line. This document says how each beat is built, what was added on the brief's request (each addition is marked), why the maths is wired the way it is, and what is still open for the LXD. The LXD's review of the build (2026-11-05) is traced line by line in §11.
+> Written for the LXD and the production team. The game follows the LXD's integrated flow (`docs/spacecraft.docx`, 13 screens) line by line. This document says how each beat is built, what was added on the brief's request (each addition is marked), why the maths is wired the way it is, and what is still open for the LXD. The LXD's reviews of the build are traced line by line: the first (2026-11-05) in §11, the second (2026-11-06) in §13.
 
 ## 1. The brief, and how the build answers it
 | Request (2026-10-29) | In the build |
@@ -14,11 +14,12 @@
 | A water planet with living waves, inspired by Interstellar's water planet | A living sea: six Gerstner waves, ripples, foam, subsurface glow, a moon-glitter path, plankton sparkles after the scan. Mountain-sized waves roll on the horizon: they read first as mountains, then you see them move. §6. |
 | Land quad ships on lands that rise from the water | Screens 3–12 (§3). |
 | Optional: a landing simulation like the airplane game's | Used for the trip to the planet: steer, thrust, hold to descend, in the cockpit with the airplane game's guided, unfailable rhythm. The five landings keep the LXD's joystick + GO, so a miss is always a wrong area, never a shaky thumb (§4). |
-| Proper SFX and audio throughout | 56 synthesised cues, 8 live loops and a generative score with 5 moods; temp narration for all 55 lines. Recordings can replace any of them (§7). |
+| Proper SFX and audio throughout | 56 synthesised cues, 8 live loops and a generative score with 6 moods; temp narration for all 51 lines. Recordings can replace any of them (§7). |
 | Asset MD files for GPT | `docs/assets/00-README.md` to `08-voice.md`: 19 picture slots with ready-to-paste prompts and acceptance checks, an audio upgrade list and the voice script. |
 | Fifteen landing zones in five sets (user, 2026-10-30) | The survey raises all fifteen zones: five sets of three, each set one shape in the LXD's three sizes, kept together in its own part of the sea. The field is compact, so the camera ends straight above it with every zone's sides traced in light (Screens 4 and 5). The LXD's Screen 4 says five zones, and Screens 8–12 raise two more islands at each landing; both are superseded. The two Screen 4 lines say "sets" (§10). |
 | A skip for the learning part (user, 2026-11-01) | Skip lesson › on Screen 6, pressed twice (§3, §8). |
 | The team's learning module as Screen 6 (user, 2026-11-02) | The learning section is now the team's own module, *spacecraft landing mission learning* (`learning/`). Swiftee teaches the area of each quadrilateral in it, with its own voice-overs (English and Hindi), practice and tools. The game frames it full-screen and keeps Skip lesson › above it (§3, §4.3). This replaces the Ship AI lesson the build had, and with it the earlier "no Swiftee" decision for this section; the rest of the game is still narrated by the Ship AI. |
+| Five Indian languages, voiced without a paid API (user, 2026-11-06) | English, Hindi, Marathi, Gujarati, Telugu and Odia, picked by `?lan=` like the team's learning module: every word on screen, every spoken line and its subtitle (§12). The narration is rendered on a Mac by open speech models; `voice-lab/` lets the team compare 23 voices and pick one per language. |
 
 ## 2. Learning objective
 Given a quadrilateral's dimensions, the learner chooses the right area rule, computes the area exactly, and understands area as the space a shape covers. A ship fits a zone only when the two areas are equal: not too small, not too big (LXD Screen 5).
@@ -36,32 +37,33 @@ LXD lines are spoken word for word (`assets/vo/lines.json`, `"lxd": true`). The 
 | 5 | Only the sea and the zones; four lines; each zone glows as the camera passes; fade out | A slow, high glide; each set glows as it passes; on the last line the camera rises straight above the field again and all fifteen glow; fade to black | |
 | 6 | The learning section, from the greeting to the last trapezium practice question | **(user)** The team's learning module (`learning/`), framed full-screen: Swiftee's welcome and Start, then its own sections, practice and tools (§4.3). When its last page is done it hands back to the mission. Skip lesson › at the top right ends it at any point: the first press asks ("Press again to skip"), so a stray tap cannot throw the learning away, and Screen 7 then leaves out "Now you know how to find the area…". | The module is the team's own content |
 | 7 | Fade back; two lines; the camera descends toward the first zone | As written | |
-| 8–12 | Per landing: the camera descends; two more islands rise (three sizes); the ship flies in and hovers; the "Here comes…" line; dimension lines; the rule; each island shows its area; the ask; the caption; fly + GO | As written, with every LXD number (§4.1), except that the set's three islands are already up (they rose in the survey: §1). The ship streaks in from the sky; the camera meets it, orbits it, then looks down as the dimensions draw on ("5 units"). The rule is spoken, not shown (§11). Then the camera rises to straight above the set (§4.2) and each island's area appears one by one, written on the island. | The "Drag the joystick…" caption shows on the first landing, and on later ones after 9 s idle |
-| every landing | Controls; 3 hearts; exact / too small / too large with their lines; autopilot when out of hearts; NEXT | All of it (§4.2). **(add.)** The difference made visible, a hint ladder, the drone's rescue. | |
+| 8–12 | Per landing: the camera descends; two more islands rise (three sizes); the ship flies in and hovers; the "Here comes…" line; dimension lines; the rule; each island shows its area; the ask; the caption; fly + GO | As written, with every LXD number (§4.1), except that the set's three islands are already up (they rose in the survey: §1). The ship streaks in from the sky; the camera meets it, orbits it, then looks straight down as the dimensions draw on ("5 units"). The rule is not said here any more: the second review keeps it for the second hint (§13). Then the camera rises to straight above the set (§4.2) and each island's area appears one by one, written on the island. | The "Drag the joystick…" caption shows on the first landing, and on later ones after 9 s idle (unless a hint is up) |
+| every landing | Controls; 3 hearts; exact / too small / too large with their lines; autopilot when out of hearts; NEXT | All of it (§4.2), with the second review's ladder after a miss: the feedback line, the zones change places, the question again, then a hint (the shape, the rule, the working), and at the fourth miss the zone that fits turns green. Four hearts, one per rung; a miss after that brings the autopilot. **(add.)** The difference made visible, the drone's rescue. | |
 | 9 | "Great landings, Commander!…" after landing | Spoken after the rectangle lands | |
-| 13 | Deep space; five ships on their islands with their rules; "Mission complete!", fanfare, confetti; the line; RESTART → Screen 2 | The five floating dioramas in a gentle arc, a sweep along them, the rules popping up beneath; then the title, fanfare and confetti. RESTART goes to the cockpit. | |
+| 13 | Deep space; five ships on their islands with their rules; "Mission complete!", fanfare, confetti; the line; RESTART → Screen 2 | On the water, not in space (the second review: "in the water only, not flying"): the five ships landed on their zones in a gentle arc on a calm sea in the middle of the field, a low sweep along them, the rules popping up beneath; then the title, fanfare and confetti. RESTART (once the last subtitle has gone) goes to the cockpit. | |
 
 ## 4. Learning design
 ### 4.1 The numbers (all from the LXD)
 | Ship | Drawn on it | Rule | Islands (sq units) | Wrong islands are |
 |---|---|---|---|---|
 | Square | side 5, side 5 | side × side | 20 · 30 · **25** | 20 = the perimeter (4 × 5) |
-| Rectangle | length 8, width 4 | length × width | 24 · 40 · **32** | 24 = the perimeter; 40 = 8 × 5 |
-| Parallelogram | base 7, height 5 (right-angle mark), slant side 6 | base × height | 26 · 42 · **35** | 26 = the perimeter; 42 = base × slant side |
+| Rectangle | length 8, width 4 | length × width | 36 · 40 · **32** | 36 and 40 both near 32, so it can't be guessed (the second review: 36, not 24, the perimeter); 40 = 8 × 5 |
+| Parallelogram | base 7, height 5 (right-angle mark), slant side 6 | base × height | 30 · 42 · **35** | 30 = slant side × height (the second review: 30, not 26, the perimeter); 42 = base × slant side |
 | Rhombus | diagonals 6 and 8, side 5 | ½ × d₁ × d₂ | 20 · 30 · **24** | 20 = the perimeter |
 | Trapezium | parallel sides 8 and 12, height 5 | ½ × (a + b) × h | 40 · 60 · **50** | 40 and 60 = one parallel side × h |
 
-On screen each dimension is written as its number with its unit ("5 units", "8 units"), without the name beside it: the drawing shows which length it is (the dashed perpendicular with its right-angle mark is the height; the dashed lines across are the diagonals). The names stay in this table and in the spoken rule (§11).
+On screen each dimension is written as its number with its unit ("5 units", "8 units"), without the name beside it: the drawing shows which length it is (the dashed perpendicular with its right-angle mark is the height; the dashed lines across are the diagonals). The names stay in this table and in the spoken rule (§11). The lines are crisp ink with no glow, and "units" is 0.86 of the number's size (the second review). The rhombus's diagonal numbers sit just past the top and right ends of their dashed lines, outside the ship, and its side is measured on the lower left edge, so its three numbers are spread round it, not crowded on it (§13). A height's number sits low beside its dashed line, under the canopy.
 
-The LXD's distractors are classic misconceptions, so a miss can be named (§4.2). `src/world/shapes.js` checks at load that every ship's polygon really has its area, and that its correct island exists.
+The distractors are classic misconceptions or near misses, so they can't be told apart by eye. `src/world/shapes.js` checks at load that every ship's polygon really has its area, and that its correct island exists.
 
 ### 4.2 Why the landing teaches (and can't be guessed)
 - **The ship's footprint is its shape.** Each hull is built from its exact polygon. An island of another area is the same shape scaled about the same centre, so "fits exactly" is a geometric fact the learner can see after landing.
-- **The playing view is straight down** (the user's request, 2026-11-01). Every island shows its true shape, and none hides another, and its area is written on it. The view holds only this set: the other sets and the ships landed on them step out of the picture, and the sea calms (little foam, no sparkle, no glitter), so nothing else draws the eye (§11). The camera's height and centre are solved each time so the three islands and the waiting ship fill, as large as they can, the part of the screen the HUD leaves free: under the hearts and pause and the tallest caption this landing can show, above the one subtitle line said in this view, clear of the stick and GO. Both are measured at the screen's real size, so no text ever covers a zone. The view holds still while the ship flies. The ship waits in clear water between the back island and the front two (each set is spaced to leave that gap). Its dimensions show only while it is still: as soon as it moves they step away, and they come back when it stops.
+- **The playing view is straight down** (the user's request, 2026-11-01). Every island shows its true shape, and none hides another, and its area is written on it. The view holds only this set: the other sets and the ships landed on them step out of the picture, and the sea calms (little foam, no sparkle, no glitter), so nothing else draws the eye (§11). The camera's height and centre are solved each time so the three islands and the waiting ship fill, as large as they can, the part of the screen the HUD leaves free: under the hearts and pause and the tallest caption this landing can show, above the subtitle lines said in this view (the ask, and the question again after a miss), clear of the stick and GO. All of them are measured at the screen's real size, so no text ever covers a zone. The view holds still while the ship flies. The ship's waiting spot is solved with it (the second review: no text over a zone or the ship): from up there the ship looks bigger than it is and sits further from the middle of the view, and its numbers and its idle fire take room round it, so the spot is chosen where all of that, seen from above, stays clear of every zone, and where the whole picture can be drawn largest. That is the gap in the middle of the set when it is wide enough, and otherwise beside the set on a wide screen (above or below on a tall one). It is solved again after the zones change places. Its dimensions show only while it is still: as soon as it moves they step away, and they come back when it stops. The close view in which they draw on is framed the same way, between the HUD and the subtitle line.
 - **The fit can't be judged by eye before GO.**
   - The ship hovers almost 7 units above the zones. From straight above it is nearer the camera, so it looks bigger than every one of the three islands (about 1.15–1.2×, more than the step between their sizes). No zone matches it by eye; the numbers decide, and on the way down it shrinks onto its island.
   - There is no ship shadow. The ghost under the ship is a small fixed ring that shows only where it would come down.
   - The three islands are dealt into random slots each run. Which island the scanner finds first is random too, so it may be a decoy. The LXD lists the right area last every time, so without the dealing it would always be the same slot.
+  - After every miss the zones change places (the second review): all three go under and come up again, each in another's slot, its number with it. So the next try can't be a guess by position ("not the left one, then the right").
 - **GO only in a landing window, then autopilot.** GO lights only while the ship's centre is over a zone. Pressing it centres and lowers the ship automatically, so a miss is a wrong area, never a shaky thumb.
 - **Each outcome draws its mistake:**
   - *Exact*: four lock beams find the zone's corner beacons and turn green. The last metre is in slow motion, then touchdown, mist and confetti. A tag over the ship confirms the fit with the area, not a formula: "25 sq units ✓".
@@ -69,12 +71,14 @@ The LXD's distractors are classic misconceptions, so a miss can be named (§4.2)
   - *Too large* (LXD: crashes onto the oversized rock): the beams fall short of the corners, so the ship can't lock. The empty rim glows a cool blue, edged with a dashed line, labelled "5 sq units left empty". With nothing to guide it down, the jets cut out and the ship drops: a clang, a boing, sparks and smoke.
 
   The two mistakes are told apart by colour, by pattern (hatched vs dashed), by their words and by their sound (creak and splash vs clang and boing), never by colour alone.
-- **A heart cracks and the ship comes back.** After too small, the drone tows the dripping ship out on a tractor beam; after too large, the ship lifts off the rock, wobbling. It returns to its waiting spot in the clear water, ready for the next try.
-- **The hint ladder (add.):**
-  - 1st miss: the idea behind that exact mistake, spoken and shown in the hint caption (once: not again as a subtitle), without the answer. For example: "20 is the distance all the way around the ship. Area is the space it covers: side times side." The caption stays up while the learner tries again.
-  - 2nd miss: the working, spoken and in the caption ("Here's a hint. Work out 5 times 5."), and the dimension tags turn amber. No formula on screen.
-  - Out of hearts: the LXD's autopilot, its caption shown and spoken.
-- **Three hearts per landing**, refilled on each new one (LXD).
+- **A heart cracks and the ship comes back.** After too small, the drone tows the dripping ship out on a tractor beam; after too large, the ship lifts off the rock, wobbling. It returns to its waiting spot, ready for the next try.
+- **After a miss: the LXD's ladder** (the second review, 2026-11-06; the same for every ship). The feedback line ("This landing zone is too small…" or "…too large…"); the ship comes back; the zones change places; the question again ("Choose the landing zone with the exact area."); then the rung, spoken and shown in the hint caption (once: not again as a subtitle), which stays up while the learner tries again:
+  - 1st miss: the shape. "Look closely! The spacecraft is square shaped." (The LXD's line for the square; the others follow it: "…rectangle shaped.", "…parallelogram shaped.", …)
+  - 2nd miss: the rule. "Its area is side times side." (the LXD's own rule lines, which are no longer said before the first try)
+  - 3rd miss: the working with the numbers. "Here, multiply 5 with 5." (the LXD's line; the others: "multiply 8 with 4", "multiply 7 with 5", "multiply 6 with 8, then take half", "add 8 and 12, multiply the sum with 5, then take half")
+  - 4th miss: the zone that fits turns green and is lit up: its rim, pad and number go green, its sides trace on in green and beat every 1.4 s, and **(add.)** the caption says "The green landing zone fits exactly. Land the spaceship there!"
+  - A miss even then: the autopilot lands it on the green zone, its caption shown and spoken (the LXD's first flow, out of hearts).
+- **Four hearts per landing**, one for each rung of the ladder, refilled on each new one: each miss cracks one, and the miss that cracks the last lights the green zone. The LXD's flow had three hearts and the autopilot when they ran out; the second review's ladder has four rungs, so with three the hearts would be gone before its last rung. The autopilot now comes only after a miss on the green zone (§10).
 
 ### 4.3 The lesson (Screen 6)
 The learning section is the team's module *spacecraft landing mission learning*, kept as delivered in `learning/` (its own page, styles, scripts, GSAP, voice-overs in English and Hindi, Swiftee's sprite sheets). Swiftee welcomes the learner (Start), warms up with shape names and their area formulas, then works through the quadrilateral split into two triangles, the parallelogram, the rhombus and the trapezium, each with practice. The module has its own tools along its bottom edge: a section menu, Back, Skip (one page), Sound and Replay.
@@ -83,7 +87,7 @@ How the game frames it (`src/game/lesson.js`):
 - An iframe over the whole screen, created when Screen 6 begins, so the module loads only then. Its page keeps its own styles and scripts, so nothing of it can touch the game's.
 - **The hand-off:** when its last page (the third trapezium practice) is done, it posts `learning:done` to the game, and the mission carries on to Screen 7. This is the one line the game adds to the module (`learning/js/script.js`).
 - **Skip lesson ›** stays at the top right, above the module (two presses). Skipping takes the frame out of the page, which also silences it.
-- While it plays, the 3D world stops drawing and the game's music and sea fade: the module has its own sound.
+- While it plays, the 3D world stops drawing and every loop of the mission stops. The drone's buzz used to run on under the module (it was never stopped after the survey), which the second review heard as "the background music in the learning section looking weird". Now a music bed made for the section plays low under the module's voice instead: the score's *lesson* mood, slow and warm (F major, soft pads, a music box now and then, a quiet bass, no drums), at a little over half the music's level. The module's own Sound off button silences it too.
 - Language: English by default; the module reads `?lan=hi` for Hindi if its page is opened with it.
 
 ## 5. The camera language
@@ -106,7 +110,7 @@ How the game frames it (`src/game/lesson.js`):
 | Drone | Hovering handheld; when the zones rise, a whip to each, then a crane up over the field |
 | Survey glides | A low banked loop through the field; then a slow, high crane glide |
 | Landings | Descend to the zone; whip to the sky to meet the ship; track it in; a hero orbit; overhead for the dimensions; pull back to play; a gentle follow while flying; a low swinging landing orbit; slow motion on touchdown; a low hero orbit after an exact landing; up and over to the next zone |
-| Finale | A banked sweep along the five dioramas, rising to see them all; a slow orbit |
+| Finale | A low banked sweep across the sea along the five landed ships, rising to see them all; a slow orbit |
 
 ## 6. World and rendering
 - **The sea** (`src/world/ocean.js`):
@@ -124,8 +128,8 @@ How the game frames it (`src/game/lesson.js`):
 `src/engine/audio.js`:
 - **Buses:** SFX, music, ambience and voice, through a limiter, plus a generated reverb.
 - **56 one-shot cues.** Every learner-facing event has a sound, and each outcome has its own sound family.
-- **8 live loops** that follow the game: the engine with the thrust lever, the hover jets with the ship's speed, the warp tunnel, re-entry plasma, the sea, the drone, the tractor beam.
-- **A generative score**, one mood per part: title, cockpit, planet, landing, complete. The learning module has its own sound, so the music fades for it.
+- **8 live loops** that follow the game: the engine with the thrust lever, the hover jets with the ship's speed, the warp tunnel, re-entry plasma, the sea, the drone (from its launch to the end of its survey), the tractor beam.
+- **A generative score**, one mood per part: title, cockpit, planet, lesson (a quiet bed under the learning module, §4.3), landing, complete.
 - **The narrator ducks the music.**
 - **Recorded overrides:** any cue or mood can be replaced by a recording (`docs/assets/07-audio.md`).
 - **Temp narration:** all 55 lines, so every device sounds the same and the waveform is the real voice.
@@ -137,23 +141,27 @@ How the game frames it (`src/game/lesson.js`):
 - **The cockpit** follows the user's cockpit reference image. A cut-corner window sits in a layered navy frame with a lilac rim, cyan and violet light strips and breathing status lights. The console holds three modules: SPEED and the THRUST lever; the Ship AI's screen with its grid and waveform; ALTITUDE and a sweeping radar socket that DESCEND and LAUNCH rise into. Frame and console are vector shapes drawn at the screen's real size (`src/ui/cockpitUI.js`), so the bezels wrap the instruments at every aspect ratio, and the painted cockpit (02-cockpit.md) can replace them.
 - **Layouts:** landscape tablets first, laptops, short phones (compact cockpit, lever and keypad sizes), portrait (wider lenses; on a narrow phone the cockpit's screen sits above the lever and the socket).
 - **Pause:** Esc or ⏸ (resume, sound, subtitles, restart). A hidden tab pauses the audio.
-- **Skip:** on the intro (one press), and on the lesson (the user's request, 2026-11-01): press, then press again within 3 s. The landings stay fully playable after a skip: each one says its rule.
+- **Skip:** on the intro (one press), and on the lesson (the user's request, 2026-11-01): press, then press again within 3 s. The landings stay playable after a skip: the dimensions are drawn on every ship, and a learner who misses gets the rule as the second hint (§10).
 
 ## 9. QA
 `playtest/mission.py` plays the whole mission with the autoplayer on the GPU (about 9 minutes at `--fast 1.6`), screenshots every phase and fails on any page error. `?plan=` drives every landing outcome, including running out of hearts.
 
-The last full run (2026-10-29) passed every phase, through the autopilot and RESTART, with no errors.
+The last full run (2026-10-29) passed every phase, through the autopilot and RESTART, with no errors. After the second review (2026-11-06): every landing in English at 1366 × 638, the full ladder (four misses, then the green zone) on the square in English and on the trapezium in Telugu, five misses (the autopilot) in Gujarati, the finale at three screen shapes, and the sound under the learning module checked in the page (no loop running, the bed muted by the module's Sound off), all with no page error.
 
 ## 10. Open questions for the LXD
-1. **The hint ladder** after a landing miss (the idea, then the working) is an addition, in the spirit of the earlier LXD reviews. Since the 2026-11-05 review, no formula is shown: the second rung says the working and shows it in the caption ("Work out 5 times 5"). Is that right?
-2. **"Click the LAUNCH button"**: the game is played on tablets. Should it be "Tap"?
-3. **The SCAN button**: "Start the scanner to search the area" reads as an instruction, so the learner presses SCAN. Is that intended, or should the scan start by itself?
-4. **The trip to the planet** (steer, thrust, descend) adds five short lines before "We need to find a safe place for it to land" (`s2.planet` … `s2.descend`).
-5. **Too large = "crashes onto the oversized rock"**: interpreted as no corner lock, so no guided landing, so a hard drop and a bounce. Does that read right for the age group?
-6. **Island order**: the LXD lists the correct area last in every set. The build deals positions randomly (§4.2). Is that acceptable?
-7. **Swiftee** appears in the learning section only (the team's module, §4.3); the rest of the game is narrated by the Ship AI.
-8. **Fifteen zones from the start** (the user's instruction, §1): every shape's three islands rise in the survey, so Screens 8–12 no longer raise "two more islands". The two Screen 4 lines now say "Great! The scanner found five sets of landing zones." and "Look! Each set of landing zones has a different shape." Is that wording right?
-9. **"Zoom out the landing zones and spacecraft, so that the user can focus more on it"** (the 2026-11-05 review) is read as *make them bigger on screen*, since its purpose is focus: the playing view now holds just the set and frames it as large as the screen allows. If "zoom out" meant showing more of the field, say so.
+1. **Four hearts** (§4.2): the second review's ladder has four rungs, so each landing now has four hearts, one per rung, and the autopilot comes only after a miss on the green zone. Or should it stay at three hearts, with no heart lost at the fourth miss?
+2. **The ladder's lines for the other ships** follow the review's square lines: "Look closely! The spacecraft is rectangle shaped." (and parallelogram, rhombus, trapezium), "Here, multiply 8 with 4." / "7 with 5", and for the two with a half: "Here, multiply 6 with 8, then take half." and "Here, add 8 and 12, multiply the sum with 5, then take half." Is that wording right?
+3. **The green zone's line** ("The green landing zone fits exactly. Land the spaceship there!") is an addition, so the learner knows why one zone turned green. Keep it?
+4. **The rule before the first try**: it is no longer said there (the review's first point), so a learner who skipped the lesson meets the rule only as the second hint. Is that intended?
+5. **How the zones change places**: all three go under and come up in new slots (§4.2), rather than sliding across the water, so they never pass under the ship or out of the view. Is that clear enough as a "shuffle"?
+6. **"Click the LAUNCH button"**: the game is played on tablets. Should it be "Tap"?
+7. **The SCAN button**: "Start the scanner to search the area" reads as an instruction, so the learner presses SCAN. Is that intended, or should the scan start by itself?
+8. **The trip to the planet** (steer, thrust, descend) adds five short lines before "We need to find a safe place for it to land" (`s2.planet` … `s2.descend`).
+9. **Too large = "crashes onto the oversized rock"**: interpreted as no corner lock, so no guided landing, so a hard drop and a bounce. Does that read right for the age group?
+10. **Island order**: the LXD lists the correct area last in every set. The build deals positions randomly, and changes them after every miss (§4.2). Is that acceptable?
+11. **Swiftee** appears in the learning section only (the team's module, §4.3); the rest of the game is narrated by the Ship AI.
+12. **Fifteen zones from the start** (the user's instruction, §1): every shape's three islands rise in the survey, so Screens 8–12 no longer raise "two more islands". The two Screen 4 lines now say "Great! The scanner found five sets of landing zones." and "Look! Each set of landing zones has a different shape." Is that wording right?
+13. **"Zoom out the landing zones and spacecraft, so that the user can focus more on it"** (the 2026-11-05 review) is read as *make them bigger on screen*, since its purpose is focus: the playing view now holds just the set and frames it as large as the screen allows. If "zoom out" meant showing more of the field, say so.
 
 ## 11. The LXD's review, 2026-11-05 (`spacecraftFeedbacks.pdf`)
 Every line of the review, and what answers it in the build.
@@ -172,3 +180,50 @@ Every line of the review, and what answers it in the build.
 | The glowing sides spread too much: thin, like the side of the shape | The sides are drawn as a thin, sharp line on the exact outline with only a faint glow hugging it, never under about two pixels so they still read from high above (the survey). |
 | "Zoom out the landing zones and spacecraft, so that the user can focus more on it" | Read as *make them bigger*: the playing view holds just the set and is framed as large as the free screen allows, now that the area tags and the formula chip no longer take room (§10, question 9). |
 | Show the dimensions only when the ship is not moving | They step away as soon as the ship moves and come back when it stops. |
+
+## 12. Languages (2026-11-06)
+The game plays in English, Hindi, Marathi, Gujarati, Telugu and Odia. The URL picks one, with the learning module's
+codes so one link works for both: `?lan=hi|mr|gu|te|od` (`or` and `?lang=` work too; anything else is English).
+
+| | In the build |
+|---|---|
+| Words | Every string is in `assets/i18n/strings.json` (115 keys per language, 51 of them the Ship AI's lines). The maths words are the learning module's, so a learner meets one word per idea in both (वर्ग, समांतर चतुर्भुज, क्षेत्रफल…); the register is its polite form (आप, तुम्ही, તમે, మీరు, ଆପଣ). |
+| Numbers | Western digits on screen in every language, as the module and NCERT books write them. The narration says them in words. |
+| Rules | Spoken in natural phrasing ("half the product of the two diagonals"), not symbol by symbol; Screen 13's cards keep `½ × d₁ × d₂` and `(a + b)` as the module writes them. |
+| Fonts | Baloo, one design per script, in the game's weights; Indian scripts drop the letter-spacing (it breaks the joined letters), the titles stand upright with room for the marks. |
+| On the zones | The area painted on each zone uses the language's font; its unit (చదరపు యూనిట్లు is three times "sq units") is sized by the number, so the number stays big. On a long, low pad (the rectangle's, the trapezium's) the number and its unit share one line when that draws them larger. |
+| Voice | 51 lines per language, rendered offline: AI4Bharat Indic-TTS female voices for Hindi, Gujarati, Telugu and Odia (MIT), SYSPIN's female voice for Marathi (CC-BY-4.0: credit "SYSPIN, IISc Bangalore and ARTPARK"). A speech recogniser heard 89-93% of each language's narration exactly as written (Hindi 93%, Marathi 92%, Gujarati, Telugu and Odia 89-90%); the second review's eleven new hint lines all came back within 25% in every language (the hardest: Gujarati "…trapezium shaped" at 23%, Telugu's rhombus working at 22%). |
+| Hints | Shown once, in the caption, and spoken without a second copy as a subtitle (as in English). |
+
+Open for the team:
+1. **Review the translations.** They are a careful first pass, written to the module's glossary; a native speaker who
+   teaches maths should read each language, and play one mission in it.
+2. **Pick the voices.** `voice-lab/index.html` (and the published showcase) has 23 voices; the choice is one line in
+   `assets/vo/voices.json`, then `python3 tools/make_vo.py --lang <code>`.
+3. **Listen to these lines,** which the recogniser flagged (mostly short exclamations, where one slip is a large
+   share of the line): Gujarati `s9.here`, `o.success`, `h.look.tr`; Telugu `s9.here`-`s12.here`, `h.calc.rh`;
+   Odia `s8.here`, `s10.here`-`s12.here`, `s2.locked`.
+4. **Digits in Marathi and Gujarati:** some state-board books print native digits (१२, ૧૨). The game uses 0-9
+   everywhere; say if a language should change.
+5. **The learning module's welcome picture** has "Area of Quadrilaterals" painted into it
+   (`learning/assets/image/welcome-page.*`), so its start screen keeps an English title in every language while its
+   buttons and lesson are translated. The module's owners would need a picture per language, or a text title from its
+   own `pageTitle` string.
+
+## 13. The LXD's second review, 2026-11-06 (`spacecraftFeedbacks2.pdf`)
+Every point of the review, and what answers it in the build.
+
+| Review | In the build |
+|---|---|
+| The highlighted piece should not be inside the exhaust jet: remove it (the command ship, on the title, in the intro and from behind) | It was the end of each swept wing: it ran on 1.6 units past the side pods' backs and crossed their glowing nozzles. Each wing now ends inside its pod, short of the nozzle (`ships.js`), so the nozzles are clear from every angle. |
+| The exhaust fire should be visible in the spacecraft: the jet can stay removed, the fire should not be | The quad ships' fire is back without the pods: flames come out of the nozzles set into their back walls, lying flat so the view from above sees them, as long as the engines' thrust. In the intro's view from above, each of the five trails its fire. |
+| The background music in the learning section sounds weird: change it | The "music" was the survey drone's buzz, which was never stopped and ran on under the module. It now stops when the drone's feed goes off, and the section has its own quiet music bed, which the module's Sound off silences too (§4.3). |
+| Don't write "Its area is side times side" up front; after a wrong landing: the feedback, shuffle the zones, ask again; hints "Look closely! The spacecraft is square shaped.", then "Its area is side times side.", then "Here, multiply 5 with 5."; then make the right zone green and highlight it; shuffle positions (not numbers) after every miss; for all the ships | The ladder in §4.2, for all five ships: the rule is no longer said before the first try; each miss gives the feedback line, the zones go under and come up in new places with their own numbers, the question again, then the next rung in the hint caption (spoken, shown once). The fourth miss turns the zone that fits green, lit and beating. Four hearts, one per rung (§10). |
+| Make sure the text does not overlap the zones or the ship | The ship's waiting spot is solved from what is seen from above (the ship looks bigger than it is up there, its numbers and fire take room), so it is always clear of every zone; the playing view is framed under the tallest hint and above the subtitles; the close view where the dimensions draw on is framed between the HUD and the subtitle line (in the review's picture the rule's subtitle covered a number); a height's number sits under the canopy, not on it. |
+| The fire is missing; joystick right: fire from the left side, and the other way; joystick up: fire from below, and the other way | Each ship has steering fire on its left, right and front walls as well as its back. The side facing away from the way it moves burns, as strongly as it moves: right → the left wall's fire, left → the right's, up the screen → the back's, down → the front's. At rest, the back burns low. |
+| The glow is too much for labelling: reduce it | The dimension lines are crisp ink like the ship's sides, under the bloom (they were bright additive light), and the number tags lost their glow. |
+| Make "units" a little bigger | On the ship's numbers "units" is 0.86 of the number's size (it was 0.66), and on the zones "sq units" is 0.42 (it was 0.33). On a long, low zone the number and "sq units" share one line, so both are larger; on the tags over the ship, "sq units" is bigger too. |
+| Rectangle: 36 sq units instead of 24, so it can't be guessed | The rectangle's zones are 36 · 40 · 32 (§4.1). |
+| Parallelogram: 30 sq units instead of 26 | The parallelogram's zones are 30 · 42 · 35 (§4.1). |
+| The rhombus with its dimensions looks crowded: adjust them | Its two diagonal numbers sit just past the ends of their dashed lines (above the top point, right of the right point), outside the ship, and the side is measured on the lower left edge, so the three numbers are spread round it. |
+| The last screen should be in the water only, not flying | Screen 13 plays on the water planet: the five ships, each landed on its zone, stand in an arc on a calm sea, with the rules beneath them (§3). |

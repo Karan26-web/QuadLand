@@ -1,6 +1,6 @@
 # 07 · Sound effects and music (optional upgrades)
 
-The game already has a full sound design, synthesised live by `src/engine/audio.js`: 56 cues, 8 continuous loops and a generative score with 5 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
+The game already has a full sound design, synthesised live by `src/engine/audio.js`: 56 cues, 8 continuous loops and a generative score with 6 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
 
 **To install a recording:**
 1. Save it as `assets/sfx/<anything>.m4a` (AAC, which plays in every browser including iPad Safari), or `.mp3`.
@@ -82,6 +82,7 @@ Each mood should loop seamlessly, last 60 to 120 s, and stay quiet under narrati
 | `title` | Screen 1, the intro | wondrous slow space-adventure theme for kids, warm synth pads, twinkling bells, Lydian, 64 bpm, cinematic but gentle, instrumental, seamless loop |
 | `cockpit` | Screen 2 | light mission-briefing theme, soft pulsing synth arpeggio, warm pads, curious and hopeful, 84 bpm, instrumental loop |
 | `planet` | Screens 3–5 | mysterious calm night ocean, deep drones, distant whale-like synth glides, sparse bells, 56 bpm, instrumental loop |
+| `lesson` | Screen 6, under the learning module (quiet: the module's own voice-overs play over it; its Sound off silences it) | gentle warm learning background music for kids, soft felt piano and pads, light music-box bells, no drums, F major, 66 bpm, calm and focused, very soft, instrumental, seamless loop |
 | `landing` | Screens 7–12 | upbeat light space-adventure groove, plucky synth, soft percussion, hopeful, 96 bpm, instrumental loop |
 | `complete` | Screen 13 | triumphant celebration theme for kids, brass-like synths, timpani, bright major key, 100 bpm, 40 seconds |
 

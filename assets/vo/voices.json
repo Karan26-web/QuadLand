@@ -1,0 +1,11 @@
+{
+  "about": "The Ship AI's voice in each language: a voice id from voice-lab/voices.json (English: a macOS voice name). Listen in voice-lab/index.html, change a line here, then run python3 tools/make_vo.py --lang <code>. Marathi is SYSPIN's female voice (the clearest Marathi voice; CC-BY-4.0: credit 'SYSPIN, IISc Bangalore and ARTPARK').",
+  "narrator": {
+    "en": "Samantha",
+    "hi": "hi-indic-female",
+    "mr": "mr-syspin-female",
+    "gu": "gu-indic-female",
+    "te": "te-indic-female",
+    "od": "od-indic-female"
+  }
+}

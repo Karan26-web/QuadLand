@@ -1,0 +1,299 @@
+<title>__PROJECT__ Voice Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,400..800&family=Anek+Devanagari:wght@400..700&family=Anek+Gujarati:wght@400..700&family=Anek+Telugu:wght@400..700&family=Anek+Odia:wght@400..700&display=swap">
+<style>
+/* Layout: one language at a time. Pick a line, then listen down a grid of voice cards; picks and where the voices
+   come from sit below. Dark-first: the game's night sky. */
+:root {
+  --bg: #0c0a22; --panel: #151236; --panel-2: #1c1845; --ink: #efedff; --muted: #a29dc9; --line: #2e2966;
+  --listen: #5ce1f5; --listen-ink: #04202a; --pick: #ffb547; --pick-ink: #2a1600;
+  --ok: #46d993; --warn: #ffb547; --no: #ff6b86; --wave: #3b3680;
+  --display: 'Anek Latin', 'Trebuchet MS', system-ui, sans-serif;
+  --body: 'Anek Latin', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #f3f2fa; --panel: #ffffff; --panel-2: #f0eef9; --ink: #1a1638; --muted: #5d5884; --line: #dcd8ef;
+  --listen: #0b7f99; --listen-ink: #ffffff; --pick: #c26d00; --pick-ink: #ffffff;
+  --ok: #17835a; --warn: #a65d00; --no: #c0304d; --wave: #cfcaea; color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #f3f2fa; --panel: #ffffff; --panel-2: #f0eef9; --ink: #1a1638; --muted: #5d5884; --line: #dcd8ef;
+  --listen: #0b7f99; --listen-ink: #ffffff; --pick: #c26d00; --pick-ink: #ffffff;
+  --ok: #17835a; --warn: #a65d00; --no: #c0304d; --wave: #cfcaea; color-scheme: light; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+:lang(hi), :lang(mr) { font-family: 'Anek Devanagari', var(--body); }
+:lang(gu) { font-family: 'Anek Gujarati', var(--body); }
+:lang(te) { font-family: 'Anek Telugu', var(--body); }
+:lang(or) { font-family: 'Anek Odia', var(--body); }
+h1, h2 { font-family: var(--display); font-stretch: 118%; font-weight: 800; letter-spacing: 0.005em; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.05; }
+h2 { font-size: 22px; }
+p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--listen); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+
+/* header */
+header { display: grid; gap: 12px; }
+header .lede { max-width: 62ch; font-size: 18px; color: var(--muted); }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--display); font-stretch: 110%; font-variant-numeric: tabular-nums; }
+.stats b { font-size: 22px; font-weight: 800; }
+.stats span { color: var(--muted); font-size: 14px; margin-left: 4px; }
+
+/* language tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+.tab { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 8px 16px 9px; display: flex; gap: 8px; align-items: baseline; }
+.tab .native { font-size: 18px; font-weight: 600; }
+.tab .en { font-size: 13px; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tab[aria-selected="true"] .en { color: var(--bg); opacity: 0.75; }
+
+/* the line being compared */
+.linebar { display: grid; gap: 12px; }
+.lines { display: flex; flex-wrap: wrap; gap: 6px; }
+.lines button { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 6px 12px; font-size: 14px; color: var(--muted); }
+.lines button[aria-pressed="true"] { border-color: var(--listen); color: var(--ink); background: var(--panel-2); }
+.said { display: grid; gap: 4px; padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+.said .native { font-size: clamp(19px, 2.4vw, 24px); line-height: 1.45; }
+.said .gloss { font-size: 14px; color: var(--muted); }
+.rowtools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.playall { border: 0; border-radius: 999px; padding: 9px 18px; background: var(--listen); color: var(--listen-ink); font-weight: 700; }
+.legend { font-size: 13px; color: var(--muted); }
+
+/* voice cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 12px; align-content: start; min-width: 0; transition: border-color 0.2s, box-shadow 0.2s; }
+.card.playing { border-color: var(--listen); box-shadow: 0 0 0 1px var(--listen); }
+.card.picked { border-color: var(--pick); }
+.card-top { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+.card h3 { margin: 0; font-family: var(--display); font-stretch: 112%; font-size: 19px; font-weight: 800; }
+.card .eng { font-size: 13px; color: var(--muted); }
+.id { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.pickbtn { flex: none; border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.pickbtn[aria-pressed="true"] { background: var(--pick); border-color: var(--pick); color: var(--pick-ink); }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-weight: 600; border-radius: 6px; padding: 3px 8px; border: 1px solid var(--line); color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, transparent); }
+.chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+.chip.no { color: var(--no); border-color: color-mix(in srgb, var(--no) 45%, transparent); }
+.player { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+.play { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--listen); color: var(--listen-ink); display: grid; place-items: center; }
+.play svg { width: 18px; height: 18px; }
+canvas.wave { width: 100%; height: 40px; display: block; }
+.dur { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.clarity { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+.meter { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--ok); }
+
+/* picks */
+.picks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+.picks ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.picks li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed var(--line); padding-bottom: 6px; }
+.picks li span:last-child { font-family: var(--mono); font-size: 13px; }
+.picks pre { margin: 0; padding: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; font-family: var(--mono); font-size: 12.5px; overflow-x: auto; }
+.copy { justify-self: start; border: 1px solid var(--line); background: var(--panel-2); border-radius: 8px; padding: 7px 14px; font-size: 14px; font-weight: 700; }
+@media (max-width: 760px) { .picks { grid-template-columns: minmax(0, 1fr); } }
+
+/* where they come from */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--panel); }
+tr:last-child td { border-bottom: 0; }
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.how > div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.how code { font-family: var(--mono); font-size: 12.5px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; display: block; overflow-x: auto; white-space: pre; }
+footer { font-size: 13px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">__PROJECT__ · narration</div>
+    <h1>Voice Lab</h1>
+    <p class="lede">__NARRATOR__ in Hindi, Marathi, Gujarati, Telugu and Odia, spoken by open speech models running on a Mac. No cloud API and no per-word bill: pick a line, listen down the voices, and star the one you want for each language.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Language"></nav>
+
+  <section class="linebar" aria-label="The line to compare">
+    <div class="lines" id="lines"></div>
+    <div class="said" id="said"></div>
+    <div class="rowtools">
+      <button class="playall" id="playall" type="button">Play this line in every voice</button>
+      <span class="legend">Clarity: how much of the line a speech recogniser heard exactly as written. Pitch: the voice's measured fundamental.</span>
+    </div>
+  </section>
+
+  <section class="grid" id="grid" aria-label="Voices"></section>
+
+  <section aria-labelledby="picks-h" style="display:grid;gap:12px">
+    <h2 id="picks-h">Your picks</h2>
+    <div class="picks">
+      <div style="display:grid;gap:10px;align-content:start">
+        <ul id="picklist"></ul>
+        <p class="muted" style="font-size:14px">Picks stay in this browser. Paste the config into <span class="id">assets/vo/voices.json</span> and run <span class="id">python3 tools/make_vo.py --lang all</span> to voice the whole game.</p>
+      </div>
+      <div style="display:grid;gap:10px;min-width:0">
+        <pre id="config"></pre>
+        <button class="copy" id="copy" type="button">Copy config</button>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="src-h" style="display:grid;gap:12px">
+    <h2 id="src-h">Where the voices come from</h2>
+    <div class="tablewrap"><table><thead><tr><th>Engine</th><th>Model</th><th>Licence</th><th>In a product</th><th>Credit</th></tr></thead><tbody id="engines"></tbody></table></div>
+    <div class="how">
+      <div><div class="eyebrow">Make a line</div><p>Any text, any voice in the catalogue:</p><code>cd voice-lab
+.venv/bin/python lab.py say gu-indic-female \
+  "સ્વાગત છે!" -o hello.m4a</code></div>
+      <div><div class="eyebrow">Voice the game</div><p>Every line of the game in one language, with the narrator chosen in the config:</p><code>python3 tools/make_vo.py --lang gu</code></div>
+      <div><div class="eyebrow">Ten more voices</div><p id="lockednote"></p></div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (id) => document.getElementById(id);
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const htmlLang = Object.fromEntries(DATA.languages.map((l) => [l.code, l.html]));
+const state = { lang: DATA.languages[0].code, line: DATA.lines[0].key, picks: store.get('voicelab.picks', {}), playing: null };
+const audio = new Audio(); audio.preload = 'auto';
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>';
+const PAUSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4.5v16H6zM13.5 4H18v16h-4.5z" fill="currentColor"/></svg>';
+
+function licence(engine) {
+  const e = DATA.engines[engine], c = (e.commercial || '').toLowerCase();
+  const cls = c.startsWith('yes') ? 'ok' : c.includes('prototype') ? 'warn' : 'no';
+  const text = c.startsWith('yes, with') ? 'Commercial use OK, with credit' : c.startsWith('yes') ? 'Commercial use OK' : c.includes('prototype') ? 'Prototype only' : 'Non-commercial only';
+  return `<span class="chip ${cls}" title="${e.licence}">${text} · ${e.licence}</span>`;
+}
+function voiceFacts(v) {
+  const g = v.sounds && v.sounds !== v.model_gender ? `Pitch in the ${v.sounds} range (model says ${v.model_gender})` : `${(v.sounds || v.model_gender).replace(/^./, (c) => c.toUpperCase())} voice`;
+  return `<span class="chip">${g}${v.pitch ? ` · ${v.pitch} Hz` : ''}</span>${licence(v.engine)}`;
+}
+
+function renderStats() {
+  const clips = DATA.voices.reduce((n, v) => n + Object.keys(v.clips).length, 0);
+  $('stats').innerHTML = [[DATA.voices.length, 'voices'], [DATA.languages.length, 'languages'], [clips, 'clips'], [0, 'cloud API calls']]
+    .map(([n, w]) => `<div><b>${n}</b><span>${w}</span></div>`).join('');
+}
+function renderTabs() {
+  $('tabs').innerHTML = DATA.languages.map((l) => {
+    const n = DATA.voices.filter((v) => v.lang === l.code).length;
+    return `<button class="tab" role="tab" type="button" id="tab-${l.code}" aria-selected="${l.code === state.lang}" data-lang="${l.code}"><span class="native" lang="${l.html}">${l.native}</span><span class="en">${l.name} · ${n}</span></button>`;
+  }).join('');
+}
+function renderLine() {
+  $('lines').innerHTML = DATA.lines.map((ln) => `<button type="button" aria-pressed="${ln.key === state.line}" data-line="${ln.key}">${ln.label}</button>`).join('');
+  const ln = DATA.lines.find((x) => x.key === state.line);
+  $('said').innerHTML = `<div class="native" lang="${htmlLang[state.lang]}">${ln.text[state.lang]}</div><div class="gloss">${ln.en}</div>`;
+}
+function renderGrid() {
+  const vs = DATA.voices.filter((v) => v.lang === state.lang);
+  $('grid').innerHTML = vs.map((v) => {
+    const clip = v.clips[state.line], picked = state.picks[state.lang] === v.id;
+    const clar = v.clarity == null ? '' : `<div class="clarity"><span>Clarity</span><span class="meter"><i style="width:${Math.round(v.clarity * 100)}%"></i></span><span>${Math.round(v.clarity * 100)}%</span></div>`;
+    return `<article class="card${picked ? ' picked' : ''}" id="card-${v.id}">
+      <div class="card-top"><div><h3>${v.label}</h3><div class="eng">${DATA.engines[v.engine].name}</div></div>
+        <button class="pickbtn" type="button" aria-pressed="${picked}" data-pick="${v.id}">${picked ? '★ Picked' : '☆ Pick'}</button></div>
+      <div class="facts">${voiceFacts(v)}</div>
+      <div class="player"><button class="play" type="button" data-play="${v.id}" aria-label="Play ${v.label}">${PLAY}</button>
+        <canvas class="wave" data-wave="${v.id}" aria-hidden="true"></canvas><span class="dur">${clip ? clip.dur.toFixed(1) + ' s' : ''}</span></div>
+      ${clar}<div class="id">${v.id}</div></article>`;
+  }).join('');
+  drawWaves();
+}
+function drawWave(v, progress = 0) {
+  const cv = document.querySelector(`[data-wave="${v.id}"]`); if (!cv) return;
+  const clip = v.clips[state.line]; if (!clip) return;
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  const css = getComputedStyle(document.documentElement), base = css.getPropertyValue('--wave').trim(), lit = css.getPropertyValue('--listen').trim();
+  const n = clip.env.length, bw = w / n;
+  clip.env.forEach((e, i) => { const bh = Math.max(2, e * (h - 4)); g.fillStyle = i / n < progress ? lit : base; g.fillRect(i * bw + 0.5, (h - bh) / 2, Math.max(1, bw - 1.5), bh); });
+}
+function drawWaves() { DATA.voices.filter((v) => v.lang === state.lang).forEach((v) => drawWave(v, state.playing === v.id ? audio.currentTime / (audio.duration || 1) : 0)); }
+function renderPicks() {
+  $('picklist').innerHTML = DATA.languages.map((l) => {
+    const id = state.picks[l.code]; const v = DATA.voices.find((x) => x.id === id);
+    return `<li><span><span lang="${l.html}">${l.native}</span> <span class="muted">${l.name}</span></span><span>${v ? v.id : '<span class="muted">not picked</span>'}</span></li>`;
+  }).join('');
+  const narrator = { en: 'Samantha' };
+  DATA.languages.forEach((l) => { narrator[l.code] = state.picks[l.code] || DATA.voices.find((v) => v.lang === l.code)?.id; });
+  $('config').textContent = JSON.stringify({ narrator }, null, 2);
+}
+function renderEngines() {
+  const used = new Set([...DATA.voices.map((v) => v.engine), 'parler']);
+  $('engines').innerHTML = Object.entries(DATA.engines).filter(([k]) => used.has(k)).map(([k, e]) =>
+    `<tr><td><a href="${e.source.startsWith('http') ? e.source : '#'}" target="_blank" rel="noopener" style="color:inherit">${e.name}</a></td><td>${e.model}</td><td>${e.licence}</td><td>${e.commercial}</td><td class="muted">${e.credit}</td></tr>`).join('');
+  const byLang = {}; DATA.locked.forEach((v) => { (byLang[v.lang] = byLang[v.lang] || []).push(v.label.replace('Parler ', '')); });
+  $('lockednote').textContent = `AI4Bharat's Indic Parler-TTS adds two named speakers per language (${Object.entries(byLang).map(([l, n]) => `${l}: ${n.join(', ')}`).join('; ')}). It is open (Apache-2.0) but gated: accept its terms on Hugging Face once, set HF_TOKEN, and lab.py samples renders them here.`;
+  $('foot').textContent = `Samples rendered ${DATA.built}. Clarity measured with ${DATA.recogniser}. Every voice reads the same lines from the game's own script.`;
+}
+
+function stop() { audio.pause(); const p = state.playing; state.playing = null; state.queue = null; if (p) markPlaying(p, false); }
+function markPlaying(id, on) {
+  const card = $(`card-${id}`); if (!card) return;
+  card.classList.toggle('playing', on);
+  const b = card.querySelector('[data-play]'); if (b) b.innerHTML = on ? PAUSE : PLAY;
+  const v = DATA.voices.find((x) => x.id === id); if (v && !on) drawWave(v, 0);
+}
+function play(id) {
+  const v = DATA.voices.find((x) => x.id === id), clip = v && v.clips[state.line]; if (!clip) return;
+  if (state.playing) markPlaying(state.playing, false);
+  state.playing = id; audio.src = clip.file; audio.currentTime = 0;
+  audio.play().then(() => markPlaying(id, true)).catch(() => { state.playing = null; });
+}
+function tick() {
+  if (state.playing && !audio.paused) { const v = DATA.voices.find((x) => x.id === state.playing); if (v) drawWave(v, audio.currentTime / (audio.duration || 1)); }
+  requestAnimationFrame(tick);
+}
+audio.addEventListener('ended', () => {
+  const p = state.playing; state.playing = null; if (p) markPlaying(p, false);
+  if (state.queue && state.queue.length) { const next = state.queue.shift(); setTimeout(() => play(next), 350); }
+});
+
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.lang) { stop(); state.lang = t.dataset.lang; if (location.hash !== '#' + state.lang) history.replaceState(null, '', '#' + state.lang); renderTabs(); renderLine(); renderGrid(); }
+  else if (t.dataset.line) { stop(); state.line = t.dataset.line; renderLine(); renderGrid(); }
+  else if (t.dataset.play) { if (state.playing === t.dataset.play && !audio.paused) stop(); else { state.queue = null; play(t.dataset.play); } }
+  else if (t.dataset.pick) {
+    const id = t.dataset.pick; state.picks[state.lang] = state.picks[state.lang] === id ? undefined : id;
+    store.set('voicelab.picks', state.picks); renderGrid(); renderPicks();
+    if (state.playing) markPlaying(state.playing, true);
+  }
+  else if (t.id === 'playall') { stop(); const q = DATA.voices.filter((v) => v.lang === state.lang).map((v) => v.id); state.queue = q.slice(1); play(q[0]); }
+  else if (t.id === 'copy') {
+    const txt = $('config').textContent;
+    const done = () => { t.textContent = 'Copied'; setTimeout(() => (t.textContent = 'Copy config'), 1600); };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($('config')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); t.textContent = 'Selected: press Ctrl/Cmd+C'; };
+    try { navigator.clipboard.writeText(txt).then(done, fallback); } catch (err) { fallback(); }
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.target.closest && e.target.closest('[role="tablist"]') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+    const codes = DATA.languages.map((l) => l.code), i = codes.indexOf(state.lang), n = codes[(i + (e.key === 'ArrowRight' ? 1 : codes.length - 1)) % codes.length];
+    $(`tab-${n}`).click(); $(`tab-${n}`).focus();
+  }
+});
+function fromHash() { const h = location.hash.slice(1); if (DATA.languages.some((l) => l.code === h)) state.lang = h; }
+addEventListener('hashchange', () => { fromHash(); stop(); renderTabs(); renderLine(); renderGrid(); });
+addEventListener('resize', () => drawWaves());
+fromHash(); renderStats(); renderTabs(); renderLine(); renderGrid(); renderPicks(); renderEngines(); requestAnimationFrame(tick);
+if (document.fonts) document.fonts.ready.then(drawWaves);
+</script>

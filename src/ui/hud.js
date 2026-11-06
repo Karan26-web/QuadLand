@@ -2,8 +2,11 @@
 // The HUD: hearts, pause, the instruction caption (LXD "Caption" lines and the
 // hints), GO and NEXT, Skip. The LXD's review (2026-11-05) took the fleet row of
 // shape icons and the formula chip off the screen: the rule is spoken, not shown.
+// Every word comes from strings.json (i18n.js): a caption is shown by its key,
+// so a screen can ask which one is up (captionKey) in any language.
 // ---------------------------------------------------------------------------
 import { audio } from '../engine/audio.js';
+import { t } from '../engine/i18n.js';
 import { voice } from '../engine/voice.js';
 import { clock } from '../engine/clock.js';
 
@@ -16,7 +19,7 @@ export class HUD {
     this.G = G;
     this.el = $('hud'); this.heartsEl = $('hearts');
     this.captionEl = $('caption'); this.goEl = $('btnGo'); this.nextEl = $('btnNext'); this.skipEl = $('btnSkip');
-    this.hearts = 3; this.renderHearts();
+    this.hearts = 3; this.maxHearts = 3; this.renderHearts();
     this.goHandler = null; this.nextResolve = null; this.skipHandler = null;
     this.goEl.addEventListener('click', () => this._go());
     this.nextEl.addEventListener('click', () => this._next());
@@ -37,8 +40,8 @@ export class HUD {
   }
   show(on = true) { this.el.hidden = !on; }
   /* hearts */
-  setHearts(n) { this.hearts = n; this.renderHearts(); }
-  renderHearts() { this.heartsEl.innerHTML = [0, 1, 2].map((i) => `<div class="heart ${i < this.hearts ? '' : 'lost'}">${i < this.hearts ? HEART : HEART_CRACK}</div>`).join(''); }
+  setHearts(n, max = this.maxHearts) { this.hearts = n; this.maxHearts = max; this.renderHearts(); }
+  renderHearts() { this.heartsEl.innerHTML = Array.from({ length: this.maxHearts }, (_, i) => `<div class="heart ${i < this.hearts ? '' : 'lost'}">${i < this.hearts ? HEART : HEART_CRACK}</div>`).join(''); }
   loseHeart() {
     if (this.hearts <= 0) return 0;
     this.hearts--;
@@ -47,10 +50,11 @@ export class HUD {
     audio.play('ui.heart');
     return this.hearts;
   }
-  /* the caption */
-  caption(text, { cool = false } = {}) {
-    if (!text) { this.captionEl.hidden = true; document.body.classList.remove('caption-on'); return; }
-    this.captionEl.textContent = text; this.captionEl.classList.toggle('cool', cool); this.captionEl.hidden = false;
+  /* the caption: shown by key (strings.json: cap.* for instructions, vo.* for a hint the Ship AI also says) */
+  caption(key, { cool = false } = {}) {
+    if (!key) { this.captionKey = null; this.captionEl.hidden = true; document.body.classList.remove('caption-on'); return; }
+    this.captionKey = key;
+    this.captionEl.textContent = t(key); this.captionEl.classList.toggle('cool', cool); this.captionEl.hidden = false;
     this.captionEl.style.animation = 'none'; void this.captionEl.offsetWidth; this.captionEl.style.animation = '';
     document.body.classList.add('caption-on');
   }
@@ -72,7 +76,7 @@ export class HUD {
   hideNext() { this.nextEl.hidden = true; if (this.nextResolve) { const r = this.nextResolve; this.nextResolve = null; r(false); } }
   /* skip: one press for a cinematic; with confirm (the lesson), the first press asks and only a second press within
      3 s skips, so a stray tap cannot throw the learning away */
-  skip(fn, { label = 'Skip', confirm = null, short = [label, confirm] } = {}) {
+  skip(fn, { label = t('ui.skip'), confirm = null, short = [label, confirm] } = {}) {
     this.skipHandler = fn; this.skipConfirm = confirm; this.skipLabel = label; this.skipShort = short;
     this._skipLabel(false); this.skipEl.hidden = !fn;
   }
@@ -99,5 +103,5 @@ export class HUD {
     clock.paused = on; audio.pause(on); this.pauseEl.hidden = !on;
     if (on) { this._pauseLabels(); $('pzResume').focus({ preventScroll: true }); }
   }
-  _pauseLabels() { $('pzSound').textContent = `Sound: ${audio.muted ? 'Off' : 'On'}`; $('pzSubs').textContent = `Subtitles: ${voice.subs ? 'On' : 'Off'}`; }
+  _pauseLabels() { $('pzSound').textContent = t(audio.muted ? 'pause.soundOff' : 'pause.soundOn'); $('pzSubs').textContent = t(voice.subs ? 'pause.subsOn' : 'pause.subsOff'); }
 }

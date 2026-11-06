@@ -1,0 +1,312 @@
+{
+ "lines": {
+  "s2.welcome": {
+   "file": "s2.welcome.m4a",
+   "dur": 4.876,
+   "hash": "a887575c8537",
+   "voice": "mr-syspin-female"
+  },
+  "s2.planet": {
+   "file": "s2.planet.m4a",
+   "dur": 3.302,
+   "hash": "58d61deced36",
+   "voice": "mr-syspin-female"
+  },
+  "s2.align": {
+   "file": "s2.align.m4a",
+   "dur": 4.365,
+   "hash": "bae80f2f8b8c",
+   "voice": "mr-syspin-female"
+  },
+  "s2.locked": {
+   "file": "s2.locked.m4a",
+   "dur": 4.203,
+   "hash": "4877f9ccf9b6",
+   "voice": "mr-syspin-female"
+  },
+  "s2.arrive": {
+   "file": "s2.arrive.m4a",
+   "dur": 2.438,
+   "hash": "b5b7065b1afa",
+   "voice": "mr-syspin-female"
+  },
+  "s2.descend": {
+   "file": "s2.descend.m4a",
+   "dur": 4.47,
+   "hash": "e8353afb05fc",
+   "voice": "mr-syspin-female"
+  },
+  "s2.safe": {
+   "file": "s2.safe.m4a",
+   "dur": 4.119,
+   "hash": "d03c1a128644",
+   "voice": "mr-syspin-female"
+  },
+  "s2.drone": {
+   "file": "s2.drone.m4a",
+   "dur": 4.261,
+   "hash": "6b542d00f6c5",
+   "voice": "mr-syspin-female"
+  },
+  "s2.launch": {
+   "file": "s2.launch.m4a",
+   "dur": 2.833,
+   "hash": "bf1f2ef29c8a",
+   "voice": "mr-syspin-female"
+  },
+  "s3.dark": {
+   "file": "s3.dark.m4a",
+   "dur": 3.587,
+   "hash": "97a22194e407",
+   "voice": "mr-syspin-female"
+  },
+  "s3.scan": {
+   "file": "s3.scan.m4a",
+   "dur": 2.891,
+   "hash": "fcd07364b942",
+   "voice": "mr-syspin-female"
+  },
+  "s4.found": {
+   "file": "s4.found.m4a",
+   "dur": 3.982,
+   "hash": "7a35bd0120f0",
+   "voice": "mr-syspin-female"
+  },
+  "s4.shapes": {
+   "file": "s4.shapes.m4a",
+   "dur": 3.924,
+   "hash": "4b9ed51663c2",
+   "voice": "mr-syspin-female"
+  },
+  "s5.ships": {
+   "file": "s5.ships.m4a",
+   "dur": 5.422,
+   "hash": "959958457b31",
+   "voice": "mr-syspin-female"
+  },
+  "s5.match": {
+   "file": "s5.match.m4a",
+   "dur": 6.875,
+   "hash": "1835063eb762",
+   "voice": "mr-syspin-female"
+  },
+  "s5.need": {
+   "file": "s5.need.m4a",
+   "dur": 6.711,
+   "hash": "137ceec2dd83",
+   "voice": "mr-syspin-female"
+  },
+  "s5.learn": {
+   "file": "s5.learn.m4a",
+   "dur": 4.667,
+   "hash": "989a47e420cd",
+   "voice": "mr-syspin-female"
+  },
+  "s7.back": {
+   "file": "s7.back.m4a",
+   "dur": 5.886,
+   "hash": "135eb0c11dfd",
+   "voice": "mr-syspin-female"
+  },
+  "s7.land": {
+   "file": "s7.land.m4a",
+   "dur": 3.553,
+   "hash": "9342cb971231",
+   "voice": "mr-syspin-female"
+  },
+  "s8.here": {
+   "file": "s8.here.m4a",
+   "dur": 2.194,
+   "hash": "4b431f48d131",
+   "voice": "mr-syspin-female"
+  },
+  "s8.space": {
+   "file": "s8.space.m4a",
+   "dur": 4.516,
+   "hash": "2543bb15cf6a",
+   "voice": "mr-syspin-female"
+  },
+  "s8.rule": {
+   "file": "s8.rule.m4a",
+   "dur": 3.344,
+   "hash": "79d4932ce74c",
+   "voice": "mr-syspin-female"
+  },
+  "s8.calc": {
+   "file": "s8.calc.m4a",
+   "dur": 4.783,
+   "hash": "ff42c36e386e",
+   "voice": "mr-syspin-female"
+  },
+  "s9.here": {
+   "file": "s9.here.m4a",
+   "dur": 2.74,
+   "hash": "36beaa0f8674",
+   "voice": "mr-syspin-female"
+  },
+  "s9.rule": {
+   "file": "s9.rule.m4a",
+   "dur": 3.483,
+   "hash": "64635723b487",
+   "voice": "mr-syspin-female"
+  },
+  "s9.find": {
+   "file": "s9.find.m4a",
+   "dur": 3.738,
+   "hash": "3bfd8825b0e9",
+   "voice": "mr-syspin-female"
+  },
+  "s9.after": {
+   "file": "s9.after.m4a",
+   "dur": 6.931,
+   "hash": "2aea1ca56019",
+   "voice": "mr-syspin-female"
+  },
+  "s10.here": {
+   "file": "s10.here.m4a",
+   "dur": 2.508,
+   "hash": "d5e49458ff1c",
+   "voice": "mr-syspin-female"
+  },
+  "s10.rule": {
+   "file": "s10.rule.m4a",
+   "dur": 2.891,
+   "hash": "bff4de2868d3",
+   "voice": "mr-syspin-female"
+  },
+  "s11.here": {
+   "file": "s11.here.m4a",
+   "dur": 3.286,
+   "hash": "0c84c4f460e6",
+   "voice": "mr-syspin-female"
+  },
+  "s11.rule": {
+   "file": "s11.rule.m4a",
+   "dur": 5.155,
+   "hash": "639f42c15d3c",
+   "voice": "mr-syspin-female"
+  },
+  "s12.here": {
+   "file": "s12.here.m4a",
+   "dur": 2.543,
+   "hash": "476931f7cfdf",
+   "voice": "mr-syspin-female"
+  },
+  "s12.rule": {
+   "file": "s12.rule.m4a",
+   "dur": 6.026,
+   "hash": "fa37de96ea81",
+   "voice": "mr-syspin-female"
+  },
+  "o.perfect": {
+   "file": "o.perfect.m4a",
+   "dur": 3.483,
+   "hash": "c55478197183",
+   "voice": "mr-syspin-female"
+  },
+  "o.success": {
+   "file": "o.success.m4a",
+   "dur": 3.587,
+   "hash": "dd47d6edb250",
+   "voice": "mr-syspin-female"
+  },
+  "o.small": {
+   "file": "o.small.m4a",
+   "dur": 5.526,
+   "hash": "4d3feff9e3b8",
+   "voice": "mr-syspin-female"
+  },
+  "o.large": {
+   "file": "o.large.m4a",
+   "dur": 5.201,
+   "hash": "9f8410a25f9a",
+   "voice": "mr-syspin-female"
+  },
+  "o.exact": {
+   "file": "o.exact.m4a",
+   "dur": 3.576,
+   "hash": "9f6edbe5c188",
+   "voice": "mr-syspin-female"
+  },
+  "o.auto": {
+   "file": "o.auto.m4a",
+   "dur": 4.063,
+   "hash": "54c3e9f40f2d",
+   "voice": "mr-syspin-female"
+  },
+  "s13.done": {
+   "file": "s13.done.m4a",
+   "dur": 5.631,
+   "hash": "13b12b95f878",
+   "voice": "mr-syspin-female"
+  },
+  "h.look.sq": {
+   "file": "h.look.sq.m4a",
+   "dur": 3.692,
+   "hash": "ed6b14df9310",
+   "voice": "mr-syspin-female"
+  },
+  "h.look.re": {
+   "file": "h.look.re.m4a",
+   "dur": 3.669,
+   "hash": "1b72cf27fc29",
+   "voice": "mr-syspin-female"
+  },
+  "h.look.pa": {
+   "file": "h.look.pa.m4a",
+   "dur": 4.4,
+   "hash": "f992686615dc",
+   "voice": "mr-syspin-female"
+  },
+  "h.look.rh": {
+   "file": "h.look.rh.m4a",
+   "dur": 4.598,
+   "hash": "e67362b468c2",
+   "voice": "mr-syspin-female"
+  },
+  "h.look.tr": {
+   "file": "h.look.tr.m4a",
+   "dur": 4.18,
+   "hash": "67ad680c49fe",
+   "voice": "mr-syspin-female"
+  },
+  "h.calc.sq": {
+   "file": "h.calc.sq.m4a",
+   "dur": 3.437,
+   "hash": "64055e13ccd3",
+   "voice": "mr-syspin-female"
+  },
+  "h.calc.re": {
+   "file": "h.calc.re.m4a",
+   "dur": 2.38,
+   "hash": "e290d82a73f9",
+   "voice": "mr-syspin-female"
+  },
+  "h.calc.pa": {
+   "file": "h.calc.pa.m4a",
+   "dur": 2.554,
+   "hash": "e49b43d5b1ee",
+   "voice": "mr-syspin-female"
+  },
+  "h.calc.rh": {
+   "file": "h.calc.rh.m4a",
+   "dur": 3.889,
+   "hash": "f1e52b998555",
+   "voice": "mr-syspin-female"
+  },
+  "h.calc.tr": {
+   "file": "h.calc.tr.m4a",
+   "dur": 7.198,
+   "hash": "ed749914ac0b",
+   "voice": "mr-syspin-female"
+  },
+  "h.green": {
+   "file": "h.green.m4a",
+   "dur": 4.458,
+   "hash": "5e034955dc0a",
+   "voice": "mr-syspin-female"
+  }
+ },
+ "voice": "mr-syspin-female",
+ "language": "mr"
+}

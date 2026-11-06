@@ -9,22 +9,33 @@
 //     at any point
 //   * the hand-off: when the module's last page is done it posts
 //     'learning:done', and the mission carries on to Screen 7
-//   * quiet behind it: the 3D world stops drawing, and the music and the sea
-//     fade, while the module plays its own sound
+//   * its sound under the module: the 3D world stops drawing, every loop of the
+//     mission stops (the sea, and the drone, whose buzz the LXD's second review
+//     heard as "the background music in the learning section looking weird"),
+//     and a soft music bed made for it plays low under the module's voice. The
+//     module's own Sound off button silences the bed too.
+// The module speaks the game's languages with the same codes (?lan=hi mr te gu
+// od), so it opens in the player's language.
 // ---------------------------------------------------------------------------
+import { t, i18n } from '../engine/i18n.js';
+import { stopDrone } from './survey.js';
+
 const SRC = 'learning/index.html';
 
 export async function run(s, G, flow) {
   const root = document.getElementById('lesson'), A = G.audio;
   G.hud.show(false); G.ck.show(false);
   G.setWorld(null);                                      // nothing of the mission shows behind the module: spare the GPU
-  A.music.stop(1.5);
-  if (flow.sea) { flow.sea.stop(1.5); flow.sea = null; }  // Screen 7 brings the sea back
+  stopDrone(G, 1.0);
+  if (flow.sea) flow.sea = null;                         // Screen 7 brings the sea back
+  A.stopLoops(1.5);
+  A.music.play('lesson', { fade: 2.5 });
+  s.onKill(() => { if (A.music.mode === 'lesson') A.music.stop(0.8); });
 
   clearTimeout(root._hideT);
   root.textContent = ''; root.classList.remove('leaving'); root.hidden = false;
   const frame = document.createElement('iframe');
-  frame.className = 'ls-frame'; frame.src = SRC; frame.title = 'Area of quadrilaterals'; frame.allow = 'autoplay';
+  frame.className = 'ls-frame'; frame.src = `${SRC}?lan=${i18n.moduleCode}`; frame.title = t('lesson.title'); frame.allow = 'autoplay';
   root.appendChild(frame);
 
   // the module says when its last page is done
@@ -43,10 +54,21 @@ export async function run(s, G, flow) {
   s.onKill(() => leave(true));
 
   // the learner may skip the lesson (the user's brief); a second press confirms
-  G.hud.skip(() => { flow.state.lessonSkipped = true; s.kill(); }, { label: 'Skip lesson', confirm: 'Press again to skip', short: ['Skip', 'Sure?'] });
-  frame.addEventListener('load', () => frame.focus(), { once: true });
+  G.hud.skip(() => { flow.state.lessonSkipped = true; s.kill(); }, { label: t('ui.skipLesson'), confirm: t('ui.skipConfirm'), short: [t('ui.skip'), t('ui.skipConfirmShort')] });
+  // the module's Sound off (#muteBtn, aria-pressed; remembered between sittings) silences the bed under it as well
+  let watch = null;
+  frame.addEventListener('load', () => {
+    frame.focus();
+    const btn = frame.contentDocument && frame.contentDocument.getElementById('muteBtn');
+    if (!btn) return;
+    const sync = () => A.music.hush(btn.getAttribute('aria-pressed') === 'true');
+    watch = new MutationObserver(sync); watch.observe(btn, { attributes: true, attributeFilter: ['aria-pressed'] }); sync();
+  }, { once: true });
+  s.onKill(() => watch && watch.disconnect());
 
   await s.run(finished);
+  if (watch) watch.disconnect();
+  A.music.stop(1.2);
   leave(false);
   await s.waitReal(0.4);
 }

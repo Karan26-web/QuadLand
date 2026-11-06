@@ -1,0 +1,312 @@
+{
+ "lines": {
+  "s2.welcome": {
+   "file": "s2.welcome.m4a",
+   "dur": 4.36,
+   "hash": "0b6a467ac7da",
+   "voice": "te-indic-female"
+  },
+  "s2.planet": {
+   "file": "s2.planet.m4a",
+   "dur": 2.685,
+   "hash": "7d3ea2f42f72",
+   "voice": "te-indic-female"
+  },
+  "s2.align": {
+   "file": "s2.align.m4a",
+   "dur": 4.565,
+   "hash": "0e181173e715",
+   "voice": "te-indic-female"
+  },
+  "s2.locked": {
+   "file": "s2.locked.m4a",
+   "dur": 4.375,
+   "hash": "310a30f12a34",
+   "voice": "te-indic-female"
+  },
+  "s2.arrive": {
+   "file": "s2.arrive.m4a",
+   "dur": 2.391,
+   "hash": "b7400ad73249",
+   "voice": "te-indic-female"
+  },
+  "s2.descend": {
+   "file": "s2.descend.m4a",
+   "dur": 3.869,
+   "hash": "e77ea5a70ae8",
+   "voice": "te-indic-female"
+  },
+  "s2.safe": {
+   "file": "s2.safe.m4a",
+   "dur": 2.629,
+   "hash": "f02fbfe21c1d",
+   "voice": "te-indic-female"
+  },
+  "s2.drone": {
+   "file": "s2.drone.m4a",
+   "dur": 3.459,
+   "hash": "91bc02fef674",
+   "voice": "te-indic-female"
+  },
+  "s2.launch": {
+   "file": "s2.launch.m4a",
+   "dur": 2.229,
+   "hash": "01effbd9d6a6",
+   "voice": "te-indic-female"
+  },
+  "s3.dark": {
+   "file": "s3.dark.m4a",
+   "dur": 3.068,
+   "hash": "c097dcfd0a8e",
+   "voice": "te-indic-female"
+  },
+  "s3.scan": {
+   "file": "s3.scan.m4a",
+   "dur": 2.31,
+   "hash": "d19aa206a9c0",
+   "voice": "te-indic-female"
+  },
+  "s4.found": {
+   "file": "s4.found.m4a",
+   "dur": 3.757,
+   "hash": "080ea4d13119",
+   "voice": "te-indic-female"
+  },
+  "s4.shapes": {
+   "file": "s4.shapes.m4a",
+   "dur": 4.069,
+   "hash": "8689024ca414",
+   "voice": "te-indic-female"
+  },
+  "s5.ships": {
+   "file": "s5.ships.m4a",
+   "dur": 4.329,
+   "hash": "c881a4e0b204",
+   "voice": "te-indic-female"
+  },
+  "s5.match": {
+   "file": "s5.match.m4a",
+   "dur": 5.789,
+   "hash": "2e1dec61dfbd",
+   "voice": "te-indic-female"
+  },
+  "s5.need": {
+   "file": "s5.need.m4a",
+   "dur": 4.932,
+   "hash": "b9caaaf9b9b4",
+   "voice": "te-indic-female"
+  },
+  "s5.learn": {
+   "file": "s5.learn.m4a",
+   "dur": 3.688,
+   "hash": "022ea640bb13",
+   "voice": "te-indic-female"
+  },
+  "s7.back": {
+   "file": "s7.back.m4a",
+   "dur": 6.228,
+   "hash": "f41256b4ec8a",
+   "voice": "te-indic-female"
+  },
+  "s7.land": {
+   "file": "s7.land.m4a",
+   "dur": 2.373,
+   "hash": "a5a72efc4fdb",
+   "voice": "te-indic-female"
+  },
+  "s8.here": {
+   "file": "s8.here.m4a",
+   "dur": 2.14,
+   "hash": "ef9eab408ff9",
+   "voice": "te-indic-female"
+  },
+  "s8.space": {
+   "file": "s8.space.m4a",
+   "dur": 3.02,
+   "hash": "d4aa772f70cd",
+   "voice": "te-indic-female"
+  },
+  "s8.rule": {
+   "file": "s8.rule.m4a",
+   "dur": 3.074,
+   "hash": "f7a9b5c09b89",
+   "voice": "te-indic-female"
+  },
+  "s8.calc": {
+   "file": "s8.calc.m4a",
+   "dur": 3.836,
+   "hash": "a9533313d801",
+   "voice": "te-indic-female"
+  },
+  "s9.here": {
+   "file": "s9.here.m4a",
+   "dur": 2.029,
+   "hash": "4adf037f18bf",
+   "voice": "te-indic-female"
+  },
+  "s9.rule": {
+   "file": "s9.rule.m4a",
+   "dur": 3.386,
+   "hash": "f101c0c7fece",
+   "voice": "te-indic-female"
+  },
+  "s9.find": {
+   "file": "s9.find.m4a",
+   "dur": 3.243,
+   "hash": "d839bcd1d03f",
+   "voice": "te-indic-female"
+  },
+  "s9.after": {
+   "file": "s9.after.m4a",
+   "dur": 7.386,
+   "hash": "4ca6ff9800b1",
+   "voice": "te-indic-female"
+  },
+  "s10.here": {
+   "file": "s10.here.m4a",
+   "dur": 2.071,
+   "hash": "9a4684472647",
+   "voice": "te-indic-female"
+  },
+  "s10.rule": {
+   "file": "s10.rule.m4a",
+   "dur": 2.92,
+   "hash": "e71e08a5ece4",
+   "voice": "te-indic-female"
+  },
+  "s11.here": {
+   "file": "s11.here.m4a",
+   "dur": 2.055,
+   "hash": "b5182c227aff",
+   "voice": "te-indic-female"
+  },
+  "s11.rule": {
+   "file": "s11.rule.m4a",
+   "dur": 2.247,
+   "hash": "c2fad1501bee",
+   "voice": "te-indic-female"
+  },
+  "s12.here": {
+   "file": "s12.here.m4a",
+   "dur": 2.369,
+   "hash": "9e8d90e2b8d0",
+   "voice": "te-indic-female"
+  },
+  "s12.rule": {
+   "file": "s12.rule.m4a",
+   "dur": 4.722,
+   "hash": "f68b8f571672",
+   "voice": "te-indic-female"
+  },
+  "o.perfect": {
+   "file": "o.perfect.m4a",
+   "dur": 3.669,
+   "hash": "47315b00f883",
+   "voice": "te-indic-female"
+  },
+  "o.success": {
+   "file": "o.success.m4a",
+   "dur": 4.217,
+   "hash": "6765ce6ade57",
+   "voice": "te-indic-female"
+  },
+  "o.small": {
+   "file": "o.small.m4a",
+   "dur": 5.341,
+   "hash": "05ed98c54801",
+   "voice": "te-indic-female"
+  },
+  "o.large": {
+   "file": "o.large.m4a",
+   "dur": 5.185,
+   "hash": "4844a5eec123",
+   "voice": "te-indic-female"
+  },
+  "o.exact": {
+   "file": "o.exact.m4a",
+   "dur": 2.868,
+   "hash": "57f0168ddb17",
+   "voice": "te-indic-female"
+  },
+  "o.auto": {
+   "file": "o.auto.m4a",
+   "dur": 4.717,
+   "hash": "d1b13da3a050",
+   "voice": "te-indic-female"
+  },
+  "s13.done": {
+   "file": "s13.done.m4a",
+   "dur": 6.371,
+   "hash": "afecf1e43da2",
+   "voice": "te-indic-female"
+  },
+  "h.look.sq": {
+   "file": "h.look.sq.m4a",
+   "dur": 4.313,
+   "hash": "c5e24d26c88a",
+   "voice": "te-indic-female"
+  },
+  "h.look.re": {
+   "file": "h.look.re.m4a",
+   "dur": 4.587,
+   "hash": "9be6f819373f",
+   "voice": "te-indic-female"
+  },
+  "h.look.pa": {
+   "file": "h.look.pa.m4a",
+   "dur": 4.938,
+   "hash": "d44e830441ce",
+   "voice": "te-indic-female"
+  },
+  "h.look.rh": {
+   "file": "h.look.rh.m4a",
+   "dur": 4.213,
+   "hash": "ef22bd18b39e",
+   "voice": "te-indic-female"
+  },
+  "h.look.tr": {
+   "file": "h.look.tr.m4a",
+   "dur": 4.53,
+   "hash": "4d89631d2143",
+   "voice": "te-indic-female"
+  },
+  "h.calc.sq": {
+   "file": "h.calc.sq.m4a",
+   "dur": 1.915,
+   "hash": "6b368da66d60",
+   "voice": "te-indic-female"
+  },
+  "h.calc.re": {
+   "file": "h.calc.re.m4a",
+   "dur": 2.045,
+   "hash": "7d153db294bf",
+   "voice": "te-indic-female"
+  },
+  "h.calc.pa": {
+   "file": "h.calc.pa.m4a",
+   "dur": 2.128,
+   "hash": "19a2636a8088",
+   "voice": "te-indic-female"
+  },
+  "h.calc.rh": {
+   "file": "h.calc.rh.m4a",
+   "dur": 3.47,
+   "hash": "7a03dbda4476",
+   "voice": "te-indic-female"
+  },
+  "h.calc.tr": {
+   "file": "h.calc.tr.m4a",
+   "dur": 4.069,
+   "hash": "ff1148b3f438",
+   "voice": "te-indic-female"
+  },
+  "h.green": {
+   "file": "h.green.m4a",
+   "dur": 5.491,
+   "hash": "0f4d34d5054a",
+   "voice": "te-indic-female"
+  }
+ },
+ "voice": "te-indic-female",
+ "language": "te"
+}

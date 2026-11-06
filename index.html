@@ -21,7 +21,7 @@
         <div class="ck-glass"></div>
         <div class="ck-reticle" hidden>
           <div class="ret-ring"></div><div class="ret-cross"></div>
-          <div class="ret-lock">LOCKED</div>
+          <div class="ret-lock" data-i18n="ck.locked">LOCKED</div>
         </div>
         <div class="ck-marker" hidden><div class="mk-box"></div><div class="mk-arrow"></div></div>
       </div>
@@ -30,27 +30,27 @@
       <div class="ck-dash">
         <div class="ck-mod ck-mod-l">
           <div class="ck-gauge">
-            <div class="g-label">SPEED</div><div class="g-val" id="ckSpeed">0.4</div><div class="g-unit">LY/H</div>
+            <div class="g-label" data-i18n="ck.speed">SPEED</div><div class="g-val" id="ckSpeed">0.4</div><div class="g-unit" data-i18n="ck.speedUnit">LY/H</div>
           </div>
-          <div class="ck-lever" id="ckLever" aria-label="Thrust lever" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
-            <div class="lv-label">THRUST</div>
+          <div class="ck-lever" id="ckLever" aria-label="Thrust lever" data-i18n-attr="aria-label:aria.lever" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+            <div class="lv-label" data-i18n="ck.thrust">THRUST</div>
             <div class="lv-slot"><div class="lv-fill"></div><div class="lv-ticks"></div><div class="lv-handle"><span></span></div></div>
             <div class="lv-hint"></div>
           </div>
         </div>
         <div class="ck-screen">
-          <div class="sc-head"><span class="sc-dot"></span><span id="ckWho">SHIP AI</span></div>
+          <div class="sc-head"><span class="sc-dot"></span><span id="ckWho" data-i18n="ck.shipAi">SHIP AI</span></div>
           <canvas id="ckWave" width="480" height="120"></canvas>
-          <div class="sc-status" id="ckStatus">CRUISING</div>
+          <div class="sc-status" id="ckStatus" data-i18n="ck.cruising">CRUISING</div>
         </div>
         <div class="ck-mod ck-mod-r">
           <div class="ck-gauge">
-            <div class="g-label">ALTITUDE</div><div class="g-val" id="ckAlt">——</div><div class="g-unit">KM</div>
+            <div class="g-label" data-i18n="ck.altitude">ALTITUDE</div><div class="g-val" id="ckAlt">——</div><div class="g-unit" data-i18n="ck.altUnit">KM</div>
           </div>
           <div class="ck-socket">
             <div class="ck-radar"></div>
-            <button class="ck-btn ck-descend" id="ckDescend" hidden><span class="b-ring"></span><span class="b-label">HOLD<br />DESCEND</span></button>
-            <button class="ck-btn ck-launch" id="ckLaunch" hidden><span class="b-ring"></span><span class="b-label">LAUNCH</span></button>
+            <button class="ck-btn ck-descend" id="ckDescend" hidden><span class="b-ring"></span><span class="b-label"><span data-i18n="ck.hold">HOLD</span><br /><span data-i18n="ck.descend">DESCEND</span></span></button>
+            <button class="ck-btn ck-launch" id="ckLaunch" hidden><span class="b-ring"></span><span class="b-label" data-i18n="ck.launch">LAUNCH</span></button>
           </div>
         </div>
       </div>
@@ -60,10 +60,10 @@
   <!-- ============================================================ drone feed -->
   <div id="feed" class="layer" hidden>
     <div class="fd-corner tl"></div><div class="fd-corner tr"></div><div class="fd-corner bl"></div><div class="fd-corner br"></div>
-    <div class="fd-top"><span class="fd-rec"></span><span>DRONE CAM</span><span class="fd-sep">|</span><span id="fdAlt">ALT 24 m</span></div>
+    <div class="fd-top"><span class="fd-rec"></span><span data-i18n="feed.cam">DRONE CAM</span><span class="fd-sep">|</span><span id="fdAlt">ALT 24 m</span></div>
     <div class="fd-compass"><div class="fd-ticks"></div><div class="fd-needle"></div></div>
-    <div class="fd-scan" id="fdScan" hidden>SCANNING<span class="fd-pct">0%</span></div>
-    <button class="hud-big scan-btn" id="btnScan" hidden><span class="b-glow"></span><span class="b-icon" aria-hidden="true"></span><span class="b-text">SCAN</span></button>
+    <div class="fd-scan" id="fdScan" hidden><span data-i18n="feed.scanning">SCANNING</span><span class="fd-pct">0%</span></div>
+    <button class="hud-big scan-btn" id="btnScan" hidden><span class="b-glow"></span><span class="b-icon" aria-hidden="true"></span><span class="b-text" data-i18n="ui.scan">SCAN</span></button>
   </div>
 
   <!-- =========================================================== world labels -->
@@ -72,11 +72,11 @@
   <!-- =================================================================== HUD -->
   <div id="hud" class="layer" hidden>
     <div class="hud-top">
-      <div class="hearts" id="hearts" aria-label="Hearts"></div>
-      <button class="hud-pause" id="btnPause" aria-label="Pause"><span></span><span></span></button>
+      <div class="hearts" id="hearts" aria-label="Hearts" data-i18n-attr="aria-label:aria.hearts"></div>
+      <button class="hud-pause" id="btnPause" aria-label="Pause" data-i18n-attr="aria-label:aria.pause"><span></span><span></span></button>
     </div>
-    <button class="hud-big go-btn" id="btnGo" disabled><span class="b-glow"></span><span class="b-text">GO</span></button>
-    <button class="hud-big next-btn" id="btnNext" hidden><span class="b-glow"></span><span class="b-text">NEXT</span><span class="b-chev">›</span></button>
+    <button class="hud-big go-btn" id="btnGo" disabled><span class="b-glow"></span><span class="b-text" data-i18n="ui.go">GO</span></button>
+    <button class="hud-big next-btn" id="btnNext" hidden><span class="b-glow"></span><span class="b-text" data-i18n="ui.next">NEXT</span><span class="b-chev">›</span></button>
   </div>
 
   <!-- ================================================================ lesson -->
@@ -85,8 +85,8 @@
 
   <!-- ===================================================== mission complete -->
   <div id="complete" class="layer" hidden>
-    <div class="cp-title"><span>Mission complete!</span></div>
-    <button class="hud-big restart-btn" id="btnRestart" hidden><span class="b-glow"></span><span class="b-text">RESTART</span></button>
+    <div class="cp-title"><span data-i18n="cp.title">Mission complete!</span></div>
+    <button class="hud-big restart-btn" id="btnRestart" hidden><span class="b-glow"></span><span class="b-text" data-i18n="ui.restart">RESTART</span></button>
   </div>
 
   <!-- ===================================== the stick (cockpit steering + flying) -->
@@ -99,12 +99,12 @@
   <!-- ================================================================= title -->
   <div id="title" class="layer">
     <div class="tt-logo">
-      <img class="tt-art" alt="Spaceship Mission" hidden />
-      <div class="tt-text" aria-hidden="true"><span class="tt-l1">SPACESHIP</span><span class="tt-l2">MISSION</span></div>
+      <img class="tt-art" alt="Spaceship Mission" data-i18n-attr="alt:doc.title" hidden />
+      <div class="tt-text" aria-hidden="true"><span class="tt-l1" data-i18n="title.l1">SPACESHIP</span><span class="tt-l2" data-i18n="title.l2">MISSION</span></div>
     </div>
     <div class="tt-gate">
       <div class="tt-bar" id="ttBar"><div class="tt-fill" id="ttFill"></div><div class="tt-pct" id="ttPct">0%</div></div>
-      <button class="tt-play" id="btnPlay" hidden><span class="b-glow"></span><span class="tt-tri" aria-hidden="true"></span><span class="b-text">PLAY</span></button>
+      <button class="tt-play" id="btnPlay" hidden><span class="b-glow"></span><span class="tt-tri" aria-hidden="true"></span><span class="b-text" data-i18n="ui.play">PLAY</span></button>
     </div>
   </div>
 
@@ -113,11 +113,11 @@
   <!-- ================================================================= pause -->
   <div id="pause" class="layer" hidden>
     <div class="pz-card">
-      <div class="pz-title">Paused</div>
-      <button class="pz-btn primary" id="pzResume">Resume</button>
+      <div class="pz-title" data-i18n="pause.title">Paused</div>
+      <button class="pz-btn primary" id="pzResume" data-i18n="pause.resume">Resume</button>
       <button class="pz-btn" id="pzSound">Sound: On</button>
       <button class="pz-btn" id="pzSubs">Subtitles: On</button>
-      <button class="pz-btn" id="pzRestart">Restart mission</button>
+      <button class="pz-btn" id="pzRestart" data-i18n="pause.restart">Restart mission</button>
     </div>
   </div>
 

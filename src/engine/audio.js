@@ -347,6 +347,9 @@ const MODES = {
   planet: { bpm: 56, bars: [[45, 52, 59, 64, 71], [41, 48, 55, 64, 67], [48, 55, 59, 64, 67], [43, 50, 55, 62, 69]], pad: 0.055, bell: 0.05, arp: 'sparse', bass: 0.07, kick: 0, hat: 0, whale: true },
   landing: { bpm: 96, bars: [[48, 55, 64, 67, 71], [45, 52, 60, 64, 67], [41, 48, 57, 60, 64], [43, 50, 59, 62, 67]], pad: 0.035, bell: 0.04, arp: 'pluck8', bass: 0.08, kick: 0.1, hat: 0.016 },
   complete: { bpm: 100, bars: [[48, 55, 64, 67, 72], [53, 60, 65, 69, 72], [55, 62, 67, 71, 74], [48, 55, 64, 67, 76]], pad: 0.05, bell: 0.06, arp: 'bell8', bass: 0.1, kick: 0.14, hat: 0.02 },
+  // F major, slow and warm, under the learning module's voice: soft pads, a music box now and then, a quiet bass, no
+  // drums (the second review heard the drone's buzz there as "weird" music; this replaces it)
+  lesson: { bpm: 66, bars: [[41, 57, 60, 65, 69], [36, 55, 60, 64, 67], [38, 57, 62, 65, 69], [34, 53, 58, 62, 65]], pad: 0.028, bell: 0.03, arp: 'sparse', bass: 0.04, kick: 0, hat: 0, level: 0.55 },
 };
 class Music {
   constructor(A) { this.A = A; this.mode = null; this.pending = null; this.timer = null; this.bus = null; this.step = 0; this.next = 0; }
@@ -356,9 +359,9 @@ class Music {
     if (mode === this.mode) return;
     this.stop(fade);
     if (!mode || !MODES[mode]) return;
-    this.mode = mode; this.cfg = MODES[mode];
+    this.mode = mode; this.cfg = MODES[mode]; this.level = this.cfg.level ?? 1;
     const bus = (this.bus = A.ctx.createGain()); bus.gain.value = 0.0001; bus.connect(A.duck);
-    bus.gain.setTargetAtTime(1, A.now, fade / 3);
+    bus.gain.setTargetAtTime(this.level, A.now, fade / 3);
     const track = A.files && A.files.get(`music.${mode}`);
     if (track) { const src = A.ctx.createBufferSource(); src.buffer = track; src.loop = true; const g = A.ctx.createGain(); g.gain.value = 2.2; src.connect(g); g.connect(bus); src.start(); this.trackSrc = src; return; }
     this.verb = A.ctx.createGain(); this.verb.gain.value = 0.55; bus.connect(this.verb); this.verb.connect(A.verbIn);
@@ -372,6 +375,11 @@ class Music {
     if (this.trackSrc) { const t = this.trackSrc; this.trackSrc = null; try { t.stop(A.now + fade + 0.3); } catch {} }
     if (this.bus && A.ctx) { const b = this.bus; b.gain.cancelScheduledValues(A.now); b.gain.setTargetAtTime(0.0001, A.now, fade / 4); setTimeout(() => { try { b.disconnect(); } catch {} }, fade * 1000 + 400); }
     this.bus = null; this.mode = null;
+  }
+  /** hush the playing mood (on: to silence) or bring it back, without stopping it (the learning module's own Sound off) */
+  hush(on, fade = 0.4) {
+    const A = this.A; if (!this.bus || !A.ctx) return;
+    this.bus.gain.cancelScheduledValues(A.now); this.bus.gain.setTargetAtTime(on ? 0.0001 : this.level, A.now, fade / 3);
   }
   _schedule() {
     const A = this.A; if (!A.ctx || !this.bus) return;

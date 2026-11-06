@@ -7,18 +7,24 @@
 //    holds for its length, so the pacing never changes), or has no file (speech
 //    synthesis, or the reading time)
 //  * a hard deadline backs every line up
+// The player's language (i18n.js) picks the words and the recordings: English
+// in assets/vo/, every other language in assets/vo/<lan>/ (tools/make_vo.py
+// renders them). A language without recordings keeps its subtitles, paced at
+// reading speed; the browser's own speech fills in only if it has a voice for it.
 // ---------------------------------------------------------------------------
 import { audio } from './audio.js';
 import { uiTweens } from './tween.js';
+import { i18n } from './i18n.js';
 
-const BASE = './assets/vo/';
+const ROOT = './assets/vo/';
 const sub = () => document.getElementById('subLine');
 
 export const voice = {
-  lines: {}, man: {}, buffers: new Map(), current: null, analyser: null, data: null, subs: true, _hideT: 0,
+  lines: {}, man: {}, buffers: new Map(), current: null, analyser: null, data: null, subs: true, _hideT: 0, base: ROOT,
   async load(onProgress = () => {}) {
+    this.base = i18n.lang === 'en' ? ROOT : `${ROOT}${i18n.lang}/`;
     try {
-      const [l, m] = await Promise.all([fetch(BASE + 'lines.json').then((r) => r.json()), fetch(BASE + 'vo.json').then((r) => (r.ok ? r.json() : { lines: {} })).catch(() => ({ lines: {} }))]);
+      const [l, m] = await Promise.all([fetch(ROOT + 'lines.json').then((r) => r.json()), fetch(this.base + 'vo.json').then((r) => (r.ok ? r.json() : { lines: {} })).catch(() => ({ lines: {} }))]);
       for (const ln of l.lines) this.lines[ln.id] = ln;
       this.man = m.lines || {};
     } catch (e) { console.warn('[voice] no script', e); return; }
@@ -33,7 +39,7 @@ export const voice = {
     let done = 0;
     const one = async (id) => {
       try {
-        const buf = await fetch(BASE + this.man[id].file).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
+        const buf = await fetch(this.base + this.man[id].file).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
         const ab = await new Promise((res, rej) => { const p = ctx.decodeAudioData(buf, res, rej); if (p && p.catch) p.catch(rej); });
         this.buffers.set(id, ab);
       } catch (e) { /* the line falls back to speech synthesis */ }
@@ -42,7 +48,15 @@ export const voice = {
     const queue = ids.slice();
     await Promise.all(Array.from({ length: 6 }, async () => { while (queue.length) await one(queue.shift()); }));
   },
-  text(id) { return this.lines[id] ? this.lines[id].text : id; },
+  /** a line's words in the player's language (strings.json, vo.<id>) */
+  text(id) { return i18n.has(`vo.${id}`) ? i18n.t(`vo.${id}`) : this.lines[id] ? this.lines[id].text || id : id; },
+  /** can the browser's own speech say this language? (an English voice would mangle Gujarati) */
+  canSynth() {
+    if (!window.speechSynthesis) return false;
+    if (i18n.lang === 'en') return true;
+    const want = (i18n.meta.html || i18n.lang).toLowerCase();
+    return speechSynthesis.getVoices().some((v) => v.lang.toLowerCase().startsWith(want));
+  },
   dur(id) { const b = this.buffers.get(id); if (b) return b.duration; const m = this.man[id]; if (m && m.dur) return m.dur; return this.readTime(this.text(id)); },
   readTime(t) { return 0.8 + t.split(/\s+/).length / 2.6; },
   setSubs(on) { this.subs = on; document.body.classList.toggle('no-subs', !on); try { localStorage.setItem('ql_subs', on ? '1' : '0'); } catch {} },
@@ -71,9 +85,9 @@ export const voice = {
       src.onended = () => finish(true);
       cur.src = src;
       if (audio.ctx.state === 'running') src.start(); else { cur.deadline.cancel(); cur.deadline = uiTweens.add({ duration: len + 0.4, onComplete: () => finish(true) }); }
-    } else if (window.speechSynthesis && !audio.muted && audio.ready) {
+    } else if (this.canSynth() && !audio.muted && audio.ready) {
       try {
-        const u = new SpeechSynthesisUtterance(line); u.rate = 0.98; u.pitch = 1.05;
+        const u = new SpeechSynthesisUtterance(line); u.rate = 0.98; u.pitch = 1.05; u.lang = i18n.meta.html || 'en';
         u.onend = () => finish(true); u.onerror = () => finish(true);
         speechSynthesis.cancel(); speechSynthesis.speak(u); cur.utt = u;
       } catch { /* the deadline carries it */ }

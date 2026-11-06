@@ -28,49 +28,52 @@ function recentre(pts) { const c = centroid(pts); return pts.map((p) => P(p.x - 
 /* dims: what is drawn onto the ship (LXD), in order.
    edge   a dimension line beside edge [i, j], drawn outside the shape
    height a dashed perpendicular from point `from` to the base line (with a right-angle mark)
-   diag   a dashed diagonal between vertices [i, j] */
+   diag   a dashed diagonal between vertices [i, j]
+   vo.hints: the hint ladder after a miss (the LXD's second review, 2026-11-06): 1 "Look closely! The spacecraft is …
+   shaped.", 2 the rule, 3 the working with its numbers; a 4th miss turns the right zone green (h.green). */
 export const SHAPES = [
   {
     key: 'square', name: 'Square', ordinal: 'first', accent: 0xff9a3c,
     verts: recentre([P(-2.5, -2.5), P(2.5, -2.5), P(2.5, 2.5), P(-2.5, 2.5)]),
     area: 25, islands: [20, 30, 25],
-    rule: 'side × side', vo: { here: 's8.here', extra: 's8.space', rule: 's8.rule', ask: 's8.calc' }, hint: 'sq',
+    rule: 'side × side', vo: { here: 's8.here', extra: 's8.space', ask: 's8.calc', hints: ['h.look.sq', 's8.rule', 'h.calc.sq'] },
     dims: [{ type: 'edge', i: 0, j: 1, name: 'side', value: 5 }, { type: 'edge', i: 3, j: 0, name: 'side', value: 5 }],
   },
   {
     key: 'rectangle', name: 'Rectangle', ordinal: 'second', accent: 0x5cf2ff,
     verts: recentre([P(-4, -2), P(4, -2), P(4, 2), P(-4, 2)]),
-    area: 32, islands: [24, 40, 32],
-    rule: 'length × width', vo: { here: 's9.here', rule: 's9.rule', ask: 's9.find', after: 's9.after' }, hint: 're',
+    area: 32, islands: [36, 40, 32],                                // 36, not 24 (the second review: so it can't be guessed)
+    rule: 'length × width', vo: { here: 's9.here', ask: 's9.find', after: 's9.after', hints: ['h.look.re', 's9.rule', 'h.calc.re'] },
     dims: [{ type: 'edge', i: 0, j: 1, name: 'length', value: 8 }, { type: 'edge', i: 3, j: 0, name: 'width', value: 4 }],
   },
   {
     key: 'parallelogram', name: 'Parallelogram', ordinal: 'third', accent: 0x9dff5c,
     verts: recentre([P(-3.5 - DX / 2, -2.5), P(3.5 - DX / 2, -2.5), P(3.5 + DX / 2, 2.5), P(-3.5 + DX / 2, 2.5)]),
-    area: 35, islands: [26, 42, 35],
-    rule: 'base × height', vo: { here: 's10.here', rule: 's10.rule', ask: 's8.calc' }, hint: 'pa',
+    area: 35, islands: [30, 42, 35],                                // 30, not 26 (the second review)
+    rule: 'base × height', vo: { here: 's10.here', ask: 's8.calc', hints: ['h.look.pa', 's10.rule', 'h.calc.pa'] },
     dims: [
       { type: 'edge', i: 0, j: 1, name: 'base', value: 7 },
       { type: 'height', from: 3, base: [0, 1], name: 'height', value: 5 },
-      { type: 'edge', i: 1, j: 2, name: 'slant side', value: 6, alt: true },
+      { type: 'edge', i: 1, j: 2, name: 'slant side', value: 6 },
     ],
   },
   {
     key: 'rhombus', name: 'Rhombus', ordinal: 'fourth', accent: 0xff5ccf,
     verts: recentre([P(0, -3), P(4, 0), P(0, 3), P(-4, 0)]),
     area: 24, islands: [20, 30, 24],
-    rule: '½ × diagonal 1 × diagonal 2', vo: { here: 's11.here', rule: 's11.rule', ask: 's9.find' }, hint: 'rh',
+    rule: '½ × diagonal 1 × diagonal 2', vo: { here: 's11.here', ask: 's9.find', hints: ['h.look.rh', 's11.rule', 'h.calc.rh'] },
+    // the diagonals' numbers sit past their top and right ends, so the side is measured on the lower left edge
     dims: [
       { type: 'diag', i: 0, j: 2, name: 'diagonal 1', value: 6 },
       { type: 'diag', i: 3, j: 1, name: 'diagonal 2', value: 8 },
-      { type: 'edge', i: 1, j: 2, name: 'side', value: 5, alt: true },
+      { type: 'edge', i: 3, j: 0, name: 'side', value: 5 },
     ],
   },
   {
     key: 'trapezium', name: 'Trapezium', ordinal: 'last', accent: 0xffe45c,
     verts: recentre([P(-6, -2.5), P(6, -2.5), P(4, 2.5), P(-4, 2.5)]),
     area: 50, islands: [40, 60, 50],
-    rule: '½ × (sum of the parallel sides) × height', vo: { here: 's12.here', rule: 's12.rule', ask: 's8.calc' }, hint: 'tr',
+    rule: '½ × (sum of the parallel sides) × height', vo: { here: 's12.here', ask: 's8.calc', hints: ['h.look.tr', 's12.rule', 'h.calc.tr'] },
     dims: [
       { type: 'edge', i: 2, j: 3, name: 'parallel side', value: 8, parallel: true },
       { type: 'edge', i: 0, j: 1, name: 'parallel side', value: 12, parallel: true },

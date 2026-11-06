@@ -1,0 +1,671 @@
+{
+ "voices": {
+  "gu-indic-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "સ્વાગત છે, અંતરિક્ષ કમાન્ડર! આપણી પાસે એક નવું લૅન્ડિંગ મિશન છે.",
+     "file": "gu/gu-indic-female/s2.welcome.m4a",
+     "dur": 6.71
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "તેનું ક્ષેત્રફળ છે, સમાંતર બાજુઓના સરવાળાનો અડધો ભાગ, ગુણ્યા ઊંચાઈ.",
+     "file": "gu/gu-indic-female/s12.rule.m4a",
+     "dur": 6.46
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "પહોળાઈ તપાસો: તે 4 એકમ છે. લંબાઈ ગુણ્યા પહોળાઈ એટલે 8 ગુણ્યા 4.",
+     "file": "gu/gu-indic-female/h.re.40.m4a",
+     "dur": 7.45
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "એકદમ બરાબર! અંતરિક્ષયાન બરાબર સમાઈ ગયું.",
+     "file": "gu/gu-indic-female/o.perfect.m4a",
+     "dur": 4.47
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "gu-indic-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "સ્વાગત છે, અંતરિક્ષ કમાન્ડર! આપણી પાસે એક નવું લૅન્ડિંગ મિશન છે.",
+     "file": "gu/gu-indic-male/s2.welcome.m4a",
+     "dur": 6.77
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "તેનું ક્ષેત્રફળ છે, સમાંતર બાજુઓના સરવાળાનો અડધો ભાગ, ગુણ્યા ઊંચાઈ.",
+     "file": "gu/gu-indic-male/s12.rule.m4a",
+     "dur": 6.27
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "પહોળાઈ તપાસો: તે 4 એકમ છે. લંબાઈ ગુણ્યા પહોળાઈ એટલે 8 ગુણ્યા 4.",
+     "file": "gu/gu-indic-male/h.re.40.m4a",
+     "dur": 7.31
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "એકદમ બરાબર! અંતરિક્ષયાન બરાબર સમાઈ ગયું.",
+     "file": "gu/gu-indic-male/o.perfect.m4a",
+     "dur": 4.75
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "gu-mms": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "સ્વાગત છે, અંતરિક્ષ કમાન્ડર! આપણી પાસે એક નવું લૅન્ડિંગ મિશન છે.",
+     "file": "gu/gu-mms/s2.welcome.m4a",
+     "dur": 5.28
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "તેનું ક્ષેત્રફળ છે, સમાંતર બાજુઓના સરવાળાનો અડધો ભાગ, ગુણ્યા ઊંચાઈ.",
+     "file": "gu/gu-mms/s12.rule.m4a",
+     "dur": 5.6
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "પહોળાઈ તપાસો: તે 4 એકમ છે. લંબાઈ ગુણ્યા પહોળાઈ એટલે 8 ગુણ્યા 4.",
+     "file": "gu/gu-mms/h.re.40.m4a",
+     "dur": 6.18
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "એકદમ બરાબર! અંતરિક્ષયાન બરાબર સમાઈ ગયું.",
+     "file": "gu/gu-mms/o.perfect.m4a",
+     "dur": 2.66
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "hi-indic-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत है, अंतरिक्ष कमांडर! हमारे पास एक नया लैंडिंग मिशन है।",
+     "file": "hi/hi-indic-female/s2.welcome.m4a",
+     "dur": 4.55
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "इसका क्षेत्रफल है, समांतर भुजाओं के योग का आधा, गुणा ऊँचाई।",
+     "file": "hi/hi-indic-female/s12.rule.m4a",
+     "dur": 4.07
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "चौड़ाई देखें: यह 4 इकाई है। लंबाई गुणा चौड़ाई यानी 8 गुणा 4।",
+     "file": "hi/hi-indic-female/h.re.40.m4a",
+     "dur": 4.94
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "बिल्कुल सही मेल! अंतरिक्ष यान ठीक-ठीक समा गया।",
+     "file": "hi/hi-indic-female/o.perfect.m4a",
+     "dur": 3.73
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "hi-indic-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत है, अंतरिक्ष कमांडर! हमारे पास एक नया लैंडिंग मिशन है।",
+     "file": "hi/hi-indic-male/s2.welcome.m4a",
+     "dur": 4.4
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "इसका क्षेत्रफल है, समांतर भुजाओं के योग का आधा, गुणा ऊँचाई।",
+     "file": "hi/hi-indic-male/s12.rule.m4a",
+     "dur": 4.09
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "चौड़ाई देखें: यह 4 इकाई है। लंबाई गुणा चौड़ाई यानी 8 गुणा 4।",
+     "file": "hi/hi-indic-male/h.re.40.m4a",
+     "dur": 4.8
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "बिल्कुल सही मेल! अंतरिक्ष यान ठीक-ठीक समा गया।",
+     "file": "hi/hi-indic-male/o.perfect.m4a",
+     "dur": 3.65
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "hi-syspin-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत है, अंतरिक्ष कमांडर! हमारे पास एक नया लैंडिंग मिशन है।",
+     "file": "hi/hi-syspin-female/s2.welcome.m4a",
+     "dur": 5.36
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "इसका क्षेत्रफल है, समांतर भुजाओं के योग का आधा, गुणा ऊँचाई।",
+     "file": "hi/hi-syspin-female/s12.rule.m4a",
+     "dur": 4.73
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "चौड़ाई देखें: यह 4 इकाई है। लंबाई गुणा चौड़ाई यानी 8 गुणा 4।",
+     "file": "hi/hi-syspin-female/h.re.40.m4a",
+     "dur": 6.3
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "बिल्कुल सही मेल! अंतरिक्ष यान ठीक-ठीक समा गया।",
+     "file": "hi/hi-syspin-female/o.perfect.m4a",
+     "dur": 4.31
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "hi-syspin-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत है, अंतरिक्ष कमांडर! हमारे पास एक नया लैंडिंग मिशन है।",
+     "file": "hi/hi-syspin-male/s2.welcome.m4a",
+     "dur": 4.99
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "इसका क्षेत्रफल है, समांतर भुजाओं के योग का आधा, गुणा ऊँचाई।",
+     "file": "hi/hi-syspin-male/s12.rule.m4a",
+     "dur": 5.47
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "चौड़ाई देखें: यह 4 इकाई है। लंबाई गुणा चौड़ाई यानी 8 गुणा 4।",
+     "file": "hi/hi-syspin-male/h.re.40.m4a",
+     "dur": 5.54
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "बिल्कुल सही मेल! अंतरिक्ष यान ठीक-ठीक समा गया।",
+     "file": "hi/hi-syspin-male/o.perfect.m4a",
+     "dur": 4.06
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "hi-mms": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत है, अंतरिक्ष कमांडर! हमारे पास एक नया लैंडिंग मिशन है।",
+     "file": "hi/hi-mms/s2.welcome.m4a",
+     "dur": 4.45
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "इसका क्षेत्रफल है, समांतर भुजाओं के योग का आधा, गुणा ऊँचाई।",
+     "file": "hi/hi-mms/s12.rule.m4a",
+     "dur": 4.64
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "चौड़ाई देखें: यह 4 इकाई है। लंबाई गुणा चौड़ाई यानी 8 गुणा 4।",
+     "file": "hi/hi-mms/h.re.40.m4a",
+     "dur": 5.46
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "बिल्कुल सही मेल! अंतरिक्ष यान ठीक-ठीक समा गया।",
+     "file": "hi/hi-mms/o.perfect.m4a",
+     "dur": 3.84
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "hi-macos-lekha": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत है, अंतरिक्ष कमांडर! हमारे पास एक नया लैंडिंग मिशन है।",
+     "file": "hi/hi-macos-lekha/s2.welcome.m4a",
+     "dur": 4.62
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "इसका क्षेत्रफल है, समांतर भुजाओं के योग का आधा, गुणा ऊँचाई।",
+     "file": "hi/hi-macos-lekha/s12.rule.m4a",
+     "dur": 4.58
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "चौड़ाई देखें: यह 4 इकाई है। लंबाई गुणा चौड़ाई यानी 8 गुणा 4।",
+     "file": "hi/hi-macos-lekha/h.re.40.m4a",
+     "dur": 4.92
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "बिल्कुल सही मेल! अंतरिक्ष यान ठीक-ठीक समा गया।",
+     "file": "hi/hi-macos-lekha/o.perfect.m4a",
+     "dur": 3.43
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "mr-indic-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत आहे, अंतराळ कमांडर! आपल्याकडे एक नवीन लँडिंग मोहीम आहे.",
+     "file": "mr/mr-indic-female/s2.welcome.m4a",
+     "dur": 5.31
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "याचे क्षेत्रफळ आहे, समांतर बाजूंच्या बेरजेचा अर्धा भाग, गुणिले उंची.",
+     "file": "mr/mr-indic-female/s12.rule.m4a",
+     "dur": 5.45
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "रुंदी तपासा: ती 4 एकक आहे. लांबी गुणिले रुंदी म्हणजे 8 गुणिले 4.",
+     "file": "mr/mr-indic-female/h.re.40.m4a",
+     "dur": 6.34
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "अगदी अचूक जुळले! अंतराळयान बरोबर बसले.",
+     "file": "mr/mr-indic-female/o.perfect.m4a",
+     "dur": 3.25
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "mr-indic-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत आहे, अंतराळ कमांडर! आपल्याकडे एक नवीन लँडिंग मोहीम आहे.",
+     "file": "mr/mr-indic-male/s2.welcome.m4a",
+     "dur": 5.21
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "याचे क्षेत्रफळ आहे, समांतर बाजूंच्या बेरजेचा अर्धा भाग, गुणिले उंची.",
+     "file": "mr/mr-indic-male/s12.rule.m4a",
+     "dur": 5.44
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "रुंदी तपासा: ती 4 एकक आहे. लांबी गुणिले रुंदी म्हणजे 8 गुणिले 4.",
+     "file": "mr/mr-indic-male/h.re.40.m4a",
+     "dur": 6.07
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "अगदी अचूक जुळले! अंतराळयान बरोबर बसले.",
+     "file": "mr/mr-indic-male/o.perfect.m4a",
+     "dur": 3.23
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "mr-syspin-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत आहे, अंतराळ कमांडर! आपल्याकडे एक नवीन लँडिंग मोहीम आहे.",
+     "file": "mr/mr-syspin-female/s2.welcome.m4a",
+     "dur": 5.02
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "याचे क्षेत्रफळ आहे, समांतर बाजूंच्या बेरजेचा अर्धा भाग, गुणिले उंची.",
+     "file": "mr/mr-syspin-female/s12.rule.m4a",
+     "dur": 6.29
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "रुंदी तपासा: ती 4 एकक आहे. लांबी गुणिले रुंदी म्हणजे 8 गुणिले 4.",
+     "file": "mr/mr-syspin-female/h.re.40.m4a",
+     "dur": 5.68
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "अगदी अचूक जुळले! अंतराळयान बरोबर बसले.",
+     "file": "mr/mr-syspin-female/o.perfect.m4a",
+     "dur": 3.32
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "mr-syspin-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत आहे, अंतराळ कमांडर! आपल्याकडे एक नवीन लँडिंग मोहीम आहे.",
+     "file": "mr/mr-syspin-male/s2.welcome.m4a",
+     "dur": 5.11
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "याचे क्षेत्रफळ आहे, समांतर बाजूंच्या बेरजेचा अर्धा भाग, गुणिले उंची.",
+     "file": "mr/mr-syspin-male/s12.rule.m4a",
+     "dur": 5.49
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "रुंदी तपासा: ती 4 एकक आहे. लांबी गुणिले रुंदी म्हणजे 8 गुणिले 4.",
+     "file": "mr/mr-syspin-male/h.re.40.m4a",
+     "dur": 5.44
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "अगदी अचूक जुळले! अंतराळयान बरोबर बसले.",
+     "file": "mr/mr-syspin-male/o.perfect.m4a",
+     "dur": 3.13
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "mr-mms": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "स्वागत आहे, अंतराळ कमांडर! आपल्याकडे एक नवीन लँडिंग मोहीम आहे.",
+     "file": "mr/mr-mms/s2.welcome.m4a",
+     "dur": 4.75
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "याचे क्षेत्रफळ आहे, समांतर बाजूंच्या बेरजेचा अर्धा भाग, गुणिले उंची.",
+     "file": "mr/mr-mms/s12.rule.m4a",
+     "dur": 5.81
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "रुंदी तपासा: ती 4 एकक आहे. लांबी गुणिले रुंदी म्हणजे 8 गुणिले 4.",
+     "file": "mr/mr-mms/h.re.40.m4a",
+     "dur": 6.08
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "अगदी अचूक जुळले! अंतराळयान बरोबर बसले.",
+     "file": "mr/mr-mms/o.perfect.m4a",
+     "dur": 2.89
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "te-indic-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "స్వాగతం, అంతరిక్ష కమాండర్! మనకు ఒక కొత్త ల్యాండింగ్ మిషన్ ఉంది.",
+     "file": "te/te-indic-female/s2.welcome.m4a",
+     "dur": 4.36
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "దీని వైశాల్యం కనుగొనడానికి, సమాంతర భుజాల మొత్తంలో సగాన్ని ఎత్తుతో గుణించాలి.",
+     "file": "te/te-indic-female/s12.rule.m4a",
+     "dur": 4.72
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "వెడల్పును చూడండి: అది 4 యూనిట్లు. పొడవును వెడల్పుతో గుణిస్తే, 8ని 4తో గుణించాలి.",
+     "file": "te/te-indic-female/h.re.40.m4a",
+     "dur": 6.22
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "సరిగ్గా సరిపోయింది! అంతరిక్ష నౌక చక్కగా అమరింది.",
+     "file": "te/te-indic-female/o.perfect.m4a",
+     "dur": 3.67
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "te-indic-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "స్వాగతం, అంతరిక్ష కమాండర్! మనకు ఒక కొత్త ల్యాండింగ్ మిషన్ ఉంది.",
+     "file": "te/te-indic-male/s2.welcome.m4a",
+     "dur": 4.5
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "దీని వైశాల్యం కనుగొనడానికి, సమాంతర భుజాల మొత్తంలో సగాన్ని ఎత్తుతో గుణించాలి.",
+     "file": "te/te-indic-male/s12.rule.m4a",
+     "dur": 4.61
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "వెడల్పును చూడండి: అది 4 యూనిట్లు. పొడవును వెడల్పుతో గుణిస్తే, 8ని 4తో గుణించాలి.",
+     "file": "te/te-indic-male/h.re.40.m4a",
+     "dur": 6.29
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "సరిగ్గా సరిపోయింది! అంతరిక్ష నౌక చక్కగా అమరింది.",
+     "file": "te/te-indic-male/o.perfect.m4a",
+     "dur": 3.65
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "te-syspin-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "స్వాగతం, అంతరిక్ష కమాండర్! మనకు ఒక కొత్త ల్యాండింగ్ మిషన్ ఉంది.",
+     "file": "te/te-syspin-female/s2.welcome.m4a",
+     "dur": 4.67
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "దీని వైశాల్యం కనుగొనడానికి, సమాంతర భుజాల మొత్తంలో సగాన్ని ఎత్తుతో గుణించాలి.",
+     "file": "te/te-syspin-female/s12.rule.m4a",
+     "dur": 5.7
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "వెడల్పును చూడండి: అది 4 యూనిట్లు. పొడవును వెడల్పుతో గుణిస్తే, 8ని 4తో గుణించాలి.",
+     "file": "te/te-syspin-female/h.re.40.m4a",
+     "dur": 6.29
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "సరిగ్గా సరిపోయింది! అంతరిక్ష నౌక చక్కగా అమరింది.",
+     "file": "te/te-syspin-female/o.perfect.m4a",
+     "dur": 3.83
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "te-syspin-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "స్వాగతం, అంతరిక్ష కమాండర్! మనకు ఒక కొత్త ల్యాండింగ్ మిషన్ ఉంది.",
+     "file": "te/te-syspin-male/s2.welcome.m4a",
+     "dur": 4.11
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "దీని వైశాల్యం కనుగొనడానికి, సమాంతర భుజాల మొత్తంలో సగాన్ని ఎత్తుతో గుణించాలి.",
+     "file": "te/te-syspin-male/s12.rule.m4a",
+     "dur": 5.51
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "వెడల్పును చూడండి: అది 4 యూనిట్లు. పొడవును వెడల్పుతో గుణిస్తే, 8ని 4తో గుణించాలి.",
+     "file": "te/te-syspin-male/h.re.40.m4a",
+     "dur": 5.77
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "సరిగ్గా సరిపోయింది! అంతరిక్ష నౌక చక్కగా అమరింది.",
+     "file": "te/te-syspin-male/o.perfect.m4a",
+     "dur": 3.32
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "te-mms": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "స్వాగతం, అంతరిక్ష కమాండర్! మనకు ఒక కొత్త ల్యాండింగ్ మిషన్ ఉంది.",
+     "file": "te/te-mms/s2.welcome.m4a",
+     "dur": 5.17
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "దీని వైశాల్యం కనుగొనడానికి, సమాంతర భుజాల మొత్తంలో సగాన్ని ఎత్తుతో గుణించాలి.",
+     "file": "te/te-mms/s12.rule.m4a",
+     "dur": 5.42
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "వెడల్పును చూడండి: అది 4 యూనిట్లు. పొడవును వెడల్పుతో గుణిస్తే, 8ని 4తో గుణించాలి.",
+     "file": "te/te-mms/h.re.40.m4a",
+     "dur": 7.53
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "సరిగ్గా సరిపోయింది! అంతరిక్ష నౌక చక్కగా అమరింది.",
+     "file": "te/te-mms/o.perfect.m4a",
+     "dur": 4.22
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "te-macos-geeta": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "స్వాగతం, అంతరిక్ష కమాండర్! మనకు ఒక కొత్త ల్యాండింగ్ మిషన్ ఉంది.",
+     "file": "te/te-macos-geeta/s2.welcome.m4a",
+     "dur": 4.93
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "దీని వైశాల్యం కనుగొనడానికి, సమాంతర భుజాల మొత్తంలో సగాన్ని ఎత్తుతో గుణించాలి.",
+     "file": "te/te-macos-geeta/s12.rule.m4a",
+     "dur": 6.59
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "వెడల్పును చూడండి: అది 4 యూనిట్లు. పొడవును వెడల్పుతో గుణిస్తే, 8ని 4తో గుణించాలి.",
+     "file": "te/te-macos-geeta/h.re.40.m4a",
+     "dur": 7.21
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "సరిగ్గా సరిపోయింది! అంతరిక్ష నౌక చక్కగా అమరింది.",
+     "file": "te/te-macos-geeta/o.perfect.m4a",
+     "dur": 3.85
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "od-indic-female": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "ସ୍ୱାଗତ, ମହାକାଶ କମାଣ୍ଡର! ଆମ ପାଖରେ ଏକ ନୂଆ ଅବତରଣ ମିଶନ ଅଛି।",
+     "file": "od/od-indic-female/s2.welcome.m4a",
+     "dur": 5.43
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "ଏହାର କ୍ଷେତ୍ରଫଳ ହେଉଛି ସମାନ୍ତର ବାହୁଗୁଡ଼ିକର ଯୋଗଫଳର ଅଧା, ଗୁଣନ ଉଚ୍ଚତା।",
+     "file": "od/od-indic-female/s12.rule.m4a",
+     "dur": 4.87
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "ପ୍ରସ୍ଥ ଦେଖନ୍ତୁ: ଏହା 4 ଏକକ। ଦୈର୍ଘ୍ୟ ଗୁଣନ ପ୍ରସ୍ଥ ମାନେ 8 ଗୁଣନ 4।",
+     "file": "od/od-indic-female/h.re.40.m4a",
+     "dur": 4.52
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "ଠିକ୍ ମେଳ! ମହାକାଶଯାନ ଠିକ୍ ଠିକ୍ ଖାପ ଖାଇଲା।",
+     "file": "od/od-indic-female/o.perfect.m4a",
+     "dur": 3.29
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "od-indic-male": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "ସ୍ୱାଗତ, ମହାକାଶ କମାଣ୍ଡର! ଆମ ପାଖରେ ଏକ ନୂଆ ଅବତରଣ ମିଶନ ଅଛି।",
+     "file": "od/od-indic-male/s2.welcome.m4a",
+     "dur": 5.43
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "ଏହାର କ୍ଷେତ୍ରଫଳ ହେଉଛି ସମାନ୍ତର ବାହୁଗୁଡ଼ିକର ଯୋଗଫଳର ଅଧା, ଗୁଣନ ଉଚ୍ଚତା।",
+     "file": "od/od-indic-male/s12.rule.m4a",
+     "dur": 4.9
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "ପ୍ରସ୍ଥ ଦେଖନ୍ତୁ: ଏହା 4 ଏକକ। ଦୈର୍ଘ୍ୟ ଗୁଣନ ପ୍ରସ୍ଥ ମାନେ 8 ଗୁଣନ 4।",
+     "file": "od/od-indic-male/h.re.40.m4a",
+     "dur": 4.36
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "ଠିକ୍ ମେଳ! ମହାକାଶଯାନ ଠିକ୍ ଠିକ୍ ଖାପ ଖାଇଲା।",
+     "file": "od/od-indic-male/o.perfect.m4a",
+     "dur": 3.18
+    }
+   ],
+   "rendered": "2026-11-06"
+  },
+  "od-mms": {
+   "clips": [
+    {
+     "line": "vo.s2.welcome",
+     "text": "ସ୍ୱାଗତ, ମହାକାଶ କମାଣ୍ଡର! ଆମ ପାଖରେ ଏକ ନୂଆ ଅବତରଣ ମିଶନ ଅଛି।",
+     "file": "od/od-mms/s2.welcome.m4a",
+     "dur": 5.18
+    },
+    {
+     "line": "vo.s12.rule",
+     "text": "ଏହାର କ୍ଷେତ୍ରଫଳ ହେଉଛି ସମାନ୍ତର ବାହୁଗୁଡ଼ିକର ଯୋଗଫଳର ଅଧା, ଗୁଣନ ଉଚ୍ଚତା।",
+     "file": "od/od-mms/s12.rule.m4a",
+     "dur": 4.87
+    },
+    {
+     "line": "vo.h.re.40",
+     "text": "ପ୍ରସ୍ଥ ଦେଖନ୍ତୁ: ଏହା 4 ଏକକ। ଦୈର୍ଘ୍ୟ ଗୁଣନ ପ୍ରସ୍ଥ ମାନେ 8 ଗୁଣନ 4।",
+     "file": "od/od-mms/h.re.40.m4a",
+     "dur": 5.38
+    },
+    {
+     "line": "vo.o.perfect",
+     "text": "ଠିକ୍ ମେଳ! ମହାକାଶଯାନ ଠିକ୍ ଠିକ୍ ଖାପ ଖାଇଲା।",
+     "file": "od/od-mms/o.perfect.m4a",
+     "dur": 2.54
+    }
+   ],
+   "rendered": "2026-11-06"
+  }
+ }
+}

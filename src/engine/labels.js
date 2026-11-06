@@ -4,11 +4,14 @@
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 
+const ANCHOR = { center: ['-50%', '-50%'], bottom: ['-50%', '-100%'], top: ['-50%', '0%'], left: ['0%', '-50%'], right: ['-100%', '-50%'] };
+
 export class LabelLayer {
   constructor(container, camera) {
     this.container = container; this.camera = camera; this.items = new Map(); this._v = new THREE.Vector3();
   }
-  /** worldPos: Vector3 or () => Vector3. offset: px. anchor: 'center' | 'bottom' (the label sits above its point) */
+  /** worldPos: Vector3 or () => Vector3. offset: px. anchor: the side of the label on its point: 'center', 'bottom' (the
+      label sits above its point), 'top' (below it), 'left' (to its right), 'right' (to its left) */
   add(id, html, { className = '', worldPos, offset = [0, 0], anchor = 'center', clamp = false } = {}) {
     this.remove(id);
     const el = document.createElement('div');
@@ -35,8 +38,8 @@ export class LabelLayer {
     const behind = this._v.z > 1 || this._v.z < -1;
     let x = (this._v.x * 0.5 + 0.5) * w + it.offset[0], y = (-this._v.y * 0.5 + 0.5) * h + it.offset[1];
     if (it.clamp) { const ew = it.el.offsetWidth / 2 + 8, eh = it.el.offsetHeight / 2 + 8; x = Math.max(ew, Math.min(w - ew, x)); y = Math.max(eh + 60, Math.min(h - eh, y)); }
-    const ty = it.anchor === 'bottom' ? '-100%' : '-50%';
-    it.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, ${ty})`;
+    const [tx, ty] = ANCHOR[it.anchor] || ANCHOR.center;
+    it.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(${tx}, ${ty})`;
     it.el.style.visibility = behind ? 'hidden' : 'visible';
   }
   update() { for (const it of this.items.values()) this._place(it); }

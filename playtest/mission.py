@@ -2,6 +2,7 @@
 """Play the whole mission headless with the autoplayer and screenshot it.
     python3 playtest/mission.py                       # intro → … → complete
     python3 playtest/mission.py --from land0 --plan sle-e-e-e-e --every 6
+    python3 playtest/mission.py --lan gu                # the whole mission in Gujarati (hi mr gu te od)
 The learning section (Screen 6) is its own app (learning/), played by hand: the autoplayer checks that it loads
 (its Start button shows inside the frame), then presses Skip lesson twice, as a player would.
 Screenshots: playtest/screens/m_<n>_<phase>.png. Exit code 1 if a page error happened."""
@@ -24,6 +25,7 @@ def main():
     ap.add_argument('--size', default='1280x800')
     ap.add_argument('--dpr', default='1')
     ap.add_argument('--tag', default='m')
+    ap.add_argument('--lan', default='', help='a language: hi mr gu te od (the game reads ?lan=)')
     ap.add_argument('--soft', action='store_true', help='software GL (no GPU)')
     a = ap.parse_args()
     w, h = map(int, a.size.split('x'))
@@ -38,7 +40,7 @@ def main():
             pg = b.new_page(viewport={'width': w, 'height': h})
             pg.on('console', lambda m: (m.type in ('error', 'warning')) and print(f'   [{m.type}] {m.text[:300]}'))
             pg.on('pageerror', lambda e: (errors.append(str(e)), print(f'   [PAGEERROR] {e}')))
-            q = f'auto=1&fast={a.fast}&dpr={a.dpr}&plan={a.plan}&screen={a.frm}&seed=7'
+            q = f'auto=1&fast={a.fast}&dpr={a.dpr}&plan={a.plan}&screen={a.frm}&seed=7' + (f'&lan={a.lan}' if a.lan else '')
             pg.goto(f'http://127.0.0.1:{port}/index.html?{q}')
             pg.wait_for_function('window.__ql && window.__ql.flow', timeout=120000)
             t0 = time.time(); last_phase = None; last_shot = 0; n = 0; skipped = False

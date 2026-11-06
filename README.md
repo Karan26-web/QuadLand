@@ -17,6 +17,9 @@ python3 playtest/serve.py 8344      # then open http://127.0.0.1:8344/
 ```
 It plays best in landscape on a tablet or a laptop. Phones and portrait work too.
 
+The URL picks the language: `?lan=hi` (Hindi), `mr` (Marathi), `gu` (Gujarati), `te` (Telugu), `od` (Odia; `or`
+works too); none or anything else is English. `?lang=` works as well. See [Languages](#languages).
+
 ## Controls
 | Action | Touch / mouse | Keyboard |
 |---|---|---|
@@ -36,24 +39,25 @@ It plays best in landscape on a tablet or a laptop. Phones and portrait work too
 | (addition) Intro | An engine close-up, a banked hull flyby, whip pans across the five ships, the five lined up and seen from straight above as their sides trace on in light, a dolly zoom with the planet looming, then a punch through the canopy | `src/game/intro.js` |
 | 2 Cockpit | The welcome; steer the planet into the reticle; the thrust lever starts the hyperspace jump; hold DESCEND through the plasma and clouds; the LXD's lines; LAUNCH sends the drone and the feed glitches in | `src/game/cockpit.js`, `src/ui/cockpitUI.js` |
 | 3–5 Dark sea, scan, five zones, the hook | The drone feed over the dark sea; SCAN makes two beam passes and the lights come up; five sets of three zones rise one by one as the camera whips to each; straight above the whole field, every zone's sides trace on in light; a low banked loop; the area hook over a high glide, ending above the field again | `src/game/survey.js` |
-| 6 Learning section | The team's learning module (`learning/`), framed full-screen: Swiftee teaches the area of each shape, with practice; its last page hands back to the mission. Skip lesson › (pressed twice) goes straight on to Screen 7 | `learning/`, `src/game/lesson.js` |
+| 6 Learning section | The team's learning module (`learning/`), framed full-screen over a quiet music bed of its own: Swiftee teaches the area of each shape, with practice; its last page hands back to the mission. Skip lesson › (pressed twice) goes straight on to Screen 7 | `learning/`, `src/game/lesson.js` |
 | 7 Back to the mission | Fade back; the camera descends toward the first zone | `src/game/landing.js` (`back`) |
-| 8–12 Five landings | The camera descends to the set; the ship flies in; its dimensions draw on ("5 units"); the rule is said; the playing view is straight down over just that set; each island's area is written on it; the player flies (the dimensions step away while the ship moves) and presses GO; one of three outcomes; 3 hearts; a hint ladder; the autopilot when the hearts run out; NEXT | `src/game/landing.js` |
-| 13 Mission complete | The five ships on their islands in deep space with their rules; the fanfare and confetti; RESTART returns to the cockpit | `src/game/complete.js` |
+| 8–12 Five landings | The camera descends to the set; the ship flies in; its dimensions draw on ("5 units"); the playing view is straight down over just that set; each island's area is written on it; the player flies (fire from the side away from the way it moves; the dimensions step away while it moves) and presses GO; one of three outcomes. After a miss, the LXD's ladder: the zones change places, then a hint (the shape, the rule, the working), and at the fourth miss the zone that fits turns green; 4 hearts; the autopilot after a miss on the green zone; NEXT | `src/game/landing.js` |
+| 13 Mission complete | The five ships landed on their zones on the sea, with their rules; the fanfare and confetti; RESTART returns to the cockpit | `src/game/complete.js` |
 
-`docs/GDD.md` explains each design decision and traces every LXD line to the build; §11 traces the LXD's review of 2026-11-05 (`spacecraftFeedbacks.pdf`).
+`docs/GDD.md` explains each design decision and traces every LXD line to the build; §11 traces the LXD's review of 2026-11-05 (`spacecraftFeedbacks.pdf`) and §13 the second review of 2026-11-06 (`spacecraftFeedbacks2.pdf`).
 
 ## Dev and QA
 URL parameters:
 - `?screen=cockpit|survey|lesson|back|land0…land4|complete` starts there, with the world set up as it would be by then.
 - `?auto=1` plays itself: it steers, pulls the lever, holds DESCEND, presses LAUNCH and SCAN, flies to an island and presses GO. The learning module is played by hand.
-- `?plan=sle-e-l-e-s` scripts the autoplayer's landing choices, one group per landing: `s` too small, `l` too large, `e` exact. `sss` runs out of hearts and brings the autopilot.
+- `?plan=sle-e-l-e-s` scripts the autoplayer's landing choices, one group per landing: `s` too small, `l` too large, `e` exact. `slsle` climbs the whole hint ladder (the fourth miss lights the green zone); `slsls` misses even the green zone and brings the autopilot.
 - `?fast=2` runs both clocks twice as fast.
 - `?dpr=1` fixes the render resolution; it adapts by default.
 - `?seed=7` deals the islands the same way every run.
 - `?view=space|fleet|planet|islands|sea|low|cockpit|ship&k=2` shows one world, still, for screenshots.
+- `?lan=hi|mr|gu|te|od` plays in that language (words, fonts, narration; the learning module follows).
 
-Console: `__ql` is the game context (`__ql.flow.phase`, `__ql.planet`, `__ql.space`, `__ql.director`, `__ql.post.fx`).
+Console: `__ql` is the game context (`__ql.flow.phase`, `__ql.planet`, `__ql.space`, `__ql.director`, `__ql.post.fx`, `__ql.i18n.lang`).
 
 Playtests (Python Playwright with Chromium; they use the Mac's GPU through ANGLE Metal, and `--soft` uses software GL):
 ```bash
@@ -79,6 +83,7 @@ src/engine/
   post.js                       the HDR pipeline: dual-Kawase bloom, chromatic aberration, warp zoom blur, whip smear, glitch, drone feed, ACES, grading
   audio.js                      procedural sound: buses, reverb, 56 cues, 8 live loops, a generative score with 5 moods; recorded files override cues
   voice.js                      the narrator: decoded lines through Web Audio (the waveform and the orb follow the real voice), subtitles, ducking
+  i18n.js                       the player's language (?lan=): every word, the fonts, which narration loads
   clock.js, tween.js            game time and real time, slow motion, cancellable scripts
   input.js, labels.js, fx.js, assets.js, util.js
 src/world/
@@ -93,11 +98,14 @@ src/world/
 src/game/                       one file per screen + flow.js (the order) + common.js + dev.js
 learning/                       Screen 6: the team's learning module, kept as delivered (its own page, css, js, voice-overs, Swiftee)
 src/ui/hud.js, cockpitUI.js     the HUD; the cockpit's vector frame and console (drawn at the screen's size) and its instruments
-assets/vo/                      lines.json (every line, LXD-marked), vo.json and the temp narration (.m4a)
+assets/i18n/strings.json        every word of the game, in all six languages
+assets/vo/                      lines.json (the lines, LXD-marked), voices.json (each language's narrator), English narration + vo.json;
+                                hi/ mr/ gu/ te/ od/: each language's narration and vo.json
+voice-lab/                      the voice lab: open speech models, the voice showcase (index.html), clarity checks
 assets/art.json, assets/img/    the GPT art slots and the installed pictures
 assets/sfx/                     recorded sound overrides (optional)
 docs/                           the LXD flow, the GDD, the art and audio briefs (docs/assets/)
-tools/                          make_vo.py, install_art.py, make_templates.py
+tools/                          make_vo.py, i18n_check.py, install_art.py, make_templates.py
 playtest/                       serve.py, mission.py, shot.py
 vendor/three.module.js          Three.js r170
 ```
@@ -109,8 +117,32 @@ python3 tools/install_art.py --list
 python3 tools/install_art.py cockpit ~/Downloads/cockpit.png
 ```
 
+## Languages
+English, Hindi, Marathi, Gujarati, Telugu and Odia: every word on screen, every spoken line and its subtitle.
+- **The words:** `assets/i18n/strings.json`, one section per language with the same keys (the layout of the team's
+  learning module, whose maths words it uses). `vo.<id>` keys are the Ship AI's lines. After an edit, run
+  `python3 tools/i18n_check.py`: every language has every key, `{n}` placeholders match, and no spoken line in an
+  Indian language holds a Latin letter.
+- **The runtime:** `src/engine/i18n.js` reads `?lan=` (or `?lang=`), sets `<html lang>` and the script, fills the
+  page's `data-i18n` elements and gives the code `t('key')`. The learning module gets the same `?lan=`.
+- **Fonts:** Baloo for each script (Baloo 2 for Devanagari, Bhai 2 for Gujarati, Tammudu 2 for Telugu, Bhaina 2 for
+  Odia), subset to the script plus Latin, in `assets/fonts/` (OFL). Only the player's script is downloaded.
+- **The voice:** each language's narration is in `assets/vo/<lan>/`, rendered on a Mac by open speech models (no cloud
+  API): AI4Bharat Indic-TTS for Hindi, Gujarati, Telugu and Odia, SYSPIN for Marathi. The narrator for each language
+  is chosen in `assets/vo/voices.json`. The voices to choose from, their licences and how they are made are in
+  `voice-lab/` (open `voice-lab/index.html` through the server to listen; `voice-lab/README.md`).
+- **Credit:** the Marathi narration is *SYSPIN, IISc Bangalore and ARTPARK* (CC-BY-4.0, which asks for this credit).
+  Indic-TTS (AI4Bharat) is MIT.
+- The translations are a first pass: a native speaker who teaches maths should review each language before release.
+
 ## Narration
-The game ships with temp narration rendered by macOS `say` (Samantha), one AAC file per line, so every device sounds the same and the waveform follows the real voice. To replace it with a recorded voice, follow `docs/assets/08-voice.md`: save each line as `assets/vo/<ID>.m4a`, then run `python3 tools/make_vo.py --adopt`. After editing `lines.json`, run `python3 tools/make_vo.py` again; it renders only the lines that changed.
+English ships with temp narration rendered by macOS `say` (Samantha), one AAC file per line, so every device sounds the same and the waveform follows the real voice. The other languages are rendered by the voice lab (`voice-lab/setup.sh` once, about 15 GB of models):
+```bash
+python3 tools/make_vo.py                 # English (macOS say)
+python3 tools/make_vo.py --lang gu       # Gujarati, in the narrator chosen in assets/vo/voices.json
+python3 tools/make_vo.py --lang all      # every language; only new or changed lines are rendered
+```
+To replace a line with a recorded voice, follow `docs/assets/08-voice.md`: save it as `assets/vo/<ID>.m4a` (another language: `assets/vo/<lan>/<ID>.m4a`), then run `python3 tools/make_vo.py --adopt` (with `--lang`). The words of every line are in `assets/i18n/strings.json`; `assets/vo/lines.json` lists the lines and which are the LXD's.
 
 ## Deploy
 It is a static site with no build step: upload the folder as it is, for example to Vercel with the "Other" preset and no build command. Keep the `vendor/` and `assets/` paths.

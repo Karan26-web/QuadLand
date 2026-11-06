@@ -1,0 +1,37 @@
+# The voice lab's Python packages (Python 3.9-3.11; tested on macOS 26/27, Apple silicon, Python 3.9.6).
+# Coqui TTS itself is installed separately with --no-deps (setup.sh): its own pins (numpy==1.22, spacy[ja]) are for
+# features the lab does not use and do not resolve on a current Mac.
+torch==2.5.1
+numpy==1.26.4
+scipy==1.13.1
+soundfile==0.13.1
+librosa==0.11.0
+transformers==4.46.3
+tokenizers==0.20.3
+safetensors==0.7.0
+coqpit==0.0.17
+trainer==0.0.36
+pandas==1.5.3
+matplotlib==3.9.4
+fsspec==2025.10.0
+num2words==0.5.14
+inflect==7.5.0
+anyascii==0.3.3
+Unidecode==1.4.0
+gruut==2.2.3
+jieba==0.42.1
+pypinyin==0.55.0
+g2pkk==0.1.2
+jamo==0.4.1
+bangla==0.0.2
+bnnumerizer==0.0.2
+bnunicodenormalizer==0.1.7
+einops==0.8.2
+encodec==0.1.1
+pysbd==0.3.4
+nltk==3.9.2
+hangul-romanize==0.1.0
+PyYAML==6.0.3
+packaging
+tqdm
+Cython

@@ -1,0 +1,28 @@
+{
+ "recogniser": "facebook/mms-1b-all",
+ "mean_cer": {
+  "gu-indic-female": 0.1644,
+  "gu-indic-male": 0.0775,
+  "gu-mms": 0.1793,
+  "hi-indic-female": 0.0439,
+  "hi-indic-male": 0.0878,
+  "hi-syspin-female": 0.1332,
+  "hi-syspin-male": 0.1084,
+  "hi-mms": 0.1431,
+  "hi-macos-lekha": 0.1015,
+  "mr-indic-female": 0.1316,
+  "mr-indic-male": 0.0647,
+  "mr-syspin-female": 0.042,
+  "mr-syspin-male": 0.0661,
+  "mr-mms": 0.1263,
+  "te-indic-female": 0.0755,
+  "te-indic-male": 0.1002,
+  "te-syspin-female": 0.0672,
+  "te-syspin-male": 0.0756,
+  "te-mms": 0.0998,
+  "te-macos-geeta": 0.0871,
+  "od-indic-female": 0.1382,
+  "od-indic-male": 0.1211,
+  "od-mms": 0.134
+ }
+}

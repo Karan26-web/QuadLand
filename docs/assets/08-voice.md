@@ -6,9 +6,9 @@ Every line the game speaks, with the ID that names its file. The game ships with
 
 **Direction.** The Ship AI talks to the Space Commander, a child aged 10 to 13, as a friendly mission partner: warm, clear and encouraging, smiling through the lines, never sing-song or babyish. Numbers and formulas must be clear: say "times" for ×, "half" for ½ and "square units" in full. Leave a beat at full stops. Outcome lines are upbeat, even the misses: the misses are funny, not failures. Questions rise at the end.
 
-**Recording.** Record mono at 44.1 or 48 kHz, normalised to about −16 LUFS with peaks under −1 dBFS. Trim the head and tail to 0.1 s. Name each file `assets/vo/<ID>.m4a` (AAC) or `.mp3`, then run `python3 tools/make_vo.py --adopt`: it measures every recording and keeps it from then on.
+**Recording.** Record mono at 44.1 or 48 kHz, normalised to about −16 LUFS with peaks under −1 dBFS. Trim the head and tail to 0.1 s. Name each file `assets/vo/<ID>.m4a` (AAC) or `.mp3` (another language: `assets/vo/<lan>/<ID>.m4a`), then run `python3 tools/make_vo.py --adopt` (with `--lang <lan>`): it measures every recording and keeps it from then on. The words of every line in every language are in `assets/i18n/strings.json`.
 
-**LXD** marks the LXD's own lines (`docs/spacecraft.docx`), kept word for word. Unmarked lines are additions: the trip to the planet and the hint ladder. They are open to the LXD's review. Screen 6, the learning section, is the team's own module (`learning/`), with its own voice-overs.
+**LXD** marks the LXD's own lines (`docs/spacecraft.docx` and its reviews), kept word for word. Unmarked lines are additions: the trip to the planet, the ladder's lines for the four ships after the square, and the green zone's line. They are open to the LXD's review. Screen 6, the learning section, is the team's own module (`learning/`), with its own voice-overs.
 
 
 ## Screen 2 · Cockpit
@@ -85,30 +85,23 @@ Every line the game speaks, with the ID that names its file. The game ships with
 | `o.exact` | ✓ | Choose the landing zone with the exact area. |
 | `o.auto` | ✓ | Out of hearts! Autopilot will land on the zone that fits. |
 
-## Landing hints, first miss: the idea of the mistake
+## Landing hints: the LXD's ladder (second review, 2026-11-06)
+
+After a miss: the feedback (`o.small` or `o.large`), the zones change places, the question again (`o.exact`), then the rung for that miss. Each rung is spoken and shown in the hint caption. The second rung is the ship's rule line (`s8.rule` … `s12.rule` above), which is no longer said before the first try.
 
 | ID | LXD | Line |
 |---|---|---|
-| `h.sq.20` |  | 20 is the distance all the way around the ship. Area is the space it covers: side times side. |
-| `h.sq.30` |  | Work out side times side: 5 times 5. |
-| `h.re.24` |  | 24 is the distance all the way around the ship. For area, multiply length times width. |
-| `h.re.40` |  | Check the width: it is 4 units. Length times width is 8 times 4. |
-| `h.pa.26` |  | 26 is the distance all the way around the ship. Area is base times height. |
-| `h.pa.42` |  | 42 uses the slanted side. Use the height: base times height. |
-| `h.rh.20` |  | 20 is the distance all the way around the ship. Area is half of diagonal 1 times diagonal 2. |
-| `h.rh.30` |  | Multiply the two diagonals, then take half. |
-| `h.tr.40` |  | 40 uses only the shorter parallel side. Add both parallel sides first. |
-| `h.tr.60` |  | 60 uses only the longer parallel side. Add both parallel sides first. |
-
-## Landing hints, second miss: the working
-
-| ID | LXD | Line |
-|---|---|---|
-| `w.sq` |  | Here's a hint. Work out 5 times 5. |
-| `w.re` |  | Here's a hint. Work out 8 times 4. |
-| `w.pa` |  | Here's a hint. Work out 7 times 5. |
-| `w.rh` |  | Here's a hint. Work out half of 6 times 8. |
-| `w.tr` |  | Here's a hint. Add 8 and 12, then multiply by 5, and take half. |
+| `h.look.sq` | ✓ | Look closely! The spacecraft is square shaped. *(1st miss)* |
+| `h.look.re` |  | Look closely! The spacecraft is rectangle shaped. |
+| `h.look.pa` |  | Look closely! The spacecraft is parallelogram shaped. |
+| `h.look.rh` |  | Look closely! The spacecraft is rhombus shaped. |
+| `h.look.tr` |  | Look closely! The spacecraft is trapezium shaped. |
+| `h.calc.sq` | ✓ | Here, multiply 5 with 5. *(3rd miss)* |
+| `h.calc.re` |  | Here, multiply 8 with 4. |
+| `h.calc.pa` |  | Here, multiply 7 with 5. |
+| `h.calc.rh` |  | Here, multiply 6 with 8, then take half. |
+| `h.calc.tr` |  | Here, add 8 and 12, multiply the sum with 5, then take half. |
+| `h.green` |  | The green landing zone fits exactly. Land the spaceship there! *(4th miss: the zone that fits turns green)* |
 
 ## Screen 13 · Mission complete
 
@@ -122,7 +115,8 @@ Every line the game speaks, with the ID that names its file. The game ships with
 |---|---|---|
 | Cockpit, waiting at LAUNCH (6 s) | Press LAUNCH when you are ready. | LXD |
 | First landing; any landing after 9 s idle | Drag the joystick to fly the spaceship. Stop over a landing zone and press GO. | LXD |
-| Out of hearts | Out of hearts! Autopilot will land on the zone that fits. | LXD (also spoken: `o.auto`) |
+| A miss even on the green zone (no hearts left) | Out of hearts! Autopilot will land on the zone that fits. | LXD (also spoken: `o.auto`) |
+| After a miss | The rung: `h.look.*`, the rule, `h.calc.*`, `h.green` | the LXD's second review (also spoken) |
 | Cockpit, steering idle (7 s) | Drag the joystick to turn the ship toward the planet. | addition |
 | Cockpit, lever idle (8 s) | Push the THRUST lever up. You can also tap it. | addition |
 | Cockpit, DESCEND idle (4.5 s) | Hold DESCEND to fly down. | addition |

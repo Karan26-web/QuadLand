@@ -1,3 +1,8 @@
 playtest/screens/
 .DS_Store
 __pycache__/
+
+# the voice lab's environment and downloaded models (voice-lab/setup.sh makes them again)
+voice-lab/.venv/
+voice-lab/models/
+voice-lab/say.m4a

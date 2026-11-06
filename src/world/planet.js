@@ -59,17 +59,19 @@ export class PlanetWorld {
       // spaced so that, seen from above, the ship waits in clear water between the back island and the front two
       const big = bounds(shape.verts), grow = Math.sqrt(Math.max(...shape.islands) / shape.area);
       const s = Math.max(Math.max(big.w, big.h) * grow + 6.5, (big.h * 1.22 + 3.4 + big.h * grow) / 0.92);
-      const slots = [[-s * 0.62, s * 0.3], [s * 0.62, s * 0.3], [0, -s * 0.62]];
+      const slots = [[-s * 0.62, s * 0.3], [s * 0.62, s * 0.3], [0, -s * 0.62]].map(([x, z]) => new THREE.Vector3(sx + x, 0, sz + z));
       const areas = shuffle(shape.islands, rng);
       const islands = areas.map((area, k) => {
         const isl = new Island(shape, area, { seed: 100 + i * 10 + k });
-        isl.position.x = sx + slots[k][0]; isl.position.z = sz + slots[k][1];
+        isl.position.x = slots[k].x; isl.position.z = slots[k].z; isl.slot = k;
         isl.rotation.y = 0; scene.add(isl);
         return isl;
       });
-      return { shape, centre: new THREE.Vector3(sx, 0, sz), islands, spacing: s, landed: false };
+      // slots: the three places in the set; after a miss the zones change places among them (landing.js)
+      return { shape, centre: new THREE.Vector3(sx, 0, sz), islands, slots, spacing: s, landed: false };
     });
     this.allIslands = this.sites.flatMap((s) => s.islands);
+    this.seaIslands = null;            // the islands the sea foams round, when not the sets' (the finale's own five)
 
     this.ships = SHAPES.map((s) => { const sh = new QuadShip(s); sh.visible = false; scene.add(sh); return sh; });
     this.drone = new Drone(); this.drone.visible = false; scene.add(this.drone);
@@ -133,7 +135,7 @@ export class PlanetWorld {
     this.ocean.update(dt, camera);
     for (const w of this.waves) w.update(dt);
     for (const s of this.sites) for (const isl of s.islands) if (isl.visible) isl.update(dt);
-    this.ocean.setIslands(this.allIslands);
+    this.ocean.setIslands(this.seaIslands || this.allIslands);
     for (const sh of this.ships) if (sh.visible) sh.update(dt);
     if (this.drone.visible) this.drone.update(dt);
     for (const p of [this.spray, this.mist, this.sparks, this.glints, this.smoke]) p.update(dt);
