@@ -10,7 +10,7 @@
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 import { Tex } from './textures.js';
-import { inset, threeShape, centroid, bounds, toWorld } from './shapes.js';
+import { inset, threeShape, centroid, bounds, toWorld, inside } from './shapes.js';
 import { EdgeGlow } from './edges.js';
 import { damp, clamp } from '../engine/util.js';
 
@@ -68,7 +68,7 @@ void main() {
   float edge = smoothstep(0.38, 0.5, hexDist(g));
   float pulse = 0.85 + 0.15 * sin(uTime * 9.0 + r * 6.0);
   vec3 hot = mix(vec3(1.0, 0.92, 0.7), vec3(1.0, 0.55, 0.12), smoothstep(0.0, 0.9, r));
-  vec3 col = mix(hot * 1.5 * pulse, vec3(0.35, 0.08, 0.02), edge) * uPower;
+  vec3 col = mix(hot * 1.2 * pulse, vec3(0.35, 0.08, 0.02), edge) * uPower;
   float a2 = smoothstep(1.0, 0.92, r);
   gl_FragColor = vec4(col * a2 + vec3(0.12, 0.05, 0.03) * (1.0 - uPower) * a2, 1.0);
   if (r > 1.0) discard;
@@ -88,87 +88,120 @@ const DARK = () => new THREE.MeshStandardMaterial({ color: 0x2b3350, roughness: 
 const GLASS = () => new THREE.MeshPhysicalMaterial({ color: 0x46d9ff, roughness: 0.04, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05, emissive: 0x0a5f86, emissiveIntensity: 0.9, envMapIntensity: 1.8 });
 
 /* ================================================================== QuadShip */
+// The LXD's review (2026-11-05): from above, nothing may stick out of the ship's shape. So the jets are built into
+// the hull (nozzles set into its back wall, vents glowing on its deck) instead of pods and flames behind it, the canopy
+// is sized to sit inside the outline, and the corner lights are small. Under it, the hover jets fire straight down,
+// inside the outline, so the view from above never sees them.
+const SIDE_FRAG_UNIFORMS = 'varying float vLy;\nuniform vec3 uTrim; uniform float uTrimK, uTrimY;';
 export class QuadShip extends THREE.Group {
   constructor(shape) {
     super();
     this.shape = shape; this.name = 'ship-' + shape.key;
     const b = bounds(shape.verts), bevel = 0.2, depth = 0.62;
     this.size = Math.max(b.w, b.h);
-    const geo = new THREE.ExtrudeGeometry(threeShape(inset(shape.verts, bevel)), { depth, bevelEnabled: true, bevelThickness: 0.22, bevelSize: bevel, bevelSegments: 3, curveSegments: 1 });
+    const geo = new THREE.ExtrudeGeometry(threeShape(inset(shape.verts, bevel)), { depth, bevelEnabled: true, bevelThickness: 0.22, bevelSize: bevel, bevelSegments: 4, curveSegments: 1 });
     geo.rotateX(-Math.PI / 2); geo.translate(0, 0.22, 0);
-    const top = new THREE.MeshStandardMaterial({ map: Tex.hull(shape), color: 0xffffff, roughness: 0.3, metalness: 0.18 });
-    const side = new THREE.MeshStandardMaterial({ color: 0xc8d1e2, roughness: 0.36, metalness: 0.42 });
     this.hullTop = depth + 0.44;
+    const accent = new THREE.Color(shape.accent);
+    const top = new THREE.MeshPhysicalMaterial({ map: Tex.hull(shape), color: 0xffffff, roughness: 0.32, metalness: 0.15, clearcoat: 0.5, clearcoatRoughness: 0.25 });
+    // the walls: a deep steel-violet, with one thin line of the ship's own colour running round them
+    const side = new THREE.MeshStandardMaterial({ color: 0x4a527f, roughness: 0.42, metalness: 0.5 });
+    this.trimU = { uTrim: { value: accent.clone() }, uTrimK: { value: 1.4 }, uTrimY: { value: 0.72 } };   // near the top of the straight wall (y 0.22 to 0.84)
+    side.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, this.trimU);
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vLy;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvLy = position.y;');
+      sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\n' + SIDE_FRAG_UNIFORMS)
+        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += uTrim * uTrimK * smoothstep(0.045, 0.02, abs(vLy - uTrimY));');
+    };
+    side.customProgramCacheKey = () => 'quad-side';
     const hull = new THREE.Mesh(geo, [top, side]);
     this.hull = hull; this.body = new THREE.Group(); this.add(this.body); this.body.add(hull);
     this.materials = [top, side];
-    // its four sides in light, round the exact footprint (the intro's view from above)
-    this.edges = new EdgeGlow(shape.verts, { y: this.hullTop + 0.1, width: 1.0 }); this.body.add(this.edges);
+    // its four sides in light, on the exact footprint (the intro's view from above)
+    this.edges = new EdgeGlow(shape.verts, { y: this.hullTop + 0.1, width: 0.6, line: 0.14 }); this.body.add(this.edges);
 
     // a raised spine along the middle, the way the reference fleet is built in layers
     const deckPts = inset(shape.verts, Math.min(b.w, b.h) * 0.3);
-    const dgeo = new THREE.ExtrudeGeometry(threeShape(deckPts), { depth: 0.16, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.08, bevelSegments: 2 });
+    const dgeo = new THREE.ExtrudeGeometry(threeShape(deckPts), { depth: 0.16, bevelEnabled: true, bevelThickness: 0.08, bevelSize: 0.08, bevelSegments: 3 });
     dgeo.rotateX(-Math.PI / 2); dgeo.translate(0, this.hullTop - 0.02, 0);
     const deck = new THREE.Mesh(dgeo, new THREE.MeshStandardMaterial({ color: 0xdfe5f0, roughness: 0.32, metalness: 0.25 }));
     this.body.add(deck);
 
-    // the canopy, a little forward of centre
+    // the canopy: as big and as far forward as fits inside the outline, frame and all (the rhombus narrows to a point)
     const front = Math.max(...shape.verts.map((p) => p.y));
-    const cR = clamp(Math.min(b.w, b.h) * 0.2, 0.7, 1.25);
-    const canopy = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), GLASS());
+    const fit = this._fitCanopy(shape.verts, clamp(Math.min(b.w, b.h) * 0.2, 0.7, 1.25), Math.min(front * 0.3, 1.0));
+    const cR = fit.r;
+    const canopy = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), GLASS());
     canopy.scale.set(cR, cR * 0.62, cR * 1.35);
-    canopy.position.set(0, this.hullTop + 0.18, -Math.min(front * 0.3, 1.0));
+    canopy.position.set(0, this.hullTop + 0.18, -fit.y);
     this.body.add(canopy);
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(1, 0.08, 8, 32), DARK());
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(1, 0.08, 10, 48), DARK());
     rim.rotation.x = Math.PI / 2; rim.scale.set(cR * 1.02, cR * 1.37, 1); rim.position.copy(canopy.position);
     this.body.add(rim);
     this.canopy = canopy;
 
-    // two rear engines, each tucked against the hull's own rear edge at its x (the rhombus's tail is a point)
+    // two engines built into the back: a nozzle set into the back wall (seen from behind and the side) and a pair
+    // of vents glowing on the deck above it (seen from above). Both brighten with the thrust; nothing leaves the hull.
     const back = Math.min(...shape.verts.map((p) => p.y));
     this.engines = [];
-    const rearXs = this._rearXs(shape, back);
-    for (const x of rearXs) {
-      const backEdgeY = this._rearYAt(shape.verts, x) + 0.35;
-      const pod = new THREE.Group();
-      const shell = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.5, 1.6, 20), STEEL());
-      shell.rotation.x = Math.PI / 2; pod.add(shell);
-      const nozzle = new THREE.Mesh(new THREE.CircleGeometry(0.36, 24), new THREE.MeshBasicMaterial({ color: 0xffb347 }));
-      nozzle.position.z = 0.81; pod.add(nozzle);
-      const fl = flameCone(0.34, flameMaterial({}));
-      fl.rotation.x = -Math.PI / 2; fl.position.z = 0.82; pod.add(fl);
-      const gl = glowSprite(0xffa040, 2.2, 0.9); gl.position.z = 0.95; pod.add(gl);
-      pod.position.set(x, this.hullTop * 0.55, -backEdgeY - 0.2);
-      this.body.add(pod);
-      this.engines.push({ pod, flame: fl, glow: gl, nozzle });
+    const midY = 0.5;                                              // on the straight part of the wall (0.22 to 0.84), which is the exact outline
+    for (const x of this._rearXs(shape, back)) {
+      const wallY = this._rearYAt(shape.verts, x), n = this._rearNormal(shape.verts, x);
+      const nozzle = honeycombDisc(0.24);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.27, 0.045, 10, 32), DARK());
+      const mount = new THREE.Group();
+      mount.position.set(x + n.x * 0.004, midY, -(wallY + n.y * 0.004));
+      mount.lookAt(mount.position.clone().add(new THREE.Vector3(n.x, 0, -n.y)));   // face out of the wall
+      mount.add(nozzle, ring);
+      this.body.add(mount);
+      // the vents on the deck, just inside the back edge
+      const vents = [];
+      for (let k = 0; k < 2; k++) {
+        const v = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.03, 0.09), new THREE.MeshBasicMaterial({ color: 0xffa040 }));
+        v.position.set(x, this.hullTop + 0.005, -(wallY + 0.55 + k * 0.2));
+        this.body.add(v); vents.push(v);
+      }
+      this.engines.push({ nozzle, vents });
     }
 
-    // hover jets + legs near each corner; beacons on the corners
+    // hover jets + legs near each corner (well inside the outline); small beacons on the corners
     const c = centroid(shape.verts);
     this.jets = []; this.legs = []; this.beacons = [];
     for (const v of shape.verts) {
       const toC = { x: c.x - v.x, y: c.y - v.y }, l = Math.hypot(toC.x, toC.y);
       const jp = { x: v.x + (toC.x / l) * Math.min(1.1, l * 0.32), y: v.y + (toC.y / l) * Math.min(1.1, l * 0.32) };
       const jet = new THREE.Group(); toWorld(jp, 0.02, jet.position);
-      const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 0.14, 18), DARK()); jet.add(ring);
-      const core = new THREE.Mesh(new THREE.CircleGeometry(0.26, 18), new THREE.MeshBasicMaterial({ color: 0x9ff3ff })); core.rotation.x = Math.PI / 2; core.position.y = -0.08; jet.add(core);
-      const fl = flameCone(0.25, flameMaterial({ core: 0xffffff, mid: 0x7fe8ff, tip: 0x3b6bff })); fl.position.y = -0.08; jet.add(fl);
-      const gl = glowSprite(0x7fe8ff, 1.6, 0.8); gl.position.y = -0.3; jet.add(gl);
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 0.14, 24), DARK()); jet.add(ring);
+      const core = new THREE.Mesh(new THREE.CircleGeometry(0.26, 24), new THREE.MeshBasicMaterial({ color: 0x9ff3ff })); core.rotation.x = Math.PI / 2; core.position.y = -0.08; jet.add(core);
+      const fl = flameCone(0.22, flameMaterial({ core: 0xffffff, mid: 0x7fe8ff, tip: 0x3b6bff })); fl.position.y = -0.08; jet.add(fl);
+      const gl = glowSprite(0x7fe8ff, 0.9, 0.6); gl.position.y = -0.35; jet.add(gl);
       this.body.add(jet); this.jets.push({ jet, flame: fl, glow: gl });
       const leg = new THREE.Group(); toWorld(jp, 0.1, leg.position);
-      const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.8, 8), STEEL()); strut.position.y = -0.4; leg.add(strut);
-      const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.3, 0.08, 14), DARK()); foot.position.y = -0.82; leg.add(foot);
+      const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.8, 10), STEEL()); strut.position.y = -0.4; leg.add(strut);
+      const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.3, 0.08, 18), DARK()); foot.position.y = -0.82; leg.add(foot);
       leg.scale.y = 0.001; leg.visible = false; this.body.add(leg); this.legs.push(leg);
-      const bc = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 10), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-      const out = { x: v.x - (toC.x / l) * 0.02, y: v.y - (toC.y / l) * 0.02 };
-      toWorld(out, this.hullTop - 0.05, bc.position);
-      const bg = glowSprite(0xffffff, 0.9, 0.85); bc.add(bg);
+      // a corner light, a little inside the corner, with a small glow (it was a big white bloom)
+      const bc = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 10), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      const out = { x: v.x + (toC.x / l) * 0.22, y: v.y + (toC.y / l) * 0.22 };
+      toWorld(out, this.hullTop - 0.02, bc.position);
+      const bg = glowSprite(0xffffff, 0.42, 0.55); bc.add(bg);
       this.body.add(bc); this.beacons.push({ mesh: bc, glow: bg, color: new THREE.Color(0xffffff), want: new THREE.Color(0xffffff) });
     }
 
     this.thrust = 0.15; this.hover = 1; this.legK = 0; this._t = Math.random() * 10;
     this.vel = new THREE.Vector3(); this.tilt = new THREE.Vector2();
     this.bob = 1;
+  }
+  /** the largest canopy (radius r, centre y forward of the middle) whose glass and frame lie inside the outline */
+  _fitCanopy(verts, r0, y0) {
+    const room = inset(verts, 0.32);                           // keep it off the coloured border
+    const fits = (r, y) => {
+      const rx = r * 1.02 + 0.08, ry = r * 1.37 + 0.08;        // the frame's outer edge
+      for (let i = 0; i < 32; i++) { const a = (i / 32) * Math.PI * 2; if (!inside(room, Math.cos(a) * rx, y + Math.sin(a) * ry)) return false; }
+      return true;
+    };
+    for (let s = 1; s >= 0.4; s -= 0.04) for (let y = y0; y >= -0.6; y -= 0.1) if (fits(r0 * s, y)) return { r: r0 * s, y };
+    return { r: r0 * 0.4, y: 0 };
   }
   _rearXs(shape, back) {
     // two engines spaced across the rear edge's own width
@@ -190,29 +223,38 @@ export class QuadShip extends THREE.Group {
     }
     return isFinite(best) ? best : Math.min(...verts.map((p) => p.y));
   }
+  /** the outward normal (plan) of the back wall at this x */
+  _rearNormal(verts, x) {
+    let best = null, by = Infinity;
+    for (let i = 0; i < verts.length; i++) {
+      const a = verts[i], b = verts[(i + 1) % verts.length];
+      if ((x - a.x) * (x - b.x) > 0 || a.x === b.x) continue;
+      const y = a.y + ((x - a.x) / (b.x - a.x)) * (b.y - a.y);
+      if (y < by) { by = y; const dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy); best = { x: dy / l, y: -dx / l }; }
+    }
+    return best || { x: 0, y: -1 };
+  }
   /** every beacon one colour (green: locked; red: no fit) or each its own */
   setBeacons(color) { for (const b of this.beacons) b.want.set(color); }
   setBeacon(i, color) { this.beacons[i].want.set(color); }
   update(dt) {
     this._t += dt;
     for (const e of this.engines) {
-      e.flame.material.uniforms.uTime.value = this._t;
-      const p = this.thrust;
-      e.flame.material.uniforms.uPower.value = p;
-      e.flame.scale.set(1 + p * 0.3, 0.6 + p * 3.4, 1 + p * 0.3);
-      e.glow.material.opacity = 0.4 + p * 0.6; e.glow.scale.setScalar(1.4 + p * 2.2);
+      const p = this.thrust, flick = 0.9 + 0.1 * Math.sin(this._t * 31 + e.nozzle.id);
+      e.nozzle.material.uniforms.uTime.value = this._t; e.nozzle.material.uniforms.uPower.value = 0.35 + p * 0.65;
+      for (const v of e.vents) v.material.color.setRGB(1, 0.62, 0.25).multiplyScalar((0.25 + p * 0.85) * flick);
     }
     for (const j of this.jets) {
       j.flame.material.uniforms.uTime.value = this._t;
       const p = this.hover * (0.85 + 0.15 * Math.sin(this._t * 17 + j.jet.position.x));
       j.flame.material.uniforms.uPower.value = p; j.flame.scale.set(1, 0.3 + p * 1.5, 1);
-      j.glow.material.opacity = 0.25 + p * 0.65;
+      j.glow.material.opacity = 0.2 + p * 0.45;
     }
     for (const b of this.beacons) {
       b.color.lerp(b.want, 1 - Math.exp(-8 * dt));
       b.mesh.material.color.copy(b.color); b.glow.material.color.copy(b.color);
       const pulse = 0.75 + 0.25 * Math.sin(this._t * 4);
-      b.glow.scale.setScalar(0.9 * pulse);
+      b.glow.scale.setScalar(0.42 * pulse);
     }
     for (const l of this.legs) { l.visible = this.legK > 0.01; l.scale.y = Math.max(0.001, this.legK); }
     // a living hover: a slow bob and a lean into the way it is flying
@@ -230,7 +272,7 @@ function hullTexture() {
   const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
   const grd = g.createLinearGradient(0, 0, 0, 512); grd.addColorStop(0, '#9aa6c2'); grd.addColorStop(1, '#7c88a6');
   g.fillStyle = grd; g.fillRect(0, 0, 1024, 512);
-  g.strokeStyle = 'rgba(40,46,70,0.35)'; g.lineWidth = 2;
+  g.strokeStyle = 'rgba(40,46,70,0.2)'; g.lineWidth = 2;
   for (let y = 0; y < 512; y += 46) { g.beginPath(); g.moveTo(0, y); g.lineTo(1024, y); g.stroke(); }
   for (let x = 0; x < 1024; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 512); g.stroke(); }
   g.fillStyle = '#ff8a3d'; g.fillRect(0, 150, 1024, 10); g.fillRect(0, 352, 1024, 10);
@@ -252,11 +294,11 @@ export class CommandShip extends THREE.Group {
     this.name = 'command-ship';
     const L = 34;
     const prof = [[0.2, 0], [2.4, 0.6], [3.4, 3], [4.6, 8], [5.1, 14], [4.9, 20], [4.3, 25], [3.3, 29], [2.0, 32], [0.6, 33.6], [0.01, 34]].map(([r, y]) => new THREE.Vector2(r, y));
-    const lathe = new THREE.LatheGeometry(prof, 48);
+    const lathe = new THREE.LatheGeometry(prof, 96);
     lathe.rotateX(-Math.PI / 2); lathe.translate(0, 0, L / 2);
     lathe.scale(1, 0.56, 1);
-    const map = new THREE.CanvasTexture(hullTexture()); map.colorSpace = THREE.SRGBColorSpace;
-    const emissiveMap = new THREE.CanvasTexture(windowTexture()); emissiveMap.colorSpace = THREE.SRGBColorSpace;
+    const map = new THREE.CanvasTexture(hullTexture()); map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 8;
+    const emissiveMap = new THREE.CanvasTexture(windowTexture()); emissiveMap.colorSpace = THREE.SRGBColorSpace; emissiveMap.anisotropy = 8;
     const hullMat = new THREE.MeshStandardMaterial({ map, emissiveMap, emissive: 0xffffff, emissiveIntensity: 1.4, roughness: 0.42, metalness: 0.28, color: 0xe6ecf8 });
     const hull = new THREE.Mesh(lathe, hullMat); this.add(hull);
     this.hull = hull;
@@ -281,14 +323,14 @@ export class CommandShip extends THREE.Group {
     for (const [x, y, z] of podAt) {
       const pod = new THREE.Group(); pod.position.set(x, y, z);
       const pprof = [[0.1, 0], [1.7, 0.8], [2.1, 3], [2.1, 9], [1.9, 11.4], [1.75, 12]].map(([r, yy]) => new THREE.Vector2(r, yy));
-      const pg = new THREE.LatheGeometry(pprof, 32); pg.rotateX(Math.PI / 2); pg.translate(0, 0, -12);
+      const pg = new THREE.LatheGeometry(pprof, 64); pg.rotateX(Math.PI / 2); pg.translate(0, 0, -12);
       const shell = new THREE.Mesh(pg, new THREE.MeshStandardMaterial({ color: 0xa4b0cc, roughness: 0.4, metalness: 0.3 }));
       pod.add(shell);
-      const trim = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.18, 10, 36), new THREE.MeshStandardMaterial({ color: 0xff8a3d, roughness: 0.4, metalness: 0.3, emissive: 0x401000 }));
+      const trim = new THREE.Mesh(new THREE.TorusGeometry(1.95, 0.18, 12, 64), new THREE.MeshStandardMaterial({ color: 0xff8a3d, roughness: 0.4, metalness: 0.3, emissive: 0x401000 }));
       trim.position.z = -0.4; pod.add(trim);
-      const honey = honeycombDisc(1.7); honey.position.z = 0.01; pod.add(honey);
+      const honey = honeycombDisc(1.7); honey.geometry.dispose(); honey.geometry = new THREE.CircleGeometry(1.7, 64); honey.position.z = 0.01; pod.add(honey);
       const fl = flameCone(1.6, flameMaterial({ core: 0xfff3d0, mid: 0xff9a3c, tip: 0xff3ea5 })); fl.rotation.x = -Math.PI / 2; fl.position.z = 0.05; pod.add(fl);
-      const gl = glowSprite(0xff9a3c, 4, 0.75); gl.position.z = 0.6; pod.add(gl);
+      const gl = glowSprite(0xff9a3c, 2.6, 0.5); gl.position.z = 0.6; pod.add(gl);
       this.add(pod); this.pods.push({ pod, honey, flame: fl, glow: gl });
     }
     const pylon = new THREE.Mesh(new THREE.BoxGeometry(0.7, 4.2, 7), STEEL()); pylon.position.set(0, 3.4, 7.4); pylon.rotation.x = -0.25; this.add(pylon);
@@ -299,7 +341,7 @@ export class CommandShip extends THREE.Group {
     // navigation lights
     this.navs = [];
     for (const [x, y, z, col] of [[-12.6, -1.4, -2.6, 0xff4d6d], [12.6, -1.4, -2.6, 0x3dffa2], [0, 7.8, 0, 0xffffff]]) {
-      const s = glowSprite(col, 2.2, 1); s.position.set(x, y, z); this.add(s); this.navs.push(s);
+      const s = glowSprite(col, 1.3, 1); s.position.set(x, y, z); this.add(s); this.navs.push(s);
     }
     this.thrust = 1; this._t = 0;
   }
@@ -309,7 +351,7 @@ export class CommandShip extends THREE.Group {
       p.honey.material.uniforms.uTime.value = this._t; p.honey.material.uniforms.uPower.value = 0.45 + this.thrust * 0.55;
       p.flame.material.uniforms.uTime.value = this._t; p.flame.material.uniforms.uPower.value = this.thrust;
       p.flame.scale.set(1, 1 + this.thrust * 9, 1);
-      p.glow.material.opacity = 0.3 + this.thrust * 0.45; p.glow.scale.setScalar(3.2 + this.thrust * 2.4);
+      p.glow.material.opacity = 0.2 + this.thrust * 0.3; p.glow.scale.setScalar(2.2 + this.thrust * 1.3);   // a glow round the nozzle, not a white blob over it
     }
     const blink = (this._t % 1.6) < 0.12;
     this.navs.forEach((n, i) => { n.material.opacity = i === 2 ? (blink ? 1 : 0.15) : 0.7 + 0.3 * Math.sin(this._t * 3 + i); });

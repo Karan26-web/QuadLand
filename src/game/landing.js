@@ -11,6 +11,9 @@
 //              ship crashes onto the rock (clang, boing, sparks); −1 heart
 // A miss climbs a hint ladder (the idea of the mistake, then the working); with no
 // hearts left the autopilot lands on the zone that fits (LXD). NEXT moves on.
+// The LXD's review (2026-11-05) shaped the playing view: the areas are written on
+// the zones, the dimensions read "5 units" and show only while the ship is still,
+// the rule is spoken and not shown, and the view holds just this set, close.
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 import { V, say, fadeIn, cleanFx } from './common.js';
@@ -154,12 +157,12 @@ export async function run(s, G, flow, k) {
   const L = G.landingFx;
   G.setWorld(P); cleanFx(G); G.ck.show(false);
   hud.show(true); hud.setHearts(3); st.hearts = 3; st.misses[k] = 0;
-  hud.setFleet(k, st.landed); hud.formula(null); hud.caption(null); hud.goShow(false);
+  hud.caption(null); hud.goShow(false);
   A.music.play('landing');
 
   const c = site.centre, sp = site.spacing;
-  const play = playView(site, ship);
-  d.shift(0, hudShift());                             // the field sits a little low: the HUD's formula chip owns the top
+  const play = playView(G, site, ship);
+  d.shift(0, hudShift());                             // the field sits a little low: the top bar and the caption own the top
   s.onKill(() => d.shift(0, 0));
   // the camera descends to the zone (after NEXT: up and over from the last one)
   await s.run(d.path({ points: [c.clone().add(V(-sp * 1.4, sp * 2.6, sp * 3.2)), play.pos], target: [c.clone().add(V(0, 0, -sp * 0.6)), play.target], fov: [50, play.fov], roll: 'bank', bank: 0.8, dur: 2.6, ease: Ease.inOutCubic, blendIn: 0.1 }));
@@ -202,18 +205,16 @@ export async function run(s, G, flow, k) {
   await s.wait(0.2);
   await dims.drawAll({ dur: 0.6, sfx: (n) => A.play(n) }, 0.35, (t) => s.wait(t));
   await s.wait(0.3);
-  hud.formula(shape.ruleHtml);
-  await say(s, G, shape.vo.rule);
+  await say(s, G, shape.vo.rule);                     // the rule is said (LXD), not shown: no formula on screen
 
-  // up to straight above the set; each island shows its area, beside it (the ship's numbers get smaller up here)
+  // up to straight above the set, which is all the view holds now; each island shows its area, written on it
+  focus(G, site, true); s.onKill(() => focus(G, site, false));
   await s.run(d.to(play, 1.6, Ease.inOutCubic));
   document.body.classList.add('topview'); s.onKill(() => document.body.classList.remove('topview'));
-  const tags = site.islands.map((isl, i) => `area-${k}-${i}`), spots = tagSpots(site);
   const order = site.islands.map((isl, i) => i).sort((a, b) => site.islands[a].position.x - site.islands[b].position.x);
   for (const i of order) {
     const isl = site.islands[i];
-    G.labels.add(tags[i], `<div class="area-tag side"><b>${isl.area}</b><small>sq units</small></div>`, { worldPos: spots[i].at, offset: spots[i].off });
-    isl.pulse(); A.play('area.pop', { i });
+    isl.showArea(true); isl.pulse(); A.play('area.pop', { i });
     await s.wait(0.55);
   }
   await say(s, G, shape.vo.ask, { after: 0.1 });
@@ -221,11 +222,11 @@ export async function run(s, G, flow, k) {
   // fly and choose
   st.hearts = 3;
   for (;;) {
-    const choice = await fly(s, G, flow, { site, ship, k, play, hoverLoop, first: k === 0 && st.misses[k] === 0, tags });
+    const choice = await fly(s, G, flow, { site, ship, k, play, hoverLoop, first: k === 0 && st.misses[k] === 0 });
     const isl = choice;
     const exact = isl.area === shape.area;
     dims.hide(true);
-    if (exact) { await landExact(s, G, { site, ship, isl, k, tags, hoverLoop }); break; }
+    if (exact) { await landExact(s, G, { site, ship, isl, k, hoverLoop }); break; }
     const tooSmall = isl.area < shape.area;
     if (tooSmall) await landTooSmall(s, G, { site, ship, isl, k, hoverLoop }); else await landTooLarge(s, G, { site, ship, isl, k, hoverLoop });
     st.misses[k]++;
@@ -234,36 +235,35 @@ export async function run(s, G, flow, k) {
     await say(s, G, 'o.exact');
     L.clearExtra();
     await recover(s, G, { ship, site, isl, tooSmall, hoverLoop, play });
-    dims.showAll();
     if (left <= 0) {
-      // the autopilot lands on the zone that fits
+      // the autopilot lands on the zone that fits (the caption says it, so the spoken line has no second copy below)
       hud.caption('Out of hearts! Autopilot will land on the zone that fits.', { cool: true });
       A.play('autopilot');
-      await say(s, G, 'o.auto');
+      await say(s, G, 'o.auto', { subtitle: false });
       const right = site.islands.find((x) => x.area === shape.area);
       await autopilot(s, G, { ship, isl: right });
       hud.caption(null);
-      await landExact(s, G, { site, ship, isl: right, k, tags, hoverLoop, auto: true });
+      await landExact(s, G, { site, ship, isl: right, k, hoverLoop, auto: true });
       break;
     }
-    // the hint ladder: the idea of the mistake, then the working
+    dims.showAll();
+    // the hint ladder: the idea of the mistake, then the working (said and shown once, in the caption; it stays up
+    // while the player tries again)
     if (st.misses[k] === 1) {
       const id = `h.${shape.hint}.${isl.area}`;
       hud.caption(G.voice.text(id), { cool: true }); A.play('ui.hint');
-      await say(s, G, id, { after: 0.4 });
+      await say(s, G, id, { after: 0.4, subtitle: false });
     } else {
-      hud.formula(`<span class="fx-k">Area</span> = ${shape.work} = <span class="fx-n">?</span>`);
       hud.caption(G.voice.text(`w.${shape.hint}`), { cool: true }); A.play('ui.hint');
       for (const it of dims.items) G.labels.cls(it.id, 'alt', true);
-      await say(s, G, `w.${shape.hint}`, { after: 0.4 });
+      await say(s, G, `w.${shape.hint}`, { after: 0.4, subtitle: false });
     }
   }
 
   // after a landing: the decoys go back under, NEXT
   hoverLoop.stop(1); document.body.classList.remove('topview');
-  st.landed[k] = true; site.landed = true; hud.setFleet(k, st.landed);
+  st.landed[k] = true; site.landed = true;
   for (const isl of site.islands) if (isl.area !== shape.area) { isl.sink(1.8); P.ocean.ripple(isl.position.x, isl.position.z, 0.5); }
-  tags.forEach((t, i) => { if (site.islands[i].area !== shape.area) G.labels.remove(t, true); });
   if (shape.vo.after) await say(s, G, shape.vo.after);
   if (G.auto) setTimeout(() => hud._next(), 1500);
   await s.run(hud.next());
@@ -277,16 +277,7 @@ export async function run(s, G, flow, k) {
 }
 
 /* ------------------------------------------------- the view from above */
-const short = () => innerHeight < 560;                      // a phone on its side: smaller tags, less room for the HUD's text
-/** each island's area tag sits beside it, out to the side (the left ones on the left, the rest on the right), so from
-    above it hides nothing and the view's height is just the set's */
-function tagSpots(site) {
-  return site.islands.map((isl) => {
-    const u = isl.position.x < site.centre.x - 0.5 ? -1 : 1;
-    const reach = Math.max(...isl.verts.map((v) => v.x * u)) + 0.9;                  // how far the island reaches that way
-    return { at: V(isl.position.x + u * reach, TOP, isl.position.z), off: [u * (short() ? 34 : 48), 0] };
-  });
-}
+const short = () => innerHeight < 560;                      // a phone on its side: less room for the HUD's text
 /** where the ship waits: in the clear water between the back island and the front two, so from above it covers none
     of them (a set too tight for that: just in front of it) */
 function startPoint(site, ship) {
@@ -297,70 +288,92 @@ function startPoint(site, ship) {
   const z = zf - zb > depth + 0.8 ? (zb + zf) / 2 : Math.max(...isls.flatMap(zs)) + 1.6 + depth / 2;
   return V(site.centre.x - midX, HOVER_Y, z + midY);         // its footprint's middle on that spot
 }
-/** the part of the screen the HUD leaves the field (px): under the top bar and the formula chip (pushed down by a
-    caption, which the first landing and every hint show), above two lines of subtitle; and the bottom corners, where
-    the stick and GO sit. A short phone can't spare all that: there the field keeps clear of the chip (not of the
-    caption's push), and a passing caption may overlap its edge */
-function freeRect() {
-  const W = innerWidth, sh = short(), body = document.body, f = document.getElementById('formula');
-  const had = body.classList.contains('caption-on'); if (!sh) body.classList.add('caption-on');
-  const fs = getComputedStyle(f), top = (parseFloat(fs.top) || 120) + (parseFloat(fs.fontSize) || 20) * 2.4 + (sh ? 4 : 12);
-  if (!had) body.classList.remove('caption-on');
-  const subs = getComputedStyle(document.getElementById('subs')), line = getComputedStyle(document.getElementById('subLine'));
-  const bottom = (parseFloat(subs.paddingBottom) || 20) + (parseFloat(line.lineHeight) || 30) * 2 + (sh ? 22 : 36);
+/** every caption this landing can show: the controls, the hints for its two wrong islands, the working, the autopilot */
+function captionsOf(G, site) {
+  const h = site.shape.hint, wrong = site.islands.filter((isl) => isl.area !== site.shape.area);
+  return ['Drag the joystick to fly the spaceship. Stop over a landing zone and press GO.', 'Out of hearts! Autopilot will land on the zone that fits.',
+    G.voice.text(`w.${h}`), ...wrong.map((isl) => G.voice.text(`h.${h}.${isl.area}`))];
+}
+/** the part of the screen the HUD leaves the field (px): under the top bar and under the tallest caption this landing
+    can show, above the one line the Ship AI says in this view (the ask: every hint is a caption now), both measured
+    at this screen's size so neither ever covers a zone; and the bottom corners, where the stick and GO sit */
+function freeRect(G, site) {
+  const W = innerWidth, H = innerHeight, sh = short(), cap = G.hud.captionEl;
+  let top = document.querySelector('.hud-top').getBoundingClientRect().bottom;
+  const was = { hidden: cap.hidden, text: cap.textContent, cool: cap.classList.contains('cool') };
+  cap.classList.add('cool');
+  for (const t of captionsOf(G, site)) { cap.textContent = t; cap.hidden = false; top = Math.max(top, cap.offsetTop + cap.offsetHeight); }
+  cap.textContent = was.text; cap.hidden = was.hidden; cap.classList.toggle('cool', was.cool);
+  top += sh ? 8 : 14;
+  const sub = document.getElementById('subLine'), keep = sub.textContent;
+  sub.textContent = G.voice.text(site.shape.vo.ask);
+  const subH = sub.offsetHeight; sub.textContent = keep;      // 0 with subtitles off: then the field may use the band
+  const bottom = (parseFloat(getComputedStyle(document.getElementById('subs')).paddingBottom) || 20) + subH + (sh ? 10 : 16);
   const go = getComputedStyle(document.getElementById('btnGo')), corner = (parseFloat(go.height) || 100) + (parseFloat(go.bottom) || 30) + 14;
-  return { top, bottom, left: Math.max(20, W * 0.04), right: Math.max(20, W * 0.04), corner: { w: Math.max(corner, 200), h: corner } };
+  return { top, bottom, left: Math.max(16, W * 0.03), right: Math.max(16, W * 0.03), corner: { w: Math.max(corner, 200), h: corner } };
 }
 /** the playing view: straight down over the set, so every island shows its true shape and none hides another. The
-    camera's height and centre are solved so the three islands, their tags and the waiting ship fill the free part of
-    the screen (the lens shift that keeps the field under the HUD is part of the sum) */
-function playView(site, ship) {
-  const W = innerWidth, H = innerHeight, fov = 40, tv = Math.tan((fov * DEG) / 2), free = freeRect();
-  // what must show (world x, z), and how far past each point its label reaches on screen (px)
+    camera's height and centre are solved so the three islands (their areas are written on them) and the waiting ship
+    fill the free part of the screen, as large as it allows (the lens shift that keeps the field under the HUD is part
+    of the sum) */
+function playView(G, site, ship) {
+  const W = innerWidth, H = innerHeight, fov = 40, tv = Math.tan((fov * DEG) / 2), free = freeRect(G, site);
+  // what must show (world x, z)
   const pts = [];
   for (const isl of site.islands) for (const v of isl.verts) {   // each corner pushed out over the rock's lip and the beacon
     const l = Math.hypot(v.x, v.y) || 1;
-    pts.push([isl.position.x + v.x * (1 + 0.9 / l), isl.position.z - v.y * (1 + 0.9 / l), 0, 0]);
-  }
-  const tw = short() ? 0.7 : 1;                            // the tags are smaller on a short screen (main.css)
-  for (const t of tagSpots(site)) {                         // a tag's outer edge, its top and bottom (about 92 × 68 px)
-    const ox = (t.off[0] + Math.sign(t.off[0]) * 46) * tw;
-    pts.push([t.at.x, t.at.z, ox, (t.off[1] - 34) * tw], [t.at.x, t.at.z, ox, (t.off[1] + 34) * tw]);
+    pts.push([isl.position.x + v.x * (1 + 0.9 / l), isl.position.z - v.y * (1 + 0.9 / l)]);
   }
   const st = startPoint(site, ship), b = bounds(ship.shape.verts);
-  pts.push([st.x + b.minX, st.z - b.maxY, 0, 0], [st.x + b.maxX, st.z - b.minY, 0, 0]);
-  const span = (k, ax) => { let lo = Infinity, hi = -Infinity; for (const p of pts) { const u = p[ax] * k + p[ax + 2]; lo = Math.min(lo, u); hi = Math.max(hi, u); } return [lo, hi]; };
+  pts.push([st.x + b.minX, st.z - b.maxY], [st.x + b.maxX, st.z - b.minY]);
+  const span = (ax) => { let lo = Infinity, hi = -Infinity; for (const p of pts) { lo = Math.min(lo, p[ax]); hi = Math.max(hi, p[ax]); } return [lo, hi]; };
+  const [x0, x1] = span(0), [z0, z1] = span(1);
   // the largest scale (px per world unit at the islands' tops) at which it all fits, centred in the free part
   const solve = (bottom) => {
     const fw = W - free.left - free.right, fh = H - free.top - bottom;
-    let k0 = 1, k1 = 600;
-    for (let i = 0; i < 36; i++) { const k = (k0 + k1) / 2, [x0, x1] = span(k, 0), [y0, y1] = span(k, 1); if (x1 - x0 <= fw && y1 - y0 <= fh) k0 = k; else k1 = k; }
-    const k = k0, [x0, x1] = span(k, 0), [y0, y1] = span(k, 1);
-    const left = free.left + (fw - (x1 - x0)) / 2, top = free.top + (fh - (y1 - y0)) / 2;
-    return { k, x0, y0, box: [left, top, left + x1 - x0, top + y1 - y0] };
+    const k = Math.min(fw / (x1 - x0), fh / (z1 - z0));
+    const left = free.left + (fw - (x1 - x0) * k) / 2, top = free.top + (fh - (z1 - z0) * k) / 2;
+    return { k, box: [left, top, left + (x1 - x0) * k, top + (z1 - z0) * k] };
   };
   // above the subtitles; if that puts anything into a bottom corner (the stick, GO), above those too
   let f = solve(free.bottom);
   const [bx0, , bx1, by1] = f.box, cw = free.corner.w, ch = free.corner.h;
   if (by1 > H - ch && (bx0 < cw || bx1 > W - cw)) f = solve(Math.max(free.bottom, ch));
   // the world point under the screen's centre, given where the content's corner must land (and the lens shift)
-  const { k, x0, y0, box } = f, shiftPx = -hudShift() * H;
-  const cx = (W / 2 - box[0] + x0) / k, cz = (H / 2 + shiftPx - box[1] + y0) / k;
+  const { k, box } = f, shiftPx = -hudShift() * H;
+  const cx = x0 + (W / 2 - box[0]) / k, cz = z0 + (H / 2 + shiftPx - box[1]) / k;
   const h = H / 2 / (k * tv);
   return { pos: V(cx, TOP + h, cz + h * 0.01), target: V(cx, TOP, cz), fov, roll: 0 };
 }
-/** the field sits a little low, clear of the HUD's top band (hearts, fleet, formula chip): more on a short screen */
+/** the field sits a little low, clear of the HUD's top band (hearts, pause, the caption): more on a short screen */
 const hudShift = () => -clamp(110 / innerHeight * 0.5, 0.04, 0.15);
 
+/** The playing view holds only this set: the other sets (and the ships landed on them) step out of the picture, and the
+    sea calms (little foam, no plankton sparkle, no glitter), so nothing but the three zones and the ship draws the eye
+    (the LXD's review: "too much distractions in the screen"). Off again for the low shots, where the field is the
+    scenery. */
+function focus(G, site, on) {
+  const P = G.planet, F = P.focusState || (P.focusState = { hidden: [], sea: null }), u = P.ocean.u;
+  if (on && !F.sea) {
+    const others = [...P.allIslands.filter((isl) => !site.islands.includes(isl)), ...P.ships.filter((sh, j) => P.sites[j] !== site)];
+    for (const o of others) if (o.visible) { o.visible = false; F.hidden.push(o); }
+    F.sea = { foam: u.uFoamK.value, lace: u.uLaceK.value, bio: u.uBio.value, spec: u.uSpecK.value };
+    u.uFoamK.value = 0.12; u.uLaceK.value = 0.3; u.uBio.value = 0; u.uSpecK.value = 0.05;
+  } else if (!on && F.sea) {
+    for (const o of F.hidden) o.visible = true;
+    F.hidden = [];
+    u.uFoamK.value = F.sea.foam; u.uLaceK.value = F.sea.lace; u.uBio.value = F.sea.bio; u.uSpecK.value = F.sea.spec; F.sea = null;
+  }
+}
+
 /* ------------------------------------------------------- flying the ship */
-async function fly(s, G, flow, { site, ship, play, hoverLoop, first, tags, k }) {
-  const P = G.planet, d = G.director, hud = G.hud, L = G.landingFx, input = G.input;
+async function fly(s, G, flow, { site, ship, play, hoverLoop, first, k }) {
+  const d = G.director, hud = G.hud, L = G.landingFx, input = G.input;
   ship.bob = 1; ship.hover = 1; ship.thrust = 0.15;
-  P.ocean.u.uSpecK.value = 0.55;                     // a calmer sea while the player flies
   input.enable(true); input.reveal({ demo: first }); input.used = false;
   hud.goShow(true); hud.goEnable(false);
   if (first) hud.caption('Drag the joystick to fly the spaceship. Stop over a landing zone and press GO.');
-  let hot = null, idle = 0, resolveGo;
+  let hot = null, idle = 0, still = 0, resolveGo;
   const goP = new Promise((r) => { resolveGo = r; });
   hud.onGo(() => { if (hot) resolveGo(hot); });
   const vel = new THREE.Vector3(), c = site.centre, lim = site.spacing * 1.55;
@@ -378,13 +391,14 @@ async function fly(s, G, flow, { site, ship, play, hoverLoop, first, tags, k }) 
     if (m > lim) { off.multiplyScalar(lim / m); ship.position.x = c.x + off.x; ship.position.z = c.z + off.z; vel.multiplyScalar(0.5); }
     ship.vel.copy(vel);
     hoverLoop.set('speed', Math.min(1, vel.length() / SPEED), 0.1);
+    // its dimensions only while it is still (the LXD's review): they step away as soon as it moves
+    if (flow.dims) { if (vel.length() > 0.8) { still = 0; flow.dims.setShown(false); } else if ((still += dt) > 0.25) flow.dims.setShown(true); }
     // which island is under the ship's centre
     let now = null;
     for (const isl of site.islands) if (isl.visible && isl.risen && inside(isl.verts, ship.position.x - isl.position.x, -(ship.position.z - isl.position.z))) now = isl;
     if (now !== hot) {
       if (hot) hot.setState('idle');
-      hot = now;
-      site.islands.forEach((isl, i) => G.labels.cls(tags[i], 'hot', isl === hot));
+      hot = now;                                       // its written area turns amber with it (islands.js)
       if (hot) { hot.setState('hot'); G.audio.play('ck.beep', { f: 1320 }); }
       hud.goEnable(!!hot);
     }
@@ -395,7 +409,7 @@ async function fly(s, G, flow, { site, ship, play, hoverLoop, first, tags, k }) 
   });
   s.onKill(loop);
   const isl = await s.run(goP);
-  loop(); input.auto = null; P.ocean.u.uSpecK.value = 1; hud.goEnable(false); hud.goShow(false); hud.onGo(null); input.enable(false); hud.caption(null);
+  loop(); input.auto = null; hud.goEnable(false); hud.goShow(false); hud.onGo(null); input.enable(false); hud.caption(null);
   L.ghost(ship, 0, false);
   ship.vel.set(0, 0, 0);
   return isl;
@@ -404,6 +418,7 @@ async function fly(s, G, flow, { site, ship, play, hoverLoop, first, tags, k }) 
 /* --------------------------------------------- over the island and down */
 async function approach(s, G, { ship, isl }) {
   const d = G.director, L = G.landingFx;
+  focus(G, G.planet.sites.find((st) => st.islands.includes(isl)), false);   // the low landing shots: the field is the scenery again
   const at = V(isl.position.x, HOVER_Y, isl.position.z);
   const from = ship.position.clone();
   await s.run(tweens.add({ duration: 0.75, ease: Ease.inOutCubic, onUpdate: (e) => { ship.position.lerpVectors(from, at, e); } }).promise);
@@ -417,7 +432,7 @@ async function approach(s, G, { ship, isl }) {
   return off;
 }
 
-async function landExact(s, G, { site, ship, isl, k, tags, hoverLoop, auto = false }) {
+async function landExact(s, G, { site, ship, isl, k, hoverLoop, auto = false }) {
   const P = G.planet, d = G.director, A = G.audio, L = G.landingFx, hud = G.hud, clock = G.clock;
   isl.setState('hot');
   const off = await approach(s, G, { ship, isl });
@@ -443,10 +458,8 @@ async function landExact(s, G, { site, ship, isl, k, tags, hoverLoop, auto = fal
   await s.wait(0.25);
   A.play('success'); A.play('confetti');
   P.confetti.burst(V(pos.x, TOP + 2, pos.z), 170, { speed: 8, up: 11, spread: 1.6 });
-  tags.forEach((t, i) => { if (site.islands[i] === isl) G.labels.cls(t, 'good', true); else G.labels.remove(t, true); });
-  // the working, as a hologram over the ship (praise the method); it takes over from the HUD's formula chip
-  hud.formula(null);
-  G.labels.add(`work-${k}`, `<div class="rule-tag"><b>${site.shape.rule.toUpperCase()}</b><span>${site.shape.work} = ${site.shape.area} ✓</span></div>`, { worldPos: () => V(pos.x, TOP + 3.6, pos.z), anchor: 'bottom' });
+  // the fit, confirmed over the ship: its area is the zone's (an area, not a formula: the LXD's review)
+  G.labels.add(`work-${k}`, `<div class="area-tag good"><b>${site.shape.area}</b><small>sq units ✓</small></div>`, { worldPos: () => V(pos.x, TOP + 3.6, pos.z), anchor: 'bottom' });
   // a hero shot: low, round the landed ship
   d.orbit({ center: V(pos.x, TOP + 1, pos.z), radius: ship.size * 2.1 + 4, height: [2.5, 4.5], from: -14, to: 40, fov: 40, dur: 6, ease: Ease.inOutSine });
   if (!auto) { await say(s, G, 'o.perfect'); await say(s, G, 'o.success'); }
@@ -555,6 +568,7 @@ async function recover(s, G, { ship, site, tooSmall, hoverLoop, play }) {
   }
   ship.setBeacons(0xffffff); ship.legK = 0; ship.hover = 1; ship.bob = 1; ship.thrust = 0.15; hoverLoop.set('power', 1, 0.4);
   for (const isl of site.islands) isl.setState('idle');
+  focus(G, site, true);
   await s.run(d.to(play, 1.2, Ease.inOutCubic));
 }
 

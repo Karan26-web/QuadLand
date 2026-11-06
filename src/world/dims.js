@@ -5,6 +5,9 @@
 //   edge    a dimension line just outside the edge, with extension lines and ticks
 //   height  a dashed perpendicular to the base, with a right-angle mark
 //   diag    a dashed diagonal
+// The LXD's review (2026-11-05): each number is written with its unit ("5 units"),
+// with no name beside it ("side", "length"…): the drawing says which length it is.
+// And the dimensions show only while the ship is still: in flight they step away.
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 import { foot } from './shapes.js';
@@ -73,24 +76,25 @@ export class Dims {
       } else if (d.type === 'diag') {
         const a = v[d.i], b = v[d.j];
         parts.push(ribbon(a, b, y, 0.12, { color: 0xffd27a, dash: 0.42 }));
-        // the two diagonals cross in the middle: one label up its far end on one side, the other out along its own on
-        // the other, both clear of the side's label even from high above (the playing view)
+        // the two diagonals cross in the middle: each label sits by its own line in an opposite quarter of the ship
+        // (the first beside its near half, the second above its other half), clear of each other, of the canopy in the
+        // middle and of the side's label, even from high above (the playing view)
         const dir = unit(sub(b, a)), n = { x: dir.y, y: -dir.x };
-        labelAt = k === 0 ? sub(lerp2(a, b, 0.75), mul(n, 1.4)) : add(lerp2(a, b, 0.17), mul(n, 0.8));
+        labelAt = k === 0 ? add(lerp2(a, b, 0.22), mul(n, 0.95)) : sub(lerp2(a, b, 0.2), mul(n, 0.7));
       }
       for (const p of parts) { p.visible = false; this.group.add(p); }
       this.items.push({ d, parts, id, labelAt });
     });
   }
   _world(p) { const out = new THREE.Vector3(p.x, this.ship.hullTop + 0.06, -p.y); return this.ship.body.localToWorld(out); }
+  _tag(it) { return `<div class="dim-tag">${it.d.value}<i>units</i></div>`; }
   /** draw the k-th dimension: the line grows, then its number pops up */
   async draw(k, { dur = 0.55, sfx = null } = {}) {
     const it = this.items[k]; if (!it) return;
     for (const p of it.parts) { p.visible = true; p.material.uniforms.uProgress.value = 0; }
     if (sfx) sfx('dim.draw');
     await tweens.add({ duration: dur, ease: Ease.inOutCubic, onUpdate: (e) => { for (const p of it.parts) p.material.uniforms.uProgress.value = e; } }).promise;
-    const name = it.d.name;
-    this.labels.add(it.id, `<div class="dim-tag"><i>${name}</i>${it.d.value}</div>`, { worldPos: () => this._world(it.labelAt) });
+    this.labels.add(it.id, this._tag(it), { worldPos: () => this._world(it.labelAt) });
     if (sfx) sfx('dim.label');
   }
   async drawAll(opts = {}, gap = 0.25, wait = (s) => tweens.delay(s).promise) {
@@ -100,12 +104,25 @@ export class Dims {
   showAll() {
     this.items.forEach((it) => {
       for (const p of it.parts) { p.visible = true; p.material.uniforms.uProgress.value = 1; }
-      if (!this.labels.get(it.id)) this.labels.add(it.id, `<div class="dim-tag"><i>${it.d.name}</i>${it.d.value}</div>`, { worldPos: () => this._world(it.labelAt) });
+      if (!this.labels.get(it.id)) this.labels.add(it.id, this._tag(it), { worldPos: () => this._world(it.labelAt) });
     });
+    this._on = null; this.setShown(true, 0);
   }
   setAlpha(a) { for (const it of this.items) for (const p of it.parts) p.material.uniforms.uAlpha.value = a; }
+  /** while the ship flies they step away (lines and numbers fade out fast); when it stops they come back */
+  setShown(on, dur = on ? 0.3 : 0.15) {
+    if (this._on === on) return;
+    this._on = on;
+    for (const it of this.items) this.labels.cls(it.id, 'away', !on);
+    if (this._tw) this._tw.cancel();
+    const from = this._k ?? 1, to = on ? 1 : 0;
+    if (!dur) { this._k = to; this.setAlpha(to); return; }
+    this._tw = tweens.add({ duration: dur, onUpdate: (e) => { this._k = from + (to - from) * e; this.setAlpha(this._k); } });
+  }
   hide(fade = true) {
     for (const it of this.items) { this.labels.remove(it.id, fade); for (const p of it.parts) p.visible = false; }
+    if (this._tw) this._tw.cancel();
+    this._on = null; this._k = 1; this.setAlpha(1);
   }
   dispose() { this.hide(false); this.group.removeFromParent(); }
 }

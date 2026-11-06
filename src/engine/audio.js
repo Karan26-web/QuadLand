@@ -240,7 +240,6 @@ SFX['ship.arrive'] = (A, o) => { SFX.flyby(A, { dur: o.dur ?? 2.2, vol: 0.4, fro
 SFX['dim.draw'] = (A) => { A.tone({ f0: 520, f1: 1300, dur: 0.45, vol: 0.06, verb: 0.2, env: { a: 0.05, d: 0.2, s: 0.6, r: 0.15 } }); A.burst({ dur: 0.45, vol: 0.05, type: 'bandpass', f0: 3000, Q: 4, env: { a: 0.05, d: 0.2, s: 0.6, r: 0.15 } }); };
 SFX['dim.label'] = (A) => { A.tone({ f0: 880, f1: 1760, dur: 0.08, vol: 0.1 }); A.bell(91, { vol: 0.05, dur: 0.8 }); };
 SFX['area.pop'] = (A, o) => { const notes = [79, 83, 86]; A.tone({ f0: 500, f1: 1200, dur: 0.08, vol: 0.09 }); A.bell(notes[(o.i ?? 0) % 3], { vol: 0.08, verb: 0.4, pan: o.pan ?? 0 }); };
-SFX['formula'] = (A) => { const t = A.now; A.bell(84, { t0: t, vol: 0.07 }); A.bell(88, { t0: t + 0.06, vol: 0.06 }); A.bell(91, { t0: t + 0.12, vol: 0.05 }); };
 SFX['go.ready'] = (A) => { A.tone({ f0: 990, dur: 0.07, vol: 0.09 }); A.tone({ f0: 1480, dur: 0.12, vol: 0.09, t0: A.now + 0.07, verb: 0.3 }); };
 SFX['go.press'] = (A) => { SFX['ck.button'](A); A.tone({ type: 'sawtooth', f0: 220, f1: 660, dur: 0.4, vol: 0.05, dest: A.filter('lowpass', 2000, 1, A.sfxBus) }); };
 SFX['lock.beam'] = (A, o) => A.tone({ f0: 1900 + (o.i ?? 0) * 140, f1: 600, dur: 0.22, vol: 0.06, verb: 0.3, pan: o.pan ?? 0 });

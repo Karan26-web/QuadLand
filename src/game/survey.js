@@ -34,14 +34,14 @@ function fieldBox(P) {
 export function prepare(G) {
   const P = G.planet;
   G.setWorld(P);
-  for (const isl of P.allIslands) { isl.placeRisen(); isl.edges.off(); }
+  for (const isl of P.allIslands) { isl.placeRisen(); isl.edges.off(); isl.showArea(false); }
   P.clouds.visible = false;
   lit(G, 1);
   if (!G.flow.sea) G.flow.sea = G.audio.loop('sea', { vol: 0.42 });
 }
 export function resetWorld(G) {
   const P = G.planet;
-  for (const isl of P.allIslands) { isl.visible = false; isl.position.y = -2.2; isl.risen = false; isl.setState('idle'); isl.edges.off(); }
+  for (const isl of P.allIslands) { isl.visible = false; isl.position.y = -2.2; isl.risen = false; isl.setState('idle'); isl.edges.off(); isl.showArea(false); }
   P.clouds.visible = true;
   P.ocean.u.uScan.value.w = 0; lit(G, 0);
   document.getElementById('feed').hidden = true; G.post.fx.feed = 0;
@@ -64,7 +64,7 @@ export async function run(s, G, flow) {
   G.setWorld(P); G.ck.show(false); hud.show(false);
   cleanFx(G); f.glitch = 1;
   if (!flow.sea) flow.sea = A.loop('sea', { vol: 0.42 });
-  for (const isl of P.allIslands) { isl.visible = false; isl.position.y = -2.2; isl.setState('idle'); isl.edges.off(); }
+  for (const isl of P.allIslands) { isl.visible = false; isl.position.y = -2.2; isl.setState('idle'); isl.edges.off(); isl.showArea(false); }
   P.clouds.visible = false;                            // the deck is above us now; the views from high up look down through it
   lit(G, 0);
   P.ocean.uniforms.uAmp.value = 0.7;

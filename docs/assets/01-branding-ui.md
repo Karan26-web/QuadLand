@@ -1,6 +1,6 @@
 # 01 · Branding and UI
 
-The HUD itself (hearts, GO, NEXT, the joystick, the fleet row, captions, the formula chip) is drawn in HTML and SVG and needs no art. This file covers the two pictures that brand the game.
+The HUD itself (hearts, pause, GO, NEXT, the joystick, captions and subtitles) is drawn in HTML and SVG and needs no art. This file covers the two pictures that brand the game.
 
 ---
 

@@ -64,7 +64,7 @@ export class Flow {
     this.runner.stop(); G.voice.stop(); tweens.clear(); clock.scale = 1;
     G.audio.stopLoops(0.3);
     this.state = fresh();
-    G.labels.clear(); G.hud.show(false); G.hud.formula(null); G.hud.caption(null); G.hud.hideNext(); G.hud.goShow(false); G.input.enable(false);
+    G.labels.clear(); G.hud.show(false); G.hud.caption(null); G.hud.hideNext(); G.hud.goShow(false); G.input.enable(false);
     document.getElementById('complete').hidden = true; document.getElementById('lesson').hidden = true; document.getElementById('feed').hidden = true;
     Landing.resetWorld(G); Survey.resetWorld(G); Cockpit.resetWorld(G);
     cleanFx(G);

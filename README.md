@@ -38,10 +38,10 @@ It plays best in landscape on a tablet or a laptop. Phones and portrait work too
 | 3–5 Dark sea, scan, five zones, the hook | The drone feed over the dark sea; SCAN makes two beam passes and the lights come up; five sets of three zones rise one by one as the camera whips to each; straight above the whole field, every zone's sides trace on in light; a low banked loop; the area hook over a high glide, ending above the field again | `src/game/survey.js` |
 | 6 Learning section | The team's learning module (`learning/`), framed full-screen: Swiftee teaches the area of each shape, with practice; its last page hands back to the mission. Skip lesson › (pressed twice) goes straight on to Screen 7 | `learning/`, `src/game/lesson.js` |
 | 7 Back to the mission | Fade back; the camera descends toward the first zone | `src/game/landing.js` (`back`) |
-| 8–12 Five landings | The camera descends to the set; the ship flies in; the playing view is straight down over the three islands; its dimensions draw on; the rule is said; the areas appear; the player flies and presses GO; one of three outcomes; 3 hearts; a hint ladder; the autopilot when the hearts run out; NEXT | `src/game/landing.js` |
+| 8–12 Five landings | The camera descends to the set; the ship flies in; its dimensions draw on ("5 units"); the rule is said; the playing view is straight down over just that set; each island's area is written on it; the player flies (the dimensions step away while the ship moves) and presses GO; one of three outcomes; 3 hearts; a hint ladder; the autopilot when the hearts run out; NEXT | `src/game/landing.js` |
 | 13 Mission complete | The five ships on their islands in deep space with their rules; the fanfare and confetti; RESTART returns to the cockpit | `src/game/complete.js` |
 
-`docs/GDD.md` explains each design decision and traces every LXD line to the build.
+`docs/GDD.md` explains each design decision and traces every LXD line to the build; §11 traces the LXD's review of 2026-11-05 (`spacecraftFeedbacks.pdf`).
 
 ## Dev and QA
 URL parameters:
@@ -77,7 +77,7 @@ src/main.js                     boot (renderer, post, worlds, loading), the fram
 src/engine/
   camera.js                     the camera director: spline paths with banking, orbits, dolly zoom, chase, whip pans, trauma shake, FOV punch, lens shift, motion blur
   post.js                       the HDR pipeline: dual-Kawase bloom, chromatic aberration, warp zoom blur, whip smear, glitch, drone feed, ACES, grading
-  audio.js                      procedural sound: buses, reverb, 57 cues, 8 live loops, a generative score with 5 moods; recorded files override cues
+  audio.js                      procedural sound: buses, reverb, 56 cues, 8 live loops, a generative score with 5 moods; recorded files override cues
   voice.js                      the narrator: decoded lines through Web Audio (the waveform and the orb follow the real voice), subtitles, ducking
   clock.js, tween.js            game time and real time, slow motion, cancellable scripts
   input.js, labels.js, fx.js, assets.js, util.js

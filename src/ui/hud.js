@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------
-// The HUD: hearts, the fleet row (which ships have landed), the formula chip,
-// the instruction caption (LXD "Caption" lines), GO and NEXT, Skip, pause.
+// The HUD: hearts, pause, the instruction caption (LXD "Caption" lines and the
+// hints), GO and NEXT, Skip. The LXD's review (2026-11-05) took the fleet row of
+// shape icons and the formula chip off the screen: the rule is spoken, not shown.
 // ---------------------------------------------------------------------------
-import { SHAPES, shapeIcon } from '../world/shapes.js';
 import { audio } from '../engine/audio.js';
 import { voice } from '../engine/voice.js';
 import { clock } from '../engine/clock.js';
@@ -14,11 +14,8 @@ const HEART_CRACK = '<svg viewBox="0 0 32 29"><path d="M16 28 3.6 15.8C.3 12.5.3
 export class HUD {
   constructor(G) {
     this.G = G;
-    this.el = $('hud'); this.heartsEl = $('hearts'); this.fleetEl = $('fleet'); this.formulaEl = $('formula');
+    this.el = $('hud'); this.heartsEl = $('hearts');
     this.captionEl = $('caption'); this.goEl = $('btnGo'); this.nextEl = $('btnNext'); this.skipEl = $('btnSkip');
-    // a long caption wraps to several lines on a narrow screen: the formula chip moves down by its real height (--cap-h)
-    new ResizeObserver(() => document.body.style.setProperty('--cap-h', `${this.captionEl.offsetHeight}px`)).observe(this.captionEl);
-    this.fleetEl.innerHTML = SHAPES.map((s) => `<div class="fs" data-k="${s.key}">${shapeIcon(s, { stroke: '#8ee8ff' })}</div>`).join('');
     this.hearts = 3; this.renderHearts();
     this.goHandler = null; this.nextResolve = null; this.skipHandler = null;
     this.goEl.addEventListener('click', () => this._go());
@@ -50,13 +47,7 @@ export class HUD {
     audio.play('ui.heart');
     return this.hearts;
   }
-  /* the fleet row */
-  setFleet(current, done) {
-    [...this.fleetEl.children].forEach((el, i) => { el.classList.toggle('now', i === current); el.classList.toggle('done', !!done[i]);
-      const s = SHAPES[i]; el.innerHTML = shapeIcon(s, done[i] ? { fill: '#3dffa2', stroke: '#c8ffe6' } : { stroke: i === current ? '#ffb547' : '#8ee8ff' }); });
-  }
-  /* formula + caption */
-  formula(html) { if (!html) { this.formulaEl.hidden = true; return; } this.formulaEl.innerHTML = html; this.formulaEl.hidden = false; this.formulaEl.style.animation = 'none'; void this.formulaEl.offsetWidth; this.formulaEl.style.animation = ''; audio.play('formula'); }
+  /* the caption */
   caption(text, { cool = false } = {}) {
     if (!text) { this.captionEl.hidden = true; document.body.classList.remove('caption-on'); return; }
     this.captionEl.textContent = text; this.captionEl.classList.toggle('cool', cool); this.captionEl.hidden = false;

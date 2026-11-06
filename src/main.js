@@ -43,8 +43,12 @@ export const G = {
 window.__ql = G;
 
 /* --------------------------------------------------------------- sizing */
-const QUALITY = { cap: touch ? 1.3 : 1.75, min: 0.6, cube: touch ? 512 : 1024 };
-let dpr = clamp(+param('dpr', Math.min(devicePixelRatio || 1, QUALITY.cap)), 0.5, 3);
+// The render resolution, as a multiple of the page's CSS pixels. It never drops below 1: under that every edge goes soft
+// (the LXD's review: "when I am playing in a tab the quality decreases"). A standard laptop screen (devicePixelRatio 1)
+// is supersampled at 1.5, so edges stay clean there too; a high-DPI screen starts at its own ratio, up to the cap. A GPU
+// that can't hold the frame rate gives the extra back first, down to 1.
+const QUALITY = { cap: touch ? 1.5 : 1.75, min: 1, cube: touch ? 512 : 1024 };
+let dpr = clamp(+param('dpr', clamp(Math.max(devicePixelRatio || 1, 1.5), QUALITY.min, QUALITY.cap)), 0.5, 3);
 function resize() {
   const w = innerWidth, h = innerHeight;
   renderer.setPixelRatio(dpr); renderer.setSize(w, h, false);

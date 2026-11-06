@@ -1,6 +1,6 @@
 # 07 · Sound effects and music (optional upgrades)
 
-The game already has a full sound design, synthesised live by `src/engine/audio.js`: 57 cues, 8 continuous loops and a generative score with 5 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
+The game already has a full sound design, synthesised live by `src/engine/audio.js`: 56 cues, 8 continuous loops and a generative score with 5 moods. There are no files to load and nothing is ever missing. Every cue below can be replaced by a recording, for example from ElevenLabs Sound Effects or a library. Music can be replaced the same way (for example from Suno or Udio).
 
 **To install a recording:**
 1. Save it as `assets/sfx/<anything>.m4a` (AAC, which plays in every browser including iPad Safari), or `.mp3`.
@@ -54,8 +54,7 @@ The ElevenLabs connector in this workspace needs authorising (claude.ai → Sett
 | `ship.arrive` | A quad ship flies in | small spaceship arriving: doppler jet whoosh settling into a hover hum | 2.5 s |
 | `dim.draw` | A dimension line draws on | holographic laser pen drawing a line, rising shimmer | 0.5 s |
 | `dim.label` | A dimension number appears | small hologram pop with a chime | 0.3 s |
-| `area.pop` | A zone's area tag appears | hologram tag pop, bright | 0.3 s |
-| `formula` | The formula chip appears | three-note sparkle chime | 0.5 s |
+| `area.pop` | A zone's area appears, written on it | hologram pop, bright | 0.3 s |
 | `go.ready` | GO lights up | quick bright double ping, ready | 0.2 s |
 | `go.press` | GO pressed | chunky button press with engage hum | 0.5 s |
 | `lock.beam` | A corner lock beam fires (×4) | short laser zap, descending | 0.25 s |

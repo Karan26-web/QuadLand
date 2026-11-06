@@ -30,7 +30,7 @@ const WAVES = [
 const WATER_FRAG = /* glsl */`
 uniform samplerCube envMap;
 uniform sampler2D tNormal, tNoise;
-uniform float uTime, uEnvI, uBio, uFogDensity, uDetail, uSpecK, uFoamK;
+uniform float uTime, uEnvI, uBio, uFogDensity, uDetail, uSpecK, uFoamK, uLaceK;
 uniform vec3 uDeep, uShallow, uSSS, uFoam, uLightDir, uLightColor;
 uniform vec4 uScan; uniform vec2 uScanFan;
 uniform vec4 uIsl[16];      // each zone in the water: centre (x, z), how far its foam reaches, its strength
@@ -77,8 +77,8 @@ void main() {
   float n1 = texture2D(tNoise, vWorld.xz * 0.028 + vec2(uTime * 0.008, 0.0)).r;
   float n2 = texture2D(tNoise, vWorld.xz * 0.09 - vec2(0.0, uTime * 0.013)).g;
   float foam = smoothstep(0.86, 0.52, vJ) * smoothstep(0.32, 0.7, n1 * 0.6 + n2 * 0.5);
-  foam = clamp(foam * uFoamK + vRipFoam * smoothstep(0.25, 0.6, n2), 0.0, 1.0);
-  foam = max(foam, contact * smoothstep(0.28, 0.72, n2 * 0.9 + contact * 0.32) * 0.9);
+  foam = clamp((foam + vRipFoam * smoothstep(0.25, 0.6, n2)) * uFoamK, 0.0, 1.0);   // uFoamK: the playing view calms it all
+  foam = max(foam, contact * smoothstep(0.28, 0.72, n2 * 0.9 + contact * 0.32) * 0.9 * uLaceK);
   foam *= exp(-dist * 0.0025);
   col = mix(col, uFoam, foam * 0.82);
   float spark = smoothstep(0.78, 1.0, texture2D(tNoise, vWorld.xz * 0.19 - uTime * 0.025).b) * smoothstep(0.0, 0.6, vCrest + 0.4);
@@ -193,7 +193,7 @@ export class Ocean {
     const shared = {
       envMap: { value: envMap }, tNormal: { value: Tex.waterNormal() }, tNoise: { value: Tex.noise() },
       uTime: { value: 0 }, uEnvI: { value: 1.0 }, uBio: { value: 0 }, uFogDensity: { value: 0.00055 }, uDetail: { value: 0.3 },
-      uSpecK: { value: 1 }, uFoamK: { value: 1 },
+      uSpecK: { value: 1 }, uFoamK: { value: 1 }, uLaceK: { value: 1 },
       uDeep: { value: new THREE.Color(0x05030f) }, uShallow: { value: new THREE.Color(0x1a1046) },
       uSSS: { value: new THREE.Color(0x0e86a6) }, uFoam: { value: new THREE.Color(0xc9c0f2) },
       uLightDir: { value: new THREE.Vector3(-0.35, 0.42, -0.84).normalize() }, uLightColor: { value: new THREE.Color(0xffd9f0) },

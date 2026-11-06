@@ -8,9 +8,9 @@ import { Ease } from '../engine/util.js';
 export const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
 
 /** a line of narration; the script waits for it (and stops it if the script is killed) */
-export async function say(s, G, id, { after = 0.25 } = {}) {
+export async function say(s, G, id, { after = 0.25, subtitle = true } = {}) {
   s.check();
-  const ok = await s.run(G.voice.say(id)).catch((e) => { G.voice.stop(); throw e; });
+  const ok = await s.run(G.voice.say(id, { subtitle })).catch((e) => { G.voice.stop(); throw e; });
   if (after) await s.wait(after);
   return ok;
 }

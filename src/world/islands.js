@@ -6,11 +6,14 @@
 //  * a beacon on each corner (the ship's corner beacons lock onto these)
 //  * the rim glows: idle (cool), hot (the ship is over it), good, bad
 //  * its sides can trace on in light (edges), so the shape reads from far above
+//  * its area is written on its pad (the LXD's review, 2026-11-05: "the area of
+//    the landing zones should be within the land, not outside"), hidden until the
+//    landing shows it: the survey keeps the LXD's "no labels"
 // The sea draws the foam where an island meets it (ocean.setIslands).
 // ---------------------------------------------------------------------------
 import * as THREE from '../../vendor/three.module.js';
 import { Tex } from './textures.js';
-import { scaledVerts, threeShape, inset, toWorld, centroid } from './shapes.js';
+import { scaledVerts, threeShape, inset, toWorld, centroid, inside } from './shapes.js';
 import { glowSprite } from './ships.js';
 import { EdgeGlow } from './edges.js';
 import { Ease, mulberry32, damp } from '../engine/util.js';
@@ -21,6 +24,21 @@ const DEPTH = 9;                 // how far its rock reaches down
 const SUNK = -2.2;               // a sunk island's top, below the (opaque) sea
 
 const COLORS = { idle: new THREE.Color(0x8ee8ff), hot: new THREE.Color(0xffb547), good: new THREE.Color(0x3dffa2), bad: new THREE.Color(0xff4d6d), off: new THREE.Color(0x1a1440) };
+
+const WHITE = new THREE.Color(0xffffff), _c = new THREE.Color();
+
+/** the area written on a pad: the number over "sq units", white with a dark edge (the zone's state tints it) */
+function areaCanvas(area) {
+  const H = 300, NUM = '800 190px "Exo 2", system-ui, sans-serif', UNIT = '800 62px Nunito, system-ui, sans-serif';
+  const m = document.createElement('canvas').getContext('2d');
+  m.font = NUM; const wn = m.measureText(String(area)).width; m.font = UNIT; const wu = m.measureText('sq units').width;
+  const c = document.createElement('canvas'); c.width = Math.ceil(Math.max(wn, wu) + 48); c.height = H;
+  const g = c.getContext('2d'), W = c.width;
+  g.textAlign = 'center'; g.lineJoin = 'round'; g.strokeStyle = 'rgba(6, 4, 26, 0.6)';
+  g.font = NUM; g.lineWidth = 16; g.strokeText(String(area), W / 2, 178); g.fillStyle = '#fff'; g.fillText(String(area), W / 2, 178);
+  g.font = UNIT; g.lineWidth = 10; g.strokeText('sq units', W / 2, 268); g.fillText('sq units', W / 2, 268);
+  return c;
+}
 
 function edgeNormals(v) {
   return v.map((a, i) => { const b = v[(i + 1) % v.length], dx = b.x - a.x, dy = b.y - a.y, l = Math.hypot(dx, dy); return { x: dy / l, y: -dx / l }; });
@@ -91,7 +109,7 @@ export class Island extends THREE.Group {
     rimGeo.rotateX(-Math.PI / 2); rimGeo.translate(0, -0.06, 0);
     this.rimMat = new THREE.MeshStandardMaterial({ color: 0x3a3060, roughness: 0.4, metalness: 0.4, emissive: COLORS.idle.clone(), emissiveIntensity: 0.9 });
     this.add(new THREE.Mesh(rimGeo, this.rimMat));
-    this.edges = new EdgeGlow(this.verts, { y: 0.16, width: 1.5 }); this.add(this.edges);
+    this.edges = new EdgeGlow(this.verts, { y: 0.16, width: 0.9, line: 0.2 }); this.add(this.edges);
 
     const rockMat = new THREE.MeshStandardMaterial({ map: Tex.rock(), vertexColors: true, color: 0xf0e4ff, roughness: 0.55, metalness: 0.05, emissive: 0x1a0f3a, emissiveIntensity: 0.6 });
     this.rockMat = rockMat;
@@ -115,10 +133,12 @@ export class Island extends THREE.Group {
       post.position.y = 0.2; g.add(post);
       const cap = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 8), new THREE.MeshBasicMaterial({ color: COLORS.idle }));
       cap.position.y = 0.55; g.add(cap);
-      const glow = glowSprite(COLORS.idle.getHex(), 1.1, 0.9); glow.position.y = 0.55; g.add(glow);
+      const glow = glowSprite(COLORS.idle.getHex(), 0.6, 0.7); glow.position.y = 0.55; g.add(glow);
       this.add(g);
       return { g, cap, glow };
     });
+
+    this.areaMark = null;                // built when first shown
 
     this.state = 'idle'; this.color = COLORS.off.clone(); this.want = COLORS.idle.clone(); this.glowK = 0.9; this.pulseT = 0;
     this.position.y = SUNK; this.visible = false;
@@ -129,6 +149,27 @@ export class Island extends THREE.Group {
   cornerWorld(i, out = new THREE.Vector3()) { this.beacons[i].g.getWorldPosition(out); out.y += 0.55; return out; }
   topWorld(out = new THREE.Vector3()) { this.getWorldPosition(out); return out; }
   setState(s) { this.state = s; this.want.copy(COLORS[s] || COLORS.idle); }
+  /** write the area on the pad (pop: it springs up) or wipe it off */
+  showArea(on = true, pop = true) {
+    if (on && !this.areaMark) this._buildAreaMark();
+    if (!this.areaMark) return;
+    if (this._areaTw) { this._areaTw.cancel(); this._areaTw = null; }
+    this.areaMark.visible = on; this.areaMark.scale.setScalar(1);
+    if (on && pop) this._areaTw = tweens.add({ duration: 0.45, ease: Ease.outBack, onUpdate: (e) => this.areaMark.scale.setScalar(Math.max(0.001, e)) });
+  }
+  /** the largest block of text that fits on the pad, inside its coloured frame (the rhombus's middle is its widest) */
+  _buildAreaMark() {
+    const c = areaCanvas(this.area), aspect = c.width / c.height;
+    const room = inset(this.verts, 0.75);
+    const fits = (h) => { const w = h * aspect; return [[-1, -1], [1, -1], [1, 1], [-1, 1]].every(([x, y]) => inside(room, (x * w) / 2, (y * h) / 2)); };
+    let lo = 0.2, hi = 2.3;
+    for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (fits(m)) lo = m; else hi = m; }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+    const mat = new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+    const mark = new THREE.Mesh(new THREE.PlaneGeometry(lo * aspect, lo), mat);
+    mark.rotation.x = -Math.PI / 2; mark.position.y = 0.03; mark.renderOrder = 3; mark.visible = false;
+    this.add(mark); this.areaMark = mark;
+  }
   pulse() { this.pulseT = 1; }
   rise(duration = 2.4, delay = 0) {
     this.visible = true; this.risen = true;
@@ -147,11 +188,15 @@ export class Island extends THREE.Group {
     this.color.lerp(this.want, 1 - Math.exp(-6 * dt));
     this.pulseT = Math.max(0, this.pulseT - dt * 0.8);
     const breathe = 0.85 + 0.15 * Math.sin(this._t * 2.2);
-    const k = (this.state === 'hot' ? 1.6 : this.state === 'good' ? 2.2 : this.state === 'bad' ? 1.8 : 0.9) * breathe + this.pulseT * 2.5;
+    // the rim lights the zone's outline without flooding round it (the LXD's review: the light must not spread)
+    const k = (this.state === 'hot' ? 1.0 : this.state === 'good' ? 1.3 : this.state === 'bad' ? 1.1 : 0.5) * breathe + this.pulseT * 1.6;
     this.rimMat.emissive.copy(this.color); this.rimMat.emissiveIntensity = damp(this.rimMat.emissiveIntensity, k, 6, dt);
-    this.glowU.value.copy(this.color); this.glowKU.value = 0.45 + k * 0.35;
+    this.glowU.value.copy(this.color); this.glowKU.value = 0.2 + k * 0.25;
     this.padMat.emissiveIntensity = 0.35 + this.pulseT * 1.2 + (this.state === 'good' ? 0.6 : 0);
-    for (const b of this.beacons) { b.cap.material.color.copy(this.color); b.glow.material.color.copy(this.color); b.glow.scale.setScalar(1.0 + 0.25 * Math.sin(this._t * 3) + this.pulseT); }
+    for (const b of this.beacons) { b.cap.material.color.copy(this.color); b.glow.material.color.copy(this.color); b.glow.scale.setScalar(0.6 + 0.12 * Math.sin(this._t * 3) + this.pulseT * 0.6); }
+    // the written area: near-white while idle, the state's colour when the ship is over it, lands or misses; kept just
+    // under the bloom's threshold, so the digits stay sharp
+    if (this.areaMark && this.areaMark.visible) this.areaMark.material.color.copy(_c.copy(this.color).lerp(WHITE, this.state === 'idle' ? 0.82 : 0.12)).multiplyScalar(0.86);
     // wet when it comes up; it dries off over a few seconds
     this.rockMat.roughness = damp(this.rockMat.roughness, this.position.y > 1 ? 0.62 : 0.15, 0.5, dt);
     this.getWorldPosition(this.labelAnchor); this.labelAnchor.y += 1.2;

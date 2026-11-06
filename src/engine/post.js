@@ -157,7 +157,7 @@ export class Post {
     /** The knobs. Screens and the camera director write these; nothing else needs to know a shader exists. */
     this.fx = {
       exposure: 1, bloom: 0.55, threshold: 0.9, knee: 0.6, ca: 0, zoomBlur: 0, zoomCenter: new THREE.Vector2(0.5, 0.5),
-      dirBlur: new THREE.Vector2(0, 0), vignette: 0.32, grain: 0.025, glitch: 0, feed: 0, fade: 0,
+      dirBlur: new THREE.Vector2(0, 0), vignette: 0.32, grain: 0.012, glitch: 0, feed: 0, fade: 0,
       fadeColor: new THREE.Color(0, 0, 0), saturation: 1.06, contrast: 1.04, lift: new THREE.Color(0, 0, 0),
       tint: new THREE.Color(1, 1, 1), blurMix: 0, blurDim: 0.55, flash: 0, flashColor: new THREE.Color(1, 1, 1),
     };
