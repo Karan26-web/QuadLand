@@ -3631,6 +3631,12 @@
   const loadFill  = document.getElementById('loadFill');
   const loadPct   = document.getElementById('loadPct');
   const startBtn  = document.getElementById('startBtn');
+  /* ?autostart: the module is framed by the Spaceship Mission game, where the learner has already pressed through
+     the mission (the gesture the voice-overs need). No welcome page and no Start button there: a quiet loader on
+     the plain sky while the preload runs, then straight into Swiftee's greeting. Opened on its own, the module
+     still welcomes the learner as before. */
+  const DIRECT = new URLSearchParams(location.search).has('autostart');
+  if (DIRECT) welcome.classList.add('direct');
 
   /* The backdrops, warmed in the format the stylesheet paints them in: AVIF
      where its @supports test for image-set() passes, WebP otherwise. A
@@ -3640,7 +3646,7 @@
   const ART_EXT = (window.CSS && CSS.supports &&
                    CSS.supports('background-image', 'image-set(url("x.avif") type("image/avif"))'))
     ? ['.avif', '.webp'] : ['.webp'];
-  const MIN_LOAD_MS = 1600;      /* the bar is never allowed to blink past */
+  const MIN_LOAD_MS = DIRECT ? 400 : 1600;      /* the bar is never allowed to blink past */
 
   /* Every clip and sheet is fetched up front so the first briefing does not
      stall halfway through, and so Swiftee's first expression change is not a
@@ -3729,6 +3735,11 @@
     await runLoader();
     /* the mission's own voice can start arriving now: the bar is done with */
     warmVoices();
+    if (DIRECT) {
+      welcome.classList.add('off');
+      setTimeout(() => { welcome.hidden = true; }, 620);
+      return;
+    }
     await wait(280);
 
     /* the button takes the loader's own grid cell, so nothing shifts */

@@ -311,6 +311,9 @@ export class CockpitUI {
     const off = () => { if (this.held) { this.held = false; b.classList.remove('held'); } };
     b.addEventListener('pointerdown', (e) => { b.setPointerCapture(e.pointerId); on(e); });
     b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('lostpointercapture', off);
+    // a long press on a touch screen is the browser's cue for a menu or a selection, which cancels the touch: the hold
+    // broke after half a second and the altimeter stalled until the next tap
+    b.addEventListener('contextmenu', (e) => e.preventDefault());
     addEventListener('keydown', (e) => { if ((e.code === 'Space' || e.code === 'Enter') && !b.hidden && !e.repeat) { e.preventDefault(); on(); } });
     addEventListener('keyup', (e) => { if (e.code === 'Space' || e.code === 'Enter') off(); });
   }

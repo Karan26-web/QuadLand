@@ -14,8 +14,9 @@
 // and the view holds just this set, close.
 // The second review (2026-11-06) made the misses a ladder, the same for every ship.
 // The rule is no longer said before the first try. After each miss: the feedback
-// line; the zones change places (their numbers go with them), so the next try is
-// not a guess by where they stand; the question again; then a hint:
+// line; the zones change places (their numbers go with them), unseen while the camera
+// looks up at the rescued ship, so the next try is not a guess by where they stand;
+// the question again; then a hint:
 //   1st miss  "Look closely! The spacecraft is square shaped."
 //   2nd miss  the rule: "Its area is side times side."
 //   3rd miss  the working: "Here, multiply 5 with 5."
@@ -242,9 +243,11 @@ export async function run(s, G, flow, k) {
     st.hearts = hud.loseHeart();
     await say(s, G, tooSmall ? 'o.small' : 'o.large');                 // the feedback (LXD)
     L.clearExtra();
-    await recover(s, G, { ship, site, tooSmall, hoverLoop, play, home: play.shipAt });
     if (miss > HEARTS) {
       // it missed even the zone lit green: the autopilot lands it there (the caption says so, so no second copy below)
+      await recover(s, G, { ship, site, tooSmall, hoverLoop, home: play.shipAt });
+      focus(G, site, true);
+      await s.run(d.to(play, 1.2, Ease.inOutCubic));
       hud.caption('vo.o.auto', { cool: true });
       A.play('autopilot');
       await say(s, G, 'o.auto', { subtitle: false });
@@ -253,10 +256,17 @@ export async function run(s, G, flow, k) {
       await landExact(s, G, { site, ship, isl: right, k, hoverLoop, auto: true });
       break;
     }
-    // the zones change places (their numbers with them), the ship takes its new waiting spot, and the question again
-    await shuffle(s, G, site);
-    play = playView(G, site, ship);
-    await settle(s, G, ship, play);
+    // the zones change places, unseen (the user, 2026-11-06: no sinking and rising; the learner notices the new places
+    // by themselves). The new layout and the ship's new waiting spot are worked out first, the ship is brought straight
+    // there, the camera drops under it and looks up at it against the sky, the zones swap while none is in the picture,
+    // and the camera rises to the view from above with them already in their new places. Then the question again
+    const now = site.islands.map((x) => x.slot), next = deal(site);
+    place(site, next); const nextPlay = playView(G, site, ship); place(site, now);
+    await recover(s, G, { ship, site, tooSmall, hoverLoop, home: nextPlay.shipAt });
+    await lookUp(s, G, ship, site, next);
+    place(site, next); play = nextPlay;
+    focus(G, site, true);
+    await s.run(d.to(play, 1.6, Ease.inOutCubic));
     await say(s, G, 'o.exact', { after: 0.2 });
     dims.showAll();
     // the rung (said and shown once, in the caption, which stays up while the player tries again): the shape, the
@@ -642,7 +652,7 @@ async function landTooLarge(s, G, { ship, isl, hoverLoop }) {
 }
 
 /** after a miss: the drone tows a wet ship out of the sea, or a dented one lifts off the rock; back to the hover at home */
-async function recover(s, G, { ship, site, tooSmall, hoverLoop, play, home }) {
+async function recover(s, G, { ship, site, tooSmall, hoverLoop, home }) {
   const P = G.planet, d = G.director, A = G.audio, dr = P.drone;
   if (tooSmall) {
     // the drone with a tractor beam
@@ -675,34 +685,57 @@ async function recover(s, G, { ship, site, tooSmall, hoverLoop, play, home }) {
   }
   ship.setBeacons(0xffffff); ship.legK = 0; ship.hover = 1; ship.bob = 1; ship.thrust = 0.15; hoverLoop.set('power', 1, 0.4);
   for (const isl of site.islands) isl.setState('idle');
-  focus(G, site, true);
-  await s.run(d.to(play, 1.2, Ease.inOutCubic));
 }
 
-/** the zones change places (the second review: after every miss, so the next try is not a guess by where they stand):
-    all three go under together and come up again, each in another's place, its number with it */
-async function shuffle(s, G, site) {
-  const P = G.planet, A = G.audio, n = site.islands.length, turn = 1 + Math.floor(Math.random() * (n - 1));
-  A.play('whoosh', { dur: 0.9, vol: 0.22 }); A.play('island.rise', { dur: 0.9 });
-  for (const isl of site.islands) { isl.setState('idle'); isl.sink(0.85); P.ocean.ripple(isl.position.x, isl.position.z, 0.5); }
-  G.director.shake(0.05);
-  await s.wait(1.05);
-  for (const isl of site.islands) { isl.slot = (isl.slot + turn) % n; isl.position.x = site.slots[isl.slot].x; isl.position.z = site.slots[isl.slot].z; }
-  for (const [i, isl] of site.islands.entries()) {
-    riseIsland(G, isl, { dur: 1.3, shake: i ? 0.03 : 0.07, rumble: i === 0, ripple: i ? 0.45 : 0.75 });
-    await s.wait(0.2);
-  }
-  await s.wait(1.15);
+/** a new deal for the set's three zones (the second review: after every miss, so the next try is not a guess by where
+    they stand): a turn round the three places, so every zone moves; their numbers go with them */
+function deal(site) {
+  const n = site.islands.length, turn = 1 + Math.floor(Math.random() * (n - 1));
+  return site.islands.map((isl) => (isl.slot + turn) % n);
 }
-/** after a shuffle: the ship glides to its new waiting spot (the fire pushing it) as the view settles on the new layout */
-async function settle(s, G, ship, play) {
-  const from = ship.position.clone(), to = play.shipAt, d = Math.hypot(to.x - from.x, to.z - from.z), dur = clamp(0.6 + d * 0.06, 0.8, 1.5);
-  G.director.to(play, dur, Ease.inOutCubic);
-  await s.run(tweens.add({ duration: dur, ease: Ease.inOutCubic, onUpdate: (e) => {
-    ship.position.lerpVectors(from, to, e);
-    ship.vel.set(to.x - from.x, 0, to.z - from.z).multiplyScalar((Math.sin(e * Math.PI) * 1.5) / dur);
-  } }).promise);
-  ship.vel.set(0, 0, 0);
+/** put each zone in its place (instantly: the sea's foam follows them on the next frame) */
+function place(site, slots) {
+  site.islands.forEach((isl, i) => { isl.slot = slots[i]; isl.position.x = site.slots[slots[i]].x; isl.position.z = site.slots[slots[i]].z; });
+}
+const _frustum = new THREE.Frustum(), _m = new THREE.Matrix4();
+/** each zone's room on the sea, in its old place and its new one: its outline and the rock's flare at the waterline,
+    from the sea up to its corner lights */
+function zoneBoxes(site, next) {
+  const out = [];
+  site.islands.forEach((isl, i) => {
+    const r = isl.verts.reduce((m, v) => Math.max(m, Math.hypot(v.x, v.y)), 0) + 1.8;
+    for (const p of [site.slots[isl.slot], site.slots[next[i]]]) out.push(new THREE.Box3(new THREE.Vector3(p.x - r, -0.6, p.z - r), new THREE.Vector3(p.x + r, TOP + 0.8, p.z + r)));
+  });
+  return out;
+}
+/** is any part of them in the picture? (points over each zone's room, at the sea and at its lights: a box test alone
+    calls a zone lying under the camera, half in front of it and half behind, "in view") */
+const _pt = new THREE.Vector3();
+function zonesInView(G, boxes) {
+  const cam = G.camera; cam.updateMatrixWorld();
+  _frustum.setFromProjectionMatrix(_m.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse));
+  for (const b of boxes) for (let i = 0; i <= 6; i++) for (let j = 0; j <= 6; j++) for (const y of [b.min.y, b.max.y]) {
+    if (_frustum.containsPoint(_pt.set(b.min.x + ((b.max.x - b.min.x) * i) / 6, y, b.min.z + ((b.max.z - b.min.z) * j) / 6))) return true;
+  }
+  return false;
+}
+/** the camera drops under the hovering ship, over open water, and looks up at it against the sky (at least 28° up, so
+    the picture's lower edge is above the horizon): everything lower than the camera, the zones and the sea round them,
+    is out of it, so they can change places unseen. If a screen's shape still shows an edge of one, the camera tilts
+    further up until none is in it */
+async function lookUp(s, G, ship, site, next) {
+  const d = G.director, p = ship.position, dist = ship.size * 0.5 + 4, boxes = zoneBoxes(site, next);
+  // straight in front of the ship (+z), facing the way the view from above faces (up the screen is -z), so the climb to
+  // that view only tilts the picture and never turns it
+  const pos = V(p.x, Math.max(TOP + 1.6, p.y - dist * 0.55), p.z + dist);
+  // aimed 34° up (half the lens, the HUD's lens shift and a margin), a little above the ship, which sits low in the
+  // picture with the sky over it
+  const up0 = Math.max(0, Math.tan((34 * Math.PI) / 180) * dist - (p.y - pos.y));
+  d.handheld(0.03);
+  await s.run(d.to({ pos, target: p.clone().add(V(0, up0, 0)), fov: 50, roll: 0 }, 1.0, Ease.inOutCubic));
+  for (let up = up0 + 1.5; up <= up0 + 12 && zonesInView(G, boxes); up += 1.5) await s.run(d.to({ pos, target: p.clone().add(V(0, up, 0)), fov: 50, roll: 0 }, 0.25, Ease.outCubic));
+  await s.wait(0.25);
+  if (zonesInView(G, boxes)) console.warn('[landing] a zone is in the picture as the zones change places');
 }
 
 async function autopilot(s, G, { ship, isl }) {

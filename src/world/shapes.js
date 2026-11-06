@@ -28,7 +28,7 @@ function recentre(pts) { const c = centroid(pts); return pts.map((p) => P(p.x - 
 /* dims: what is drawn onto the ship (LXD), in order.
    edge   a dimension line beside edge [i, j], drawn outside the shape
    height a dashed perpendicular from point `from` to the base line (with a right-angle mark)
-   diag   a dashed diagonal between vertices [i, j]
+   diag   a dashed diagonal between vertices [i, j], measured by a dimension line outside the ship on side `out`
    vo.hints: the hint ladder after a miss (the LXD's second review, 2026-11-06): 1 "Look closely! The spacecraft is …
    shaped.", 2 the rule, 3 the working with its numbers; a 4th miss turns the right zone green (h.green). */
 export const SHAPES = [
@@ -62,10 +62,11 @@ export const SHAPES = [
     verts: recentre([P(0, -3), P(4, 0), P(0, 3), P(-4, 0)]),
     area: 24, islands: [20, 30, 24],
     rule: '½ × diagonal 1 × diagonal 2', vo: { here: 's11.here', ask: 's9.find', hints: ['h.look.rh', 's11.rule', 'h.calc.rh'] },
-    // the diagonals' numbers sit past their top and right ends, so the side is measured on the lower left edge
+    // the diagonals are measured outside the ship (the user's sketch): 8 across the top, 6 down the right; so the side
+    // is measured on the lower left edge
     dims: [
-      { type: 'diag', i: 0, j: 2, name: 'diagonal 1', value: 6 },
-      { type: 'diag', i: 3, j: 1, name: 'diagonal 2', value: 8 },
+      { type: 'diag', i: 0, j: 2, name: 'diagonal 1', value: 6, out: 'right' },
+      { type: 'diag', i: 3, j: 1, name: 'diagonal 2', value: 8, out: 'top' },
       { type: 'edge', i: 3, j: 0, name: 'side', value: 5 },
     ],
   },

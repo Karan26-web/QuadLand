@@ -82,11 +82,11 @@ export async function run(s, G, flow) {
   const sayAlign = say(s, G, 's2.align', { after: 0 });
   // locked: the planet inside the circle for half a second
   let inside = 0, idle = 0;
-  await s.until(() => {
+  await s.until((dt) => {
     const f = dirOf(look.yaw, look.pitch), a = Math.acos(clamp(f.dot(S.oceanPlanet.position.clone().sub(P0).normalize()), -1, 1)) / DEG;
     if (G.auto) { const pl2 = S.oceanPlanet.position.clone().sub(P0).normalize(); G.input.auto = { x: clamp(-(Math.atan2(-pl2.x, -pl2.z) - look.yaw) * 4, -1, 1), y: clamp((Math.asin(pl2.y) - look.pitch) * 4, -1, 1) }; }
     ck.lockState(a < 3.6 ? 'locked' : a < 9 ? 'near' : 'none');
-    const dt = 1 / 60; inside = a < 3.6 ? inside + dt : 0;
+    inside = a < 3.6 ? inside + dt : 0;
     if (G.input.read().mag === 0) { idle += dt; if (idle > 7 && hud.captionKey !== 'cap.steer') { hud.caption('cap.steer'); G.input.demo(true); } } else { idle = 0; }
     return inside > 0.5;
   });
@@ -109,7 +109,7 @@ export async function run(s, G, flow) {
   s.onKill(leverFx);
   let idleL = 0;
   if (G.auto) setTimeout(() => ck._leverTap(), 1200);
-  await s.until(() => { idleL += 1 / 60; if (idleL > 8 && lv < 0.1 && hud.captionKey !== 'cap.thrust') hud.caption('cap.thrust'); return lv >= 0.995; });
+  await s.until((dt) => { idleL += dt; if (idleL > 8 && lv < 0.1 && hud.captionKey !== 'cap.thrust') hud.caption('cap.thrust'); return lv >= 0.995; });
   hud.caption(null);
   leverFx(); ck.leverEnable(false); ck.leverDone(); ck.showReticle(false);
   ck.onLever = null;
@@ -181,9 +181,11 @@ async function descend(s, G, { look, dirOf, setFov, engine, eye }) {
   let prog = 0, idle = 0, switched = false, plasma = null, k = 0;
   const startYaw = look.yaw, startPitch = look.pitch;
   ck.status(t('ck.descent'));
-  await s.until(() => {
+  // the frame's real seconds: with a fixed 1/60 a tablet drawing 30 frames a second took twice as long to come down,
+  // and the altimeter crawled
+  await s.until((dt) => {
     if (G.auto) ck.held = true;
-    const dt = 1 / 60, held = ck.held;
+    const held = ck.held;
     if (held) { prog = Math.min(1, prog + dt / 5.2); idle = 0; if (!plasma) { plasma = A.loop('plasma', { vol: 0.42 }); s.onKill(() => plasma && plasma.stop(0.3)); } }
     else { idle += dt; if (idle > 4.5 && hud.captionKey !== 'cap.descend') { hud.caption('cap.descend', { cool: true }); ck.descend.classList.add('ready'); } }
     if (held) hud.caption(null);

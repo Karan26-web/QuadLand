@@ -4126,6 +4126,10 @@ body {
   transition: opacity .6s ease;
 }
 .welcome.off  { opacity: 0; pointer-events: none; }
+/* ?autostart (framed by the game): no welcome page, only the loader, centred on the plain sky */
+.welcome.direct { align-items: center; }
+.welcome.direct .welcome-art, .welcome.direct .welcome-scrim, .welcome.direct .welcome-mascot { display: none; }
+.welcome.direct .welcome-body { margin-bottom: 0; }
 .welcome[hidden] { display: none; }
 
 .welcome-art {

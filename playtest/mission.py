@@ -4,7 +4,7 @@
     python3 playtest/mission.py --from land0 --plan sle-e-e-e-e --every 6
     python3 playtest/mission.py --lan gu                # the whole mission in Gujarati (hi mr gu te od)
 The learning section (Screen 6) is its own app (learning/), played by hand: the autoplayer checks that it loads
-(its Start button shows inside the frame), then presses Skip lesson twice, as a player would.
+(its loader clears and the lesson begins inside the frame), then presses Skip lesson twice, as a player would.
 Screenshots: playtest/screens/m_<n>_<phase>.png. Exit code 1 if a page error happened."""
 import sys, os, time, subprocess, socket, argparse
 from playwright.sync_api import sync_playwright
@@ -55,10 +55,10 @@ def main():
                     print(f"           shot {n:02d}  sub: {st['sub'][:70]!r}  cap: {st['cap'][:50]!r}")
                     last_phase = st['phase']
                 if not skipped and st['phase'] == 'lesson':
-                    pg.frame_locator('#lesson iframe').locator('#startBtn:not([hidden])').wait_for(timeout=60000)
+                    pg.frame_locator('#lesson iframe').locator('#welcome.off').wait_for(state='attached', timeout=60000)   # loaded, no welcome page: the lesson has begun
                     pg.wait_for_timeout(800)
                     pg.screenshot(path=os.path.join(OUT, f'{a.tag}_lesson_module.png'))
-                    print(f"[{time.time() - t0:6.1f}s] the learning module is up (its Start button shows)")
+                    print(f"[{time.time() - t0:6.1f}s] the learning module is up and has begun (no welcome page)")
                     pg.click('#btnSkip'); pg.wait_for_timeout(400)
                     pg.screenshot(path=os.path.join(OUT, f'{a.tag}_skip_confirm.png'))
                     label = pg.evaluate("() => document.getElementById('btnSkip').innerText")

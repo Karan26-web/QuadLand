@@ -35,7 +35,8 @@ export async function run(s, G, flow) {
   clearTimeout(root._hideT);
   root.textContent = ''; root.classList.remove('leaving'); root.hidden = false;
   const frame = document.createElement('iframe');
-  frame.className = 'ls-frame'; frame.src = `${SRC}?lan=${i18n.moduleCode}`; frame.title = t('lesson.title'); frame.allow = 'autoplay';
+  // autostart: no welcome page and no Start button, straight into the lesson (the user, 2026-11-06)
+  frame.className = 'ls-frame'; frame.src = `${SRC}?lan=${i18n.moduleCode}&autostart=1`; frame.title = t('lesson.title'); frame.allow = 'autoplay';
   root.appendChild(frame);
 
   // the module says when its last page is done

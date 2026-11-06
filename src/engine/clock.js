@@ -11,12 +11,12 @@
 import { tweens, uiTweens } from './tween.js';
 
 export const clock = {
-  scale: 1, paused: false, time: 0, realTime: 0,
+  scale: 1, paused: false, time: 0, realTime: 0, dt: 0,
   /** world seconds since boot (slowed by scale, stopped by pause) */
   tick(rawDt) {
     const dt = this.paused ? 0 : rawDt * this.scale;
     const ui = this.paused ? 0 : rawDt;
-    this.time += dt; this.realTime += ui;
+    this.time += dt; this.realTime += ui; this.dt = dt;
     return { dt, ui };
   },
 };
@@ -48,13 +48,14 @@ export class Script {
   wait(s) { return this.run(tweens.delay(s).promise); }
   /** real-time wait (through slow motion) */
   waitReal(s) { return this.run(uiTweens.delay(s).promise); }
-  /** resolve once pred() is true (checked every frame); timeout in real seconds */
+  /** resolve once pred(dt) is true (checked every frame, given that frame's world seconds: never assume 60 frames a
+      second, a tablet may draw 30); timeout in real seconds */
   until(pred, timeout = Infinity) {
     const t0 = performance.now();
     return this.run(new Promise((res) => {
       const step = () => {
         if (this.dead) return;
-        let ok = false; try { ok = pred(); } catch { ok = false; }
+        let ok = false; try { ok = pred(clock.dt); } catch { ok = false; }
         if (ok || (performance.now() - t0) / 1000 > timeout) { res(ok); return; }
         requestAnimationFrame(step);
       };

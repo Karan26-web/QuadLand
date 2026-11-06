@@ -62,6 +62,21 @@ const lerp2 = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t
     anchor: 'center' (on the point), or the side of the label that touches the point ('left': the label starts there
     and runs right; 'bottom': it sits above the point), so a number past the end of a line never covers the line or the
     ship, whatever its width in any language */
+/** a dimension line parallel to a → b, `off` out along n, with arrowheads at its ends and extension lines from `from`
+    to just past it */
+function dimLine(segs, a, b, n, from, off) {
+  const dir = unit(sub(b, a)), a2 = add(a, mul(n, off)), b2 = add(b, mul(n, off));
+  segs.push([a2, b2, 0.13]);
+  segs.push([add(a, mul(n, from)), add(a, mul(n, off + 0.3)), 0.07]);
+  segs.push([add(b, mul(n, from)), add(b, mul(n, off + 0.3)), 0.07]);
+  for (const [p, s] of [[a2, 1], [b2, -1]]) {
+    const back = add(p, mul(dir, 0.42 * s));
+    segs.push([p, add(back, mul(n, 0.2)), 0.08]); segs.push([p, add(back, mul(n, -0.2)), 0.08]);
+  }
+  return lerp2(a2, b2, 0.5);
+}
+const SIDES = { right: { x: 1, y: 0 }, left: { x: -1, y: 0 }, top: { x: 0, y: 1 }, bottom: { x: 0, y: -1 } };
+
 export function dimLayout(shape) {
   const v = shape.verts;
   return shape.dims.map((d, k) => {
@@ -69,15 +84,7 @@ export function dimLayout(shape) {
     let labelAt, anchor = 'center';
     if (d.type === 'edge') {
       const a = v[d.i], b = v[d.j], dir = unit(sub(b, a)), n = { x: dir.y, y: -dir.x };   // outward for a counter-clockwise outline
-      const off = 0.85, a2 = add(a, mul(n, off)), b2 = add(b, mul(n, off));
-      segs.push([a2, b2, 0.13]);
-      segs.push([add(a, mul(n, 0.25)), add(a, mul(n, off + 0.3)), 0.07]);
-      segs.push([add(b, mul(n, 0.25)), add(b, mul(n, off + 0.3)), 0.07]);
-      for (const [p, s] of [[a2, 1], [b2, -1]]) {
-        const back = add(p, mul(dir, 0.42 * s));
-        segs.push([p, add(back, mul(n, 0.2)), 0.08]); segs.push([p, add(back, mul(n, -0.2)), 0.08]);
-      }
-      labelAt = add(lerp2(a2, b2, 0.5), mul(n, 0.85));
+      labelAt = add(dimLine(segs, a, b, n, 0.25, 0.85), mul(n, 0.85));
     } else if (d.type === 'height') {
       const top = v[d.from], ba = v[d.base[0]], bb = v[d.base[1]], f = foot(top, ba, bb);
       segs.push([top, f, 0.12, { color: 0xffd27a, dash: 0.42 }]);
@@ -86,12 +93,17 @@ export function dimLayout(shape) {
       segs.push([c1, c2, 0.07, { color: 0xffffff }]); segs.push([c2, c3, 0.07, { color: 0xffffff }]);
       labelAt = add(lerp2(top, f, 0.72), mul(along, 1.05));      // low beside the line: under the canopy, never on it
     } else if (d.type === 'diag') {
-      // a dashed diagonal, and its number just past the end it runs to, outside the ship (on the ship, two diagonals'
-      // numbers, the canopy and the side's number were crowded: the second review)
+      // a dashed diagonal on the ship, measured by a dimension line outside it on the side `out` (the user's sketch,
+      // 2026-11-06: the 8 across the top, the 6 down the right), its number beyond the line. The extension lines start
+      // past the ship's own extent, so the two lines' ends never cross at the corner they share
       const a = v[d.i], b = v[d.j], dir = unit(sub(b, a));
       segs.push([a, b, 0.12, { color: 0xffd27a, dash: 0.42 }]);
-      labelAt = add(b, mul(dir, 0.5));
-      anchor = Math.abs(dir.x) > Math.abs(dir.y) ? (dir.x > 0 ? 'left' : 'right') : (dir.y > 0 ? 'bottom' : 'top');
+      let n = { x: dir.y, y: -dir.x };
+      const want = SIDES[d.out];
+      if (want && n.x * want.x + n.y * want.y < 0) n = mul(n, -1);
+      const reach = Math.max(...v.map((p) => (p.x - a.x) * n.x + (p.y - a.y) * n.y));   // how far the ship reaches that way
+      labelAt = add(dimLine(segs, a, b, n, reach + 0.25, reach + 0.85), mul(n, 0.35));
+      anchor = Math.abs(n.x) > Math.abs(n.y) ? (n.x > 0 ? 'left' : 'right') : (n.y > 0 ? 'bottom' : 'top');
     }
     return { d, k, segs, labelAt, anchor };
   });
