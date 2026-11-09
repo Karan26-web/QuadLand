@@ -2,243 +2,283 @@
  "lines": {
   "s2.welcome": {
    "file": "s2.welcome.m4a",
-   "dur": 3.52,
-   "hash": "e8cbe7dce42d",
-   "voice": "Samantha"
+   "dur": 4.15,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.planet": {
    "file": "s2.planet.m4a",
-   "dur": 2.318,
-   "hash": "756816c9380c",
-   "voice": "Samantha"
+   "dur": 3.25,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.align": {
    "file": "s2.align.m4a",
-   "dur": 3.87,
-   "hash": "1b8714a211bd",
-   "voice": "Samantha"
+   "dur": 5.0,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.locked": {
    "file": "s2.locked.m4a",
-   "dur": 3.127,
-   "hash": "7dee32c49fdb",
-   "voice": "Samantha"
+   "dur": 4.35,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.arrive": {
    "file": "s2.arrive.m4a",
-   "dur": 2.22,
-   "hash": "a8b435c636a8",
-   "voice": "Samantha"
+   "dur": 3.48,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.descend": {
    "file": "s2.descend.m4a",
-   "dur": 2.945,
-   "hash": "478a76eb2e65",
-   "voice": "Samantha"
+   "dur": 4.0,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.safe": {
    "file": "s2.safe.m4a",
-   "dur": 2.533,
-   "hash": "a85e93ae2711",
-   "voice": "Samantha"
+   "dur": 2.91,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.drone": {
    "file": "s2.drone.m4a",
-   "dur": 2.489,
-   "hash": "8e30fa1341db",
-   "voice": "Samantha"
+   "dur": 2.91,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s2.launch": {
    "file": "s2.launch.m4a",
-   "dur": 2.216,
-   "hash": "30bc2239c0ad",
-   "voice": "Samantha"
+   "dur": 3.1,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s3.dark": {
    "file": "s3.dark.m4a",
-   "dur": 2.377,
-   "hash": "f59f8b859bcb",
-   "voice": "Samantha"
+   "dur": 2.77,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s3.scan": {
    "file": "s3.scan.m4a",
-   "dur": 2.185,
-   "hash": "4b5460eb8294",
-   "voice": "Samantha"
+   "dur": 2.61,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s4.found": {
    "file": "s4.found.m4a",
-   "dur": 3.366,
-   "hash": "abd6021446f0",
-   "voice": "Samantha"
+   "dur": 4.35,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s4.shapes": {
    "file": "s4.shapes.m4a",
-   "dur": 3.162,
-   "hash": "698f78d7cc07",
-   "voice": "Samantha"
+   "dur": 4.04,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s5.ships": {
    "file": "s5.ships.m4a",
-   "dur": 4.529,
-   "hash": "e1e3e059b432",
-   "voice": "Samantha"
+   "dur": 5.32,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s5.match": {
    "file": "s5.match.m4a",
-   "dur": 5.408,
-   "hash": "fc579c767f7f",
-   "voice": "Samantha"
+   "dur": 6.67,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s5.need": {
    "file": "s5.need.m4a",
-   "dur": 4.923,
-   "hash": "23d64e83817a",
-   "voice": "Samantha"
+   "dur": 5.6,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s5.learn": {
    "file": "s5.learn.m4a",
-   "dur": 2.812,
-   "hash": "a0f49dd5ea36",
-   "voice": "Samantha"
+   "dur": 3.63,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s7.back": {
    "file": "s7.back.m4a",
-   "dur": 4.994,
-   "hash": "5b2a67046956",
-   "voice": "Samantha"
+   "dur": 5.27,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s7.land": {
    "file": "s7.land.m4a",
-   "dur": 2.697,
-   "hash": "b724b1667c44",
-   "voice": "Samantha"
+   "dur": 3.08,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s8.here": {
    "file": "s8.here.m4a",
-   "dur": 1.888,
-   "hash": "c8aef3c31334",
-   "voice": "Samantha"
+   "dur": 2.11,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s8.space": {
    "file": "s8.space.m4a",
-   "dur": 3.838,
-   "hash": "ea843e6fcc8e",
-   "voice": "Samantha"
+   "dur": 4.18,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s8.rule": {
    "file": "s8.rule.m4a",
-   "dur": 1.971,
-   "hash": "0a73cd2ed1b6",
-   "voice": "Samantha"
+   "dur": 2.95,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s8.calc": {
    "file": "s8.calc.m4a",
-   "dur": 4.609,
-   "hash": "e85f41a9e240",
-   "voice": "Samantha"
+   "dur": 5.21,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s9.here": {
    "file": "s9.here.m4a",
-   "dur": 1.958,
-   "hash": "70d8f3d98a70",
-   "voice": "Samantha"
+   "dur": 2.26,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s9.rule": {
    "file": "s9.rule.m4a",
-   "dur": 2.052,
-   "hash": "79cb20225a4e",
-   "voice": "Samantha"
+   "dur": 2.74,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s9.find": {
    "file": "s9.find.m4a",
-   "dur": 3.647,
-   "hash": "2ad65e1770e0",
-   "voice": "Samantha"
+   "dur": 4.14,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s9.after": {
    "file": "s9.after.m4a",
-   "dur": 5.1,
-   "hash": "09279de1e676",
-   "voice": "Samantha"
+   "dur": 5.64,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s10.here": {
    "file": "s10.here.m4a",
-   "dur": 1.807,
-   "hash": "7459523e5c05",
-   "voice": "Samantha"
+   "dur": 2.03,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s10.rule": {
    "file": "s10.rule.m4a",
-   "dur": 1.959,
-   "hash": "041dc2c3c5ef",
-   "voice": "Samantha"
+   "dur": 2.66,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s11.here": {
    "file": "s11.here.m4a",
-   "dur": 1.865,
-   "hash": "29869f18053f",
-   "voice": "Samantha"
+   "dur": 2.01,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s11.rule": {
    "file": "s11.rule.m4a",
-   "dur": 3.793,
-   "hash": "b000313d6ecc",
-   "voice": "Samantha"
+   "dur": 4.41,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s12.here": {
    "file": "s12.here.m4a",
-   "dur": 1.842,
-   "hash": "771db4e8c054",
-   "voice": "Samantha"
+   "dur": 2.23,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s12.rule": {
    "file": "s12.rule.m4a",
-   "dur": 3.886,
-   "hash": "9c87f65c4fda",
-   "voice": "Samantha"
+   "dur": 4.9,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "o.perfect": {
    "file": "o.perfect.m4a",
-   "dur": 3.005,
-   "hash": "83a7eac9aee8",
-   "voice": "Samantha"
+   "dur": 4.28,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "o.success": {
    "file": "o.success.m4a",
-   "dur": 3.418,
-   "hash": "1dd26cb97b8a",
-   "voice": "Samantha"
+   "dur": 4.4,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "o.small": {
    "file": "o.small.m4a",
-   "dur": 3.876,
-   "hash": "30b215f7e0e8",
-   "voice": "Samantha"
+   "dur": 4.75,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "o.large": {
    "file": "o.large.m4a",
-   "dur": 3.888,
-   "hash": "5612eee617d5",
-   "voice": "Samantha"
+   "dur": 5.02,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "o.exact": {
    "file": "o.exact.m4a",
-   "dur": 2.471,
-   "hash": "1d4d1f7c0e27",
-   "voice": "Samantha"
+   "dur": 3.26,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "o.auto": {
    "file": "o.auto.m4a",
-   "dur": 3.048,
-   "hash": "57d83ae620b4",
-   "voice": "Samantha"
+   "dur": 4.48,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "s13.done": {
    "file": "s13.done.m4a",
-   "dur": 4.53,
-   "hash": "320522385dbe",
-   "voice": "Samantha"
+   "dur": 5.16,
+   "recorded": true,
+   "voice": "ElevenLabs",
+   "source": "voice-lab/recordings/en-elevenlabs-2026-11-09.mp3"
   },
   "h.look.sq": {
    "file": "h.look.sq.m4a",

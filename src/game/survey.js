@@ -121,13 +121,14 @@ export async function run(s, G, flow) {
   A.play('edge.trace', { dur: 1.4 });
   await s.wait(1.0);
   await say(s, G, 's4.found');
-  // "each set has a different shape": the sets light up one by one, left to right
-  const shapesP = say(s, G, 's4.shapes', { after: 0 });
+  // "each set has a different shape": the sets light up one by one, left to right, spread over the line as it is
+  // spoken (its length is the clip's, in any language and voice)
+  const shapesP = say(s, G, 's4.shapes', { after: 0 }), beat = clamp((G.voice.dur('s4.shapes') - 0.9) / ORDER.length, 0.45, 0.9);
   for (const [n, i] of ORDER.entries()) {
     const site = P.sites[i], v = site.centre.clone().project(G.camera);
     for (const isl of site.islands) { isl.pulse(); isl.edges.flash(1); }
     A.play('zone.pulse', { i: n, pan: clamp(v.x * 0.8, -0.8, 0.8) });
-    await s.wait(0.6);
+    await s.wait(beat);
   }
   await shapesP;
   await s.wait(0.4);
@@ -143,7 +144,9 @@ export async function run(s, G, flow) {
   feed.hidden = true; feed.style.transition = ''; f.feed = 0;
 
   /* ---- Screen 5: the area hook */
-  highGlide(G, 16);                                   // about as long as the three lines
+  // the glide lasts as long as its three lines (their clips' lengths and the breaths between them), so the camera is
+  // still moving when the last one ends, in any language and voice
+  highGlide(G, ['s5.ships', 's5.match', 's5.need'].reduce((t, id) => t + G.voice.dur(id) + 0.25, 0.4));
   const glow = pulseAsPassed(G, { glow: true });
   s.onKill(glow);
   await say(s, G, 's5.ships');

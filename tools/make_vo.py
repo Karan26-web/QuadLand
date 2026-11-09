@@ -61,7 +61,7 @@ def render_lang(lang, words, lines, voice_id, a):
                 man['lines'][lid] = {'file': f'{lid}.{ext}', 'dur': duration(f), 'recorded': True}
                 recorded = True
                 break
-        if recorded and not a.all: continue
+        if recorded and not a.replace_recorded: continue      # a recording is never re-rendered by --all
         if prev and prev.get('hash') == h and not a.all and os.path.exists(os.path.join(out_dir, prev['file'])): continue
         todo.append({'id': lid, 'text': text, 'hash': h})
     if lang == 'en':
@@ -104,6 +104,7 @@ def main():
     ap.add_argument('--rate', type=int, default=168, help='English: the macOS speaking rate')
     ap.add_argument('--all', action='store_true', help='render every line again')
     ap.add_argument('--adopt', action='store_true', help='keep recorded files already in the folder')
+    ap.add_argument('--replace-recorded', action='store_true', help='render over recorded lines too (they are kept otherwise, even with --all)')
     a = ap.parse_args()
     strings = json.load(open(STRINGS, encoding='utf-8'))
     lines = json.load(open(LINES, encoding='utf-8'))['lines']

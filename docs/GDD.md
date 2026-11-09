@@ -14,7 +14,7 @@
 | A water planet with living waves, inspired by Interstellar's water planet | A living sea: six Gerstner waves, ripples, foam, subsurface glow, a moon-glitter path, plankton sparkles after the scan. Mountain-sized waves roll on the horizon: they read first as mountains, then you see them move. §6. |
 | Land quad ships on lands that rise from the water | Screens 3–12 (§3). |
 | Optional: a landing simulation like the airplane game's | Used for the trip to the planet: steer, thrust, hold to descend, in the cockpit with the airplane game's guided, unfailable rhythm. The five landings keep the LXD's joystick + GO, so a miss is always a wrong area, never a shaky thumb (§4). |
-| Proper SFX and audio throughout | 56 synthesised cues, 8 live loops and a generative score with 6 moods; temp narration for all 51 lines. Recordings can replace any of them (§7). |
+| Proper SFX and audio throughout | 56 synthesised cues, 8 live loops and a generative score with 6 moods; the English narration recorded in ElevenLabs (40 of 51 lines; the 11 newest hints still temp). Recordings can replace any of them (§7). |
 | Asset MD files for GPT | `docs/assets/00-README.md` to `08-voice.md`: 19 picture slots with ready-to-paste prompts and acceptance checks, an audio upgrade list and the voice script. |
 | Fifteen landing zones in five sets (user, 2026-10-30) | The survey raises all fifteen zones: five sets of three, each set one shape in the LXD's three sizes, kept together in its own part of the sea. The field is compact, so the camera ends straight above it with every zone's sides traced in light (Screens 4 and 5). The LXD's Screen 4 says five zones, and Screens 8–12 raise two more islands at each landing; both are superseded. The two Screen 4 lines say "sets" (§10). |
 | A skip for the learning part (user, 2026-11-01) | Skip lesson › on Screen 6, pressed twice (§3, §8). |
@@ -133,7 +133,7 @@ How the game frames it (`src/game/lesson.js`):
 - **A generative score**, one mood per part: title, cockpit, planet, lesson (a quiet bed under the learning module, §4.3), landing, complete.
 - **The narrator ducks the music.**
 - **Recorded overrides:** any cue or mood can be replaced by a recording (`docs/assets/07-audio.md`).
-- **Temp narration:** all 55 lines, so every device sounds the same and the waveform is the real voice.
+- **Narration:** English recorded in ElevenLabs (2026-11-09), 40 of the 51 lines, cut from one take by `tools/split_vo.py`: each line found in the take, cut at the pauses in the audio, with room before (0.12 s) and after (0.38 s), and any pause between two sentences opened to at least 0.34 s. Between two lines the player hears about 0.85 s of quiet. The 11 newest hint lines still play the temp macOS voice until they are recorded (`docs/assets/vo-script-en.md`). Every line is a file, so every device sounds the same and the waveform is the real voice. The camera moves that run under narration take their length from the clips (the survey's high glide, the return to the field), so they fit any voice and language.
 
 ## 8. UX
 - **Input:** a thumb stick that appears where the thumb lands, W A S D / arrows, and Enter/Space for every primary button. Every button is at least 70 px. Waiting always brings a hint: a caption, a demo hand on the stick, or a pulse on the control.

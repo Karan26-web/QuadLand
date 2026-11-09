@@ -136,13 +136,18 @@ English, Hindi, Marathi, Gujarati, Telugu and Odia: every word on screen, every 
 - The translations are a first pass: a native speaker who teaches maths should review each language before release.
 
 ## Narration
-English ships with temp narration rendered by macOS `say` (Samantha), one AAC file per line, so every device sounds the same and the waveform follows the real voice. The other languages are rendered by the voice lab (`voice-lab/setup.sh` once, about 15 GB of models):
+English is recorded in ElevenLabs (2026-11-09): 40 of the 51 lines, cut from one take by `tools/split_vo.py`. The other 11 (the newest hint lines) still play the temp narration rendered by macOS `say` (Samantha) until they are recorded (`docs/assets/vo-script-en.md` lists them). Every line is one AAC file, so every device sounds the same and the waveform follows the real voice. The other languages are rendered by the voice lab (`voice-lab/setup.sh` once, about 15 GB of models):
 ```bash
 python3 tools/make_vo.py                 # English (macOS say)
 python3 tools/make_vo.py --lang gu       # Gujarati, in the narrator chosen in assets/vo/voices.json
 python3 tools/make_vo.py --lang all      # every language; only new or changed lines are rendered
 ```
-To replace a line with a recorded voice, follow `docs/assets/08-voice.md`: save it as `assets/vo/<ID>.m4a` (another language: `assets/vo/<lan>/<ID>.m4a`), then run `python3 tools/make_vo.py --adopt` (with `--lang`). The words of every line are in `assets/i18n/strings.json`; `assets/vo/lines.json` lists the lines and which are the LXD's.
+To install a recording that holds many lines in one file (a voice actor's take, an ElevenLabs export), drop it in `voice-lab/recordings/` and run `tools/split_vo.py`. It finds each line wherever it was read, cuts it at the pauses in the audio with room before (0.12 s) and after (0.38 s), opens up any pause between two sentences shorter than 0.34 s, levels it, and marks it as a recording, which `make_vo.py` never re-renders (not even with `--all`). It needs `pip install faster-whisper` in any venv:
+```bash
+python3 tools/split_vo.py voice-lab/recordings/take.mp3 --lang en              # report: which lines were found where
+python3 tools/split_vo.py voice-lab/recordings/take.mp3 --lang en --write      # cut and install them
+```
+To replace a single line with a recording, follow `docs/assets/08-voice.md`: save it as `assets/vo/<ID>.m4a` (another language: `assets/vo/<lan>/<ID>.m4a`), then run `python3 tools/make_vo.py --adopt` (with `--lang`). The words of every line are in `assets/i18n/strings.json`; `assets/vo/lines.json` lists the lines and which are the LXD's.
 
 ## Deploy
 It is a static site with no build step: upload the folder as it is, for example to Vercel with the "Other" preset and no build command. Keep the `vendor/` and `assets/` paths.

@@ -208,12 +208,14 @@ on their machine. Clarity scores catch broken audio, not warmth or accent, so a 
 | A speech recogniser "lost" whole sentences across the synthesizer's digital silence | Transcribe sentence by sentence (split at silences) |
 | Two models' gender labels disagree with their measured pitch | Show measured pitch beside the label; let people listen |
 | Indic Parler-TTS returned 401 | It is gated: the user accepts its terms on Hugging Face and sets `HF_TOKEN` |
+| A one-take ElevenLabs recording: the recogniser's word times were 0.4 s out where lines ran close, and the take was read from an older script | `split_vo.py` finds each line by its words wherever it was read, cuts at the pauses found in the audio, reports lines missing from the take |
 
 ## Files in this skill
 
 - `scripts/i18n.js`: the runtime (`t`, `apply`, `?lan=`).
 - `scripts/i18n_check.py`: checks the strings file (and `assets/vo/lines.json` if the game has one).
 - `scripts/make_vo.py`: renders each language's narration from the strings file into `assets/vo/<lan>/`.
+- `scripts/split_vo.py`: cuts a recording that holds many lines in one file (a voice actor's take, an ElevenLabs export) into the per-line clips, with breathing room, and marks them as recordings.
 - `scripts/lang_probe.py`: opens the game once per `?lan=` value and reports what loaded (and screenshots it).
 - `scripts/voice-lab/`: `lab.py` (engines, `samples`, `render`, `say`), `textnorm.py`, `asr_check.py`,
   `build_page.py` + `page_template.html` (the showcase), `voices.json` (the catalogue, with calibrated paces),

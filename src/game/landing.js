@@ -156,7 +156,9 @@ export async function back(s, G, flow) {
   d.handheld(0.15);
   fadeIn(G, 1.2);
   // round the near side of the field to the first set (the square's)
-  const pathP = d.path({ points: [V(110, 70, 56), V(54, 58, 34), V(14, 46, 26)], target: V(6, 0, -66), fov: [50, 50], roll: 'bank', bank: 0.6, dur: 9, ease: Ease.inOutSine });
+  // at least as long as the lines said over it (their clips' lengths), so it never stops while the Ship AI talks
+  const talk = (flow.state.lessonSkipped ? 0 : G.voice.dur('s7.back') + 0.25) + G.voice.dur('s7.land');
+  const pathP = d.path({ points: [V(110, 70, 56), V(54, 58, 34), V(14, 46, 26)], target: V(6, 0, -66), fov: [50, 50], roll: 'bank', bank: 0.6, dur: Math.max(9, talk + 0.6), ease: Ease.inOutSine });
   if (!flow.state.lessonSkipped) await say(s, G, 's7.back');   // "Now you know how to find the area…": not after a skipped lesson
   await say(s, G, 's7.land', { after: 0 });
   await s.run(pathP);

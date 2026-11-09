@@ -1,12 +1,14 @@
 # 08 · The narrator's script (Ship AI)
 
-Every line the game speaks, with the ID that names its file. The game ships with temp narration rendered by macOS `say` (`tools/make_vo.py`). A recorded line replaces its temp file, and the game finds lines by ID, so the order and timing never change.
+Every line the game speaks, with the ID that names its file. 40 of the 51 English lines are recorded in ElevenLabs (2026-11-09, cut by `tools/split_vo.py`); the other 11 play temp narration rendered by macOS `say` (`tools/make_vo.py`) until they are recorded (`vo-script-en.md` lists them). A recorded line replaces its temp file, and the game finds lines by ID, so the order and timing never change.
 
 **Voice.** Ship AI (the narrator): warm, clear, encouraging mission-control voice; British or Indian English; age 25-35; smiling; never rushed.
 
 **Direction.** The Ship AI talks to the Space Commander, a child aged 10 to 13, as a friendly mission partner: warm, clear and encouraging, smiling through the lines, never sing-song or babyish. Numbers and formulas must be clear: say "times" for ×, "half" for ½ and "square units" in full. Leave a beat at full stops. Outcome lines are upbeat, even the misses: the misses are funny, not failures. Questions rise at the end.
 
 **Recording.** Record mono at 44.1 or 48 kHz, normalised to about −16 LUFS with peaks under −1 dBFS. Trim the head and tail to 0.1 s. Name each file `assets/vo/<ID>.m4a` (AAC) or `.mp3` (another language: `assets/vo/<lan>/<ID>.m4a`), then run `python3 tools/make_vo.py --adopt` (with `--lang <lan>`): it measures every recording and keeps it from then on. The words of every line in every language are in `assets/i18n/strings.json`.
+
+**Recording in ElevenLabs.** `vo-script-en.md` and `vo-script-en.csv` (next to this file) have all 51 lines with their file names, where each plays and how to say it. Use one voice and the same settings for every line, paste each line exactly, download each as MP3 named `<ID>.mp3`, and put them in `assets/vo/elevenlabs/`; they are then trimmed, levelled, converted to the game's AAC and installed as recordings (`make_vo.py --adopt`), so the temp voice never overwrites them.
 
 **LXD** marks the LXD's own lines (`docs/spacecraft.docx` and its reviews), kept word for word. Unmarked lines are additions: the trip to the planet, the ladder's lines for the four ships after the square, and the green zone's line. They are open to the LXD's review. Screen 6, the learning section, is the team's own module (`learning/`), with its own voice-overs.
 

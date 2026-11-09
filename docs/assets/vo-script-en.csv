@@ -1,0 +1,52 @@
+#,file,line (paste this),"LXD words, keep exactly",screen,plays when,how to say it
+1,s2.welcome.mp3,"Welcome, Space Commander! We have a new landing mission.",yes,Screen 2 · The cockpit,"The mission's first line, in the cockpit","Warm, bright welcome. Smile through it."
+2,s2.planet.mp3,Our landing site is on that ocean planet.,,Screen 2 · The cockpit,The ocean planet comes into view,"Calm, pointing it out."
+3,s2.align.mp3,Use the joystick to turn the ship. Put the planet inside the circle.,,Screen 2 · The cockpit,Before the player steers,"Clear instruction, unhurried."
+4,s2.locked.mp3,Locked on! Now push the thrust lever all the way up.,,Screen 2 · The cockpit,The planet locks into the circle,"Quick and pleased on ""Locked on!"", then the instruction."
+5,s2.arrive.mp3,Wow! A planet covered in water.,,Screen 2 · The cockpit,"Out of hyperspace, the water planet fills the window","Real wonder. A small breath before ""A planet…""."
+6,s2.descend.mp3,Hold the DESCEND button to fly down through the clouds.,,Screen 2 · The cockpit,The DESCEND button appears,"Clear. Lean on ""DESCEND"": it is the button's name."
+7,s2.safe.mp3,We need to find a safe place for it to land.,yes,Screen 2 · The cockpit,Hovering over the sea,"Thoughtful, mission tone."
+8,s2.drone.mp3,Let's send the survey drone to check the area.,yes,Screen 2 · The cockpit,Before the drone launch,Upbeat: a plan.
+9,s2.launch.mp3,Click the LAUNCH button to launch the drone.,yes,Screen 2 · The cockpit,The LAUNCH button rises,"Clear. Lean on ""LAUNCH""."
+10,s3.dark.mp3,It is too dark to see the landing zones.,yes,Screen 3 · The dark sea,The drone's camera over a dark sea,"Hushed, a little mysterious."
+11,s3.scan.mp3,Start the scanner to search the area.,yes,Screen 3 · The dark sea,The SCAN button appears,Clear instruction.
+12,s4.found.mp3,Great! The scanner found five sets of landing zones.,yes,Screen 4 · The zones rise,The landing zones rise out of the sea,Excited.
+13,s4.shapes.mp3,Look! Each set of landing zones has a different shape.,yes,Screen 4 · The zones rise,Each set of zones lights up in turn,"Curious, pointing out."
+14,s5.ships.mp3,"Five spaceships are on their way to this planet, and each one has a different shape.",yes,Screen 5 · Why area matters,A slow glide over the field,"Storytelling, building up."
+15,s5.match.mp3,"Each spaceship must land on the zone that matches it perfectly, not too small and not too big.",yes,Screen 5 · Why area matters,The same glide,"Clear. Stress ""perfectly"" and ""not too small and not too big""."
+16,s5.need.mp3,"To find the perfect spot for every spaceship, we need to know the area of these shapes.",yes,Screen 5 · Why area matters,The same glide,"Thoughtful, leading into the lesson."
+17,s5.learn.mp3,So let's learn how to find the area of each shape!,yes,Screen 5 · Why area matters,Just before the lesson,Enthusiastic hand-off.
+18,s7.back.mp3,"Welcome back, Space Commander! Now you know how to find the area of every shape.",yes,Screen 7 · Back to the mission,Back from the lesson,Warm and proud of the learner.
+19,s7.land.mp3,"Let's land the spaceships, one by one.",yes,Screen 7 · Back to the mission,The camera dives toward the first zone,"Upbeat, determined."
+20,s8.here.mp3,Here comes our first spaceship!,yes,Screens 8–12 · The five landings,The first ship streaks in (square),"Excited. Stress ""first""."
+21,s8.space.mp3,"Next, we need to find how much space the spaceship needs.",yes,Screens 8–12 · The five landings,The camera circles the first ship,Calm explanation.
+22,s8.rule.mp3,Its area is side times side.,yes,Screens 8–12 · The five landings,"Second hint, after a second wrong landing on the square","Slow, clear, teacherly: every ""times"" distinct."
+23,s8.calc.mp3,"Calculate the area of the spaceship, and select the land with the required area.",yes,Screens 8–12 · The five landings,"Above the zones, before flying (ships 1, 3 and 5)",Clear instruction.
+24,s9.here.mp3,Here comes our second spaceship!,yes,Screens 8–12 · The five landings,The second ship streaks in (rectangle),"Excited. Stress ""second""."
+25,s9.rule.mp3,Its area is length times width.,yes,Screens 8–12 · The five landings,"Second hint, after a second wrong landing on the rectangle","Slow, clear, teacherly: every ""times"" distinct."
+26,s9.find.mp3,"Find the area of the spaceship, and select the suitable land.",yes,Screens 8–12 · The five landings,"Above the zones, before flying (ships 2 and 4)",Clear instruction.
+27,s9.after.mp3,"Great landings, Commander! Three more spaceships are waiting. Let's bring them down!",yes,Screens 8–12 · The five landings,After the second ship lands,"Cheerful, rallying."
+28,s10.here.mp3,Here comes our third spaceship!,yes,Screens 8–12 · The five landings,The third ship streaks in (parallelogram),"Excited. Stress ""third""."
+29,s10.rule.mp3,Its area is base times height.,yes,Screens 8–12 · The five landings,"Second hint, after a second wrong landing on the parallelogram","Slow, clear, teacherly: every ""times"" distinct."
+30,s11.here.mp3,Here comes our fourth spaceship!,yes,Screens 8–12 · The five landings,The fourth ship streaks in (rhombus),"Excited. Stress ""fourth""."
+31,s11.rule.mp3,Its area is half times diagonal 1 times diagonal 2.,yes,Screens 8–12 · The five landings,"Second hint, after a second wrong landing on the rhombus","Slow, clear, teacherly: every ""times"" distinct. Say ""diagonal one"" and ""diagonal two""."
+32,s12.here.mp3,Here comes our last spaceship!,yes,Screens 8–12 · The five landings,The last ship streaks in (trapezium),"Excited. Stress ""last""."
+33,s12.rule.mp3,Its area is half times the sum of the parallel sides times the height.,yes,Screens 8–12 · The five landings,"Second hint, after a second wrong landing on the trapezium","Slow, clear, teacherly: every ""times"" distinct. One breath if you can."
+34,o.perfect.mp3,Perfect match! The spaceship fits exactly.,yes,After a landing,A ship lands on the zone that fits,Celebration!
+35,o.success.mp3,"Landing successful! Great work, Space Commander.",yes,After a landing,"Right after ""Perfect match""",Proud and warm.
+36,o.small.mp3,This landing zone is too small. The spaceship cannot fit safely.,yes,After a landing,A ship tips off a zone that is too small,"Sympathetic and light: a miss is funny, never a failure."
+37,o.large.mp3,This landing zone is too large. Try to find the exact match.,yes,After a landing,A ship crashes onto a zone that is too big,"Sympathetic and light, same as above."
+38,o.exact.mp3,Choose the landing zone with the exact area.,yes,After a landing,"After a miss, once the zones have changed places",Encouraging: a fresh try.
+39,o.auto.mp3,Out of hearts! Autopilot will land on the zone that fits.,yes,After a landing,Even the green zone was missed: the autopilot takes over,"Reassuring, never disappointed."
+40,h.look.sq.mp3,Look closely! The spacecraft is square shaped.,yes,Hints after a wrong landing,"First hint, after a first wrong landing on the square","A friendly nudge. Stress ""square""."
+41,h.look.re.mp3,Look closely! The spacecraft is rectangle shaped.,,Hints after a wrong landing,"First hint, after a first wrong landing on the rectangle","A friendly nudge. Stress ""rectangle""."
+42,h.look.pa.mp3,Look closely! The spacecraft is parallelogram shaped.,,Hints after a wrong landing,"First hint, after a first wrong landing on the parallelogram","A friendly nudge. Stress ""parallelogram"". Say ""parallelogram"" as pa-ruh-LEL-uh-gram."
+43,h.look.rh.mp3,Look closely! The spacecraft is rhombus shaped.,,Hints after a wrong landing,"First hint, after a first wrong landing on the rhombus","A friendly nudge. Stress ""rhombus"". Say ""rhombus"" as ROM-bus."
+44,h.look.tr.mp3,Look closely! The spacecraft is trapezium shaped.,,Hints after a wrong landing,"First hint, after a first wrong landing on the trapezium","A friendly nudge. Stress ""trapezium"". Say ""trapezium"" as truh-PEE-zee-um."
+45,h.calc.sq.mp3,"Here, multiply 5 with 5.",yes,Hints after a wrong landing,"Third hint, after a third wrong landing on the square",Slow and clear with the numbers.
+46,h.calc.re.mp3,"Here, multiply 8 with 4.",,Hints after a wrong landing,"Third hint, after a third wrong landing on the rectangle",Slow and clear with the numbers.
+47,h.calc.pa.mp3,"Here, multiply 7 with 5.",,Hints after a wrong landing,"Third hint, after a third wrong landing on the parallelogram",Slow and clear with the numbers.
+48,h.calc.rh.mp3,"Here, multiply 6 with 8, then take half.",,Hints after a wrong landing,"Third hint, after a third wrong landing on the rhombus",Slow and clear with the numbers.
+49,h.calc.tr.mp3,"Here, add 8 and 12, multiply the sum with 5, then take half.",,Hints after a wrong landing,"Third hint, after a third wrong landing on the trapezium",Slow and clear with the numbers.
+50,h.green.mp3,The green landing zone fits exactly. Land the spaceship there!,,Hints after a wrong landing,Fourth hint: the zone that fits turns green,"Helpful, pointing the way."
+51,s13.done.mp3,"All five spaceships have landed safely. Great work, Space Commander!",yes,Screen 13 · Mission complete,"Mission complete, with the fanfare and confetti",Triumphant and warm.
