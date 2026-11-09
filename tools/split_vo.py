@@ -7,14 +7,17 @@ in it and installs it as the game's clip for that line:
   1. transcribe the recording with word timings (faster-whisper)
   2. find each script line in the transcript, wherever it was read (the order of the recording does not matter;
      lines it lacks are reported and keep their current clip, lines the script no longer has are ignored)
-  3. find the line's real start and end in the audio (the speech energy round the words' times)
+  3. find the line's real start and end in the audio (the speech energy round the words' times); a breath taken for
+     the next line belongs to neither, even where only a short dip parts it from the words
   4. cut it with room before and after (padding with silence where the take ran lines close together), and open up
      a pause between two sentences that is too short to breathe in
   5. level it, encode it as the game's AAC and record it in the language's vo.json as a recording, which
      tools/make_vo.py never overwrites
 
-    python3 tools/split_vo.py 1.mp3 --lang en            # report only: what was found where, nothing written
-    python3 tools/split_vo.py 1.mp3 --lang en --write    # install the clips
+    python3 tools/split_vo.py take.mp3 --lang en            # report only: what was found where, nothing written
+    python3 tools/split_vo.py take.mp3 --lang en --write    # install the clips
+
+Keep the take in voice-lab/recordings/ and cut it from there: vo.json then names it as each clip's source.
 
 Needs numpy and faster-whisper (pip install faster-whisper, in any venv) and a Whisper model (small.en downloads once
 into the Hugging Face cache). macOS afconvert decodes and encodes. --asr FILE reuses a saved transcript.
@@ -30,6 +33,9 @@ SR = 44100
 HOP = 0.01                  # energy frames (s)
 SPEECH_DB = -48             # a frame louder than this is speech, for levelling (the take's silence sits near -80 dB)
 SILENT_DB = -50             # a frame quieter than this is a pause (a breath between lines counts as one)
+BREATH_DB = -36             # a breath peaks under this (speech runs near -20 dB, a voiced word's quietest tail above it)
+BREATH_VOICING = 0.35       # and has no pitch: its autocorrelation stays under this (a vowel reaches 0.9)
+BREATH_HZ = 5500            # and is dull: its spectrum centres under this (breaths 3.6-4.8 kHz, th/f/s hiss 6-9 kHz)
 PRE, POST = 0.12, 0.38      # room before and after the speech in every clip (s)
 MIN_SENTENCE_PAUSE = 0.34   # a pause between two sentences of one line is opened up to at least this (s)
 TARGET_DB, PEAK_DB = -20.0, -1.0
@@ -129,17 +135,44 @@ def main():
                 st = None
         return out
 
+    def voiced(t0, t1):
+        """does this stretch have a pitch (a voice), or is it noise (a breath, a hiss)"""
+        s = x[int(t0 * SR):int(t1 * SR)]; s = s - s.mean()
+        if len(s) < int(0.03 * SR): return False
+        ac = np.correlate(s, s, 'full')[len(s) - 1:]; ac = ac / (ac[0] + 1e-12)
+        return float(ac[int(SR / 400):int(SR / 70)].max()) > BREATH_VOICING
+
+    def centroid(t0, t1):
+        s = x[int(t0 * SR):int(t1 * SR)]; sp = np.abs(np.fft.rfft((s - s.mean()) * np.hanning(len(s))))
+        return float((sp * np.fft.rfftfreq(len(s), 1 / SR)).sum() / (sp.sum() + 1e-12))
+
+    def breath(t0, t1):
+        """a breath: 0.1 s or more of quiet, unvoiced, dull noise. No word is that quiet and pitchless, and the hiss of
+        a last th, f or s is as quiet and as long but much brighter (the 'th' of 'width' centres near 8.7 kHz)"""
+        return (t1 - t0 >= 0.1 and db[f_(t0):f_(t1)].max() < BREATH_DB and not voiced(t0, t1)
+                and centroid(t0, t1) < BREATH_HZ)
+
     def end_of(t_last_start, t_next_end):
         """where the speech of a word ends before the next one: the first real pause after it (120 ms or more, longer
-        than any consonant's silent closure). A breath before the next word stays out of both"""
+        than any consonant's silent closure). A breath before the next word stays out of both, even where only a
+        short dip parts it from the word"""
         r = runs(t_last_start, t_next_end, 0.12) or runs(t_last_start, t_next_end, 0.04)
-        if r: return r[0][0]
+        if r:
+            p = r[0][0]
+            for d0, d1 in runs(t_last_start, p, 0.03):
+                if d1 < p and breath(d1, p): return d0
+            return p
         k0, k1 = f_(t_last_start), f_(t_next_end); return (k0 + int(np.argmin(db[k0:k1 + 1]))) * HOP
 
     def start_of(t_prev_start, t_first_end):
-        """where the speech of a word starts after the previous one: the end of the last pause before it"""
+        """where the speech of a word starts after the previous one: the end of the last pause before it, after any
+        breath that leads into the word"""
         r = runs(t_prev_start, t_first_end, 0.06) or runs(t_prev_start, t_first_end, 0.03)
-        if r: return r[-1][1]
+        if r:
+            q = r[-1][1]
+            for d0, d1 in reversed(runs(q, t_first_end, 0.03)):
+                if d0 > q and breath(q, d0): return d1
+            return q
         k0, k1 = f_(t_prev_start), f_(t_first_end); return (k0 + int(np.argmin(db[k0:k1 + 1]))) * HOP
 
     report, clips = [], {}
@@ -165,7 +198,10 @@ def main():
                 if (e - 1) in mp and e in mp:
                     gs = end_of(toks[mp[e - 1]][1], toks[mp[e]][2]); ge = start_of(gs, toks[mp[e]][2])
                     gap = max(0.0, ge - gs)
-                    if MIN_SENTENCE_PAUSE - gap > 0.03: inserts.append(((gs + ge) / 2 - on, MIN_SENTENCE_PAUSE - gap))
+                    if MIN_SENTENCE_PAUSE - gap > 0.03:
+                        # in the gap's longest silence, so a breath in it stays whole
+                        q = sorted(runs(gs, ge, 0.0), key=lambda r: r[0] - r[1])
+                        inserts.append(((sum(q[0]) / 2 if q else (gs + ge) / 2) - on, MIN_SENTENCE_PAUSE - gap))
         for at, extra in sorted(inserts, reverse=True):
             k = int(at * SR); fade = int(0.006 * SR)
             seg[max(0, k - fade):k] *= np.linspace(1, 0, k - max(0, k - fade)); seg[k:k + fade] *= np.linspace(0, 1, len(seg[k:k + fade]))
@@ -189,13 +225,15 @@ def main():
 
     out_dir = VO if a.lang == 'en' else os.path.join(VO, a.lang)
     mp_path = os.path.join(out_dir, 'vo.json'); man = json.load(open(mp_path, encoding='utf-8'))
+    src = os.path.relpath(os.path.abspath(a.audio), ROOT)       # where the take is kept, if it is kept in the project
+    if src.startswith('..'): src = os.path.basename(a.audio)
     with tempfile.TemporaryDirectory() as td:
         for lid, seg in clips.items():
             w = os.path.join(td, lid + '.wav'); write_wav(w, seg)
             out = os.path.join(out_dir, lid + '.m4a')
             subprocess.run(['afconvert', '-f', 'm4af', '-d', 'aac@22050', '-b', str(BITRATE), '-q', '127', '--src-complexity', 'bats', w, out], check=True)
             dur = float(re.search(r'estimated duration:\s*([\d.]+)', subprocess.run(['afinfo', out], capture_output=True, text=True).stdout).group(1))
-            man['lines'][lid] = {'file': lid + '.m4a', 'dur': round(dur, 3), 'recorded': True, 'voice': a.voice, 'source': os.path.basename(a.audio)}
+            man['lines'][lid] = {'file': lid + '.m4a', 'dur': round(dur, 3), 'recorded': True, 'voice': a.voice, 'source': src}
     json.dump(man, open(mp_path, 'w', encoding='utf-8'), indent=1, ensure_ascii=False)
     print(f'installed {len(clips)} clips in {os.path.relpath(out_dir, ROOT)} and marked them as recordings in vo.json')
     return 0

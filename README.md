@@ -136,7 +136,7 @@ English, Hindi, Marathi, Gujarati, Telugu and Odia: every word on screen, every 
 - The translations are a first pass: a native speaker who teaches maths should review each language before release.
 
 ## Narration
-English is recorded in ElevenLabs (2026-11-09): 40 of the 51 lines, cut from one take by `tools/split_vo.py`. The other 11 (the newest hint lines) still play the temp narration rendered by macOS `say` (Samantha) until they are recorded (`docs/assets/vo-script-en.md` lists them). Every line is one AAC file, so every device sounds the same and the waveform follows the real voice. The other languages are rendered by the voice lab (`voice-lab/setup.sh` once, about 15 GB of models):
+English is recorded in ElevenLabs (2026-11-09): all 51 lines, cut from one take (`voice-lab/recordings/en-karan-2026-11-09.mp3`) by `tools/split_vo.py`. `tools/make_vo.py` never overwrites a recorded line (its macOS `say` voice only fills in a line that has no recording yet). Every line is one AAC file, so every device sounds the same and the waveform follows the real voice. The other languages are rendered by the voice lab (`voice-lab/setup.sh` once, about 15 GB of models):
 ```bash
 python3 tools/make_vo.py                 # English (macOS say)
 python3 tools/make_vo.py --lang gu       # Gujarati, in the narrator chosen in assets/vo/voices.json

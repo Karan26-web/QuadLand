@@ -1,6 +1,6 @@
 # 08 · The narrator's script (Ship AI)
 
-Every line the game speaks, with the ID that names its file. 40 of the 51 English lines are recorded in ElevenLabs (2026-11-09, cut by `tools/split_vo.py`); the other 11 play temp narration rendered by macOS `say` (`tools/make_vo.py`) until they are recorded (`vo-script-en.md` lists them). A recorded line replaces its temp file, and the game finds lines by ID, so the order and timing never change.
+Every line the game speaks, with the ID that names its file. All 51 English lines are recorded in ElevenLabs (2026-11-09, one take, `voice-lab/recordings/en-karan-2026-11-09.mp3`, cut by `tools/split_vo.py`). Temp narration rendered by macOS `say` (`tools/make_vo.py`) only fills in a line that has no recording yet. A recorded line replaces its temp file, and the game finds lines by ID, so the order and timing never change.
 
 **Voice.** Ship AI (the narrator): warm, clear, encouraging mission-control voice; British or Indian English; age 25-35; smiling; never rushed.
 

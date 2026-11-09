@@ -209,6 +209,7 @@ on their machine. Clarity scores catch broken audio, not warmth or accent, so a 
 | Two models' gender labels disagree with their measured pitch | Show measured pitch beside the label; let people listen |
 | Indic Parler-TTS returned 401 | It is gated: the user accepts its terms on Hugging Face and sets `HF_TOKEN` |
 | A one-take ElevenLabs recording: the recogniser's word times were 0.4 s out where lines ran close, and the take was read from an older script | `split_vo.py` finds each line by its words wherever it was read, cuts at the pauses found in the audio, reports lines missing from the take |
+| Where a take ran two lines close, the breath taken for the next line (after a dip too short to count as a pause) stuck to the end of the clip before it | A breath is 0.1 s or more of quiet (under -36 dB), pitchless, dull noise (centre under 5.5 kHz): clips end before it. The last "th" of "width" is as quiet and pitchless but centres near 8.7 kHz, so it stays |
 
 ## Files in this skill
 

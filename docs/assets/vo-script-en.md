@@ -9,23 +9,13 @@ Every line the Ship AI (the narrator) speaks in Spaceship Mission, in the order 
 - **One voice** for every line.
 - **English only.** The five Indian languages keep their current voices. Swiftee's lines in the learning section belong to the team's module and are not part of this script.
 
-## Still to record (11 lines)
+## Recorded: all 51 lines
 
-The ElevenLabs take of 2026-11-09 (`voice-lab/recordings/en-elevenlabs-2026-11-09.mp3`) is installed: **40 of the 51 lines**. It was read from an older script, so it lacks these 11 hint lines, which still play in the temporary macOS voice. Record them **with the same voice and settings**, in one file, and drop it into the project: `tools/split_vo.py` cuts it and installs each line.
+The ElevenLabs take of 2026-11-09 (`voice-lab/recordings/en-karan-2026-11-09.mp3`, 4 min 32 s) holds **all 51 lines** and every one of them is installed, the 11 hint lines included. `tools/split_vo.py` found each line in the take, cut it at the pauses in the audio with room before and after, left out the breaths taken for the next line, and installed it as the game's clip. Each clip was then transcribed again on its own, and all 51 match their script word for word.
 
-- `h.look.sq.mp3` · Look closely! The spacecraft is square shaped.
-- `h.look.re.mp3` · Look closely! The spacecraft is rectangle shaped.
-- `h.look.pa.mp3` · Look closely! The spacecraft is parallelogram shaped.
-- `h.look.rh.mp3` · Look closely! The spacecraft is rhombus shaped.
-- `h.look.tr.mp3` · Look closely! The spacecraft is trapezium shaped.
-- `h.calc.sq.mp3` · Here, multiply 5 with 5.
-- `h.calc.re.mp3` · Here, multiply 8 with 4.
-- `h.calc.pa.mp3` · Here, multiply 7 with 5.
-- `h.calc.rh.mp3` · Here, multiply 6 with 8, then take half.
-- `h.calc.tr.mp3` · Here, add 8 and 12, multiply the sum with 5, then take half.
-- `h.green.mp3` · The green landing zone fits exactly. Land the spaceship there!
+The take also read the old hint lines of an earlier script ("20 is the distance all the way around the ship…", "Here's a hint. Work out 5 times 5.", …). The game no longer uses them, so they were left out.
 
-The take also read 15 old hint lines ("20 is the distance all the way around the ship…", "Here's a hint. Work out 5 times 5.", …). The game no longer uses them, so they were left out.
+To re-record a line, read it with the same voice and settings into one file, keep it in `voice-lab/recordings/`, and run `python3 tools/split_vo.py <file> --lang en --write`: it installs every line it finds and leaves the others as they are.
 
 ## The voice
 
