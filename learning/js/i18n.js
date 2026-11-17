@@ -278,6 +278,15 @@ var I18n = (function () {
     var file = id && p.files[id];
     return file ? _url(p, file) : null;
   }
+  /* where each piece of a line begins in its recording, in seconds, when the
+     pack measured it ("cues": { key: [0, 1.42, ...] }) -- the typewriter then
+     moves on as the narrator reaches each piece, not at a guess from letters */
+  function voiceCues(text) {
+    var p = _pack();
+    if (!p || !p.cues || text == null) return null;
+    var id = _keyOf[_norm(text)];
+    return (id && p.cues[id]) || null;
+  }
   /* every line of the language that has a recording, as it is shown --
      `only`, a pattern on the keys, narrows it (the preload wants the lines
      that are said, not the buttons) */
@@ -317,6 +326,7 @@ var I18n = (function () {
     source: source,
     hasVoice: hasVoice,
     voice: voice,
+    voiceCues: voiceCues,
     voiceTexts: voiceTexts,
     applyStatic: applyStatic,
     getLang: getLang,

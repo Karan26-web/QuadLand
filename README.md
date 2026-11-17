@@ -55,7 +55,7 @@ URL parameters:
 - `?dpr=1` fixes the render resolution; it adapts by default.
 - `?seed=7` deals the islands the same way every run.
 - `?view=space|fleet|planet|islands|sea|low|cockpit|ship&k=2` shows one world, still, for screenshots.
-- `?lan=hi|mr|gu|te|od` plays in that language (words, fonts, narration; the learning module follows).
+- `?lan=hi|mr|gu|te|od` plays in that language (words, fonts, narration; the learning module follows, voiced in its own recordings in Hindi, Marathi and Gujarati, and with the English clips in Telugu and Odia, which have none yet).
 
 Console: `__ql` is the game context (`__ql.flow.phase`, `__ql.planet`, `__ql.space`, `__ql.director`, `__ql.post.fx`, `__ql.i18n.lang`).
 

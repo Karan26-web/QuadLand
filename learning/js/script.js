@@ -2005,6 +2005,8 @@
     'P27-09-lets-simplify-it-step-by-step': [0.0, 1.31]
   };
   function voCues(text) {
+    /* a language's own pack may carry its cues too (I18n.voiceCues) */
+    if (VO_PACK) return I18n.voiceCues(text);
     const stem = voStem(text);
     return (stem && VO_CUES[stem]) || null;
   }
