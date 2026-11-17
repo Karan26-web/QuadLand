@@ -232,11 +232,14 @@ function loopGlide(G, dur) {
   }
   return G.director.path({ points: pts, target: tg, fov: [54, 46], roll: 'bank', bank: 1.4, dur, ease: Ease.inOutSine, blendIn: 0.08 });
 }
-/* Screen 5: a slow, high glide across the field, from the near left to the far right */
+/* Screen 5: a slow, high glide across the field, from the far right back to the near left. It rises out of the low loop,
+   which ends on the far right (131, 8, -128), so it carries on from wherever the camera is: it used to start at the near
+   left, and the camera cut 260 units across the field between two shots of the same sea, which read as a blink (the
+   user, 2026-11-17) */
 function highGlide(G, dur) {
-  const pts = [V(-80, 60, 12), V(-24, 46, -28), V(36, 42, -48), V(96, 46, -66), V(150, 56, -116)];
-  const tg = [V(-21, 0, -104), V(6, 0, -80), V(33, 0, -106), V(62, 0, -80), V(89, 0, -116)];
-  return G.director.path({ points: pts, target: tg, fov: [50, 46], roll: 'bank', bank: 0.5, dur, ease: Ease.inOutSine, blendIn: 0.2, fromCurrent: false });
+  const pts = [V(150, 56, -116), V(96, 46, -66), V(36, 42, -48), V(-24, 46, -28), V(-80, 60, 12)];
+  const tg = [V(89, 0, -116), V(62, 0, -80), V(33, 0, -106), V(6, 0, -80), V(-21, 0, -104)];
+  return G.director.path({ points: pts, target: tg, fov: [50, 46], roll: 'bank', bank: 0.5, dur, ease: Ease.inOutSine, blendIn: 0.2 });
 }
 /* each set pulses (or glows) as the camera's gaze passes over it */
 function pulseAsPassed(G, { glow }) {

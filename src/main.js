@@ -59,25 +59,33 @@ function resize() {
   director.setView(w, h);
   document.documentElement.style.setProperty('--vh', `${h / 100}px`);
 }
-addEventListener('resize', resize);
+// A new size is applied at the start of the next frame, just before it is drawn: resizing the canvas wipes it, and a
+// canvas resized after its frame was drawn shows that frame blank, a one-frame black blink (the user, 2026-11-17:
+// "blinks here and there", which were the adaptive resolution below stepping between levels).
+let resizeDue = false;
+addEventListener('resize', () => { resizeDue = true; });
 resize();
 
 /* ------------------------------------------------- adaptive resolution */
-const perf = { acc: 0, n: 0, slow: 0, fast: 0, locked: param('dpr') != null };
+// Each step changes the sharpness of the whole picture, so it steps rarely: down after 2 slow seconds, up after 6 fast
+// ones, and never back up to a level that was already too slow (no stepping down and up again all game).
+const perf = { acc: 0, n: 0, slow: 0, fast: 0, ceil: QUALITY.cap, locked: param('dpr') != null };
 function adapt(raw) {
   if (perf.locked || document.hidden) return;
   perf.acc += raw; perf.n++;
   if (perf.acc < 1) return;
   const avg = perf.acc / perf.n; perf.acc = 0; perf.n = 0;
   if (avg > 1 / 42) { perf.slow++; perf.fast = 0; } else if (avg < 1 / 58) { perf.fast++; perf.slow = 0; } else { perf.slow = perf.fast = 0; }
-  if (perf.slow >= 2 && dpr > QUALITY.min) { dpr = Math.max(QUALITY.min, dpr - 0.15); perf.slow = 0; resize(); }
-  else if (perf.fast >= 4 && dpr < QUALITY.cap) { dpr = Math.min(QUALITY.cap, dpr + 0.1); perf.fast = 0; resize(); }
+  if (perf.slow >= 2 && dpr > QUALITY.min) {
+    perf.ceil = Math.max(QUALITY.min, dpr - 0.05); dpr = Math.max(QUALITY.min, dpr - 0.15); perf.slow = 0; resizeDue = true;
+  } else if (perf.fast >= 6 && dpr < perf.ceil - 1e-3) { dpr = Math.min(perf.ceil, dpr + 0.1); perf.fast = 0; resizeDue = true; }
 }
 
 /* ------------------------------------------------------------ the loop */
 let last = performance.now(), running = false;
 const FAST = clamp(+param('fast', 1), 0.25, 8);
 function frame(now) {
+  if (resizeDue) { resizeDue = false; resize(); }
   const raw = Math.min(0.05, Math.max(0, (now - last) / 1000)) * FAST; last = now;
   const { dt, ui } = clock.tick(raw);
   tweens.update(dt); uiTweens.update(ui);

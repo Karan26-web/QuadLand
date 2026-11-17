@@ -199,9 +199,16 @@ export async function run(s, G, flow, k) {
     const p = arrive.getPointAt(e); ship.vel.copy(p).sub(ship.position).multiplyScalar(60); ship.position.copy(p);
     ship.thrust = 1 - e * 0.8;
   } });
-  // the camera swings round to meet it
+  // the camera swings round to meet it. It tilts back off the straight-down view first, on the side "up the screen"
+  // already points away from: looking straight down, the least sideways step of the point it looks at turns the whole
+  // picture round in one frame (the user, 2026-11-17: "blinks"; it spun 30° at the start of every landing)
   d.handheld(0.3);
-  d.follow((p) => { const sp2 = ship.position; p.pos.copy(sp2).add(V(-sp * 1.1, 4 + sp * 0.2, sp * 1.6)); p.target.copy(sp2); p.fov = 46; p.roll = 0.06; }, 2.6);
+  const top = d.current(), lift = top.pos.distanceTo(top.target), tilted = top.clone();
+  tilted.pos.copy(top.target).add(V(0, lift * 0.8, lift * 0.6));
+  d.to(tilted, 0.7, Ease.inOutSine).then((ok) => {
+    if (!ok || !s.alive) return;
+    d.follow((p) => { const sp2 = ship.position; p.pos.copy(sp2).add(V(-sp * 1.1, 4 + sp * 0.2, sp * 1.6)); p.target.copy(sp2); p.fov = 46; p.roll = 0.06; }, 2.6);
+  });
   const hereP = say(s, G, shape.vo.here, { after: 0 });
   await s.run(flyIn.promise);
   ship.vel.set(0, 0, 0); ship.thrust = 0.15;
