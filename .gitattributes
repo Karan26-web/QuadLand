@@ -1,0 +1,24 @@
+# GitHub's "Download ZIP" (git archive) leaves out everything marked export-ignore, so the ZIP stays under 5 MB.
+# All of it stays in the repo, in every clone and on the live site (Vercel deploys the repo itself).
+
+# The voice clips (27.8 MB). The ZIP keeps their manifests (assets/vo/**/vo.json, lines.json, the lesson's
+# locale file), and its game streams the clips from the live site, https://quadland-psi.vercel.app
+# (src/engine/voice.js VOICE_HOST, learning/js/script.js VO_HOST).
+/assets/vo/**/*.m4a export-ignore
+/learning/assets/VO export-ignore
+/learning/assets/VO-* export-ignore
+
+# Reference and development files: the game never loads them.
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.claude export-ignore
+/docs export-ignore
+/tools export-ignore
+/voice-lab export-ignore
+/spacecraftFeedbacks*.pdf export-ignore
+/learning/build export-ignore
+/learning/assets/swiftee-assets/spritesheets/2x export-ignore
+/learning/assets/swiftee-assets/source export-ignore
+/learning/assets/swiftee-assets/build export-ignore
+/learning/assets/swiftee-assets/atlas export-ignore
+/learning/assets/swiftee-assets/*.md export-ignore

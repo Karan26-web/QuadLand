@@ -134,6 +134,7 @@ How the game frames it (`src/game/lesson.js`):
 - **The narrator ducks the music.**
 - **Recorded overrides:** any cue or mood can be replaced by a recording (`docs/assets/07-audio.md`).
 - **Narration:** English recorded in ElevenLabs (2026-11-09), all 51 lines, cut from one take (`voice-lab/recordings/en-karan-2026-11-09.mp3`) by `tools/split_vo.py`: each line found in the take, cut at the pauses in the audio, with room before (0.12 s) and after (0.38 s), a breath taken for the next line left out of both, and any pause between two sentences opened to at least 0.34 s. Between two lines the player hears about 0.85 s of quiet. Every line is a file, so every device sounds the same and the waveform is the real voice. The camera moves that run under narration take their length from the clips (the survey's high glide, the return to the field), so they fit any voice and language.
+- **The download stays under 5 MB** (the user, 2026-11-17): the repo's Download ZIP leaves out every voice clip (27.8 MB in all, the game's and the lesson's) and the reference and development files (`.gitattributes`), which brings it to 2.7 MB. Its game streams the clips from the live site (quadland-psi.vercel.app) when they are not beside the page; the repo and the live site play their own (README, "The download").
 
 ## 8. UX
 - **Input:** a thumb stick that appears where the thumb lands, W A S D / arrows, and Enter/Space for every primary button. Every button is at least 70 px. Waiting always brings a hint: a caption, a demo hand on the stick, or a pulse on the control.

@@ -11,12 +11,17 @@
 // in assets/vo/, every other language in assets/vo/<lan>/ (tools/make_vo.py
 // renders them). A language without recordings keeps its subtitles, paced at
 // reading speed; the browser's own speech fills in only if it has a voice for it.
+// The clips play from beside the page (the repo, the live site). GitHub's Download ZIP leaves them out so it stays
+// under 5 MB (.gitattributes), and the game run from it streams them from the live site (VOICE_HOST) instead.
 // ---------------------------------------------------------------------------
 import { audio } from './audio.js';
 import { uiTweens } from './tween.js';
 import { i18n } from './i18n.js';
 
 const ROOT = './assets/vo/';
+/** where the clips are streamed from when they are not beside the page: the live site, which deploys the whole repo
+    and serves its files to any origin (access-control-allow-origin: *) */
+export const VOICE_HOST = 'https://quadland-psi.vercel.app/';
 const sub = () => document.getElementById('subLine');
 
 export const voice = {
@@ -37,15 +42,21 @@ export const voice = {
     this.data = new Uint8Array(this.analyser.fftSize);
     const ids = Object.keys(this.man);
     let done = 0;
+    // beside the page, unless the first clip is not there (the downloaded ZIP): then every clip comes from the live site
+    const remote = VOICE_HOST + this.base.replace(/^\.\//, '');
+    let from = this.base;
+    const get = (at, id) => fetch(at + this.man[id].file).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
     const one = async (id) => {
       try {
-        const buf = await fetch(this.base + this.man[id].file).then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); });
+        let buf;
+        try { buf = await get(from, id); } catch (e) { if (from === remote) throw e; from = remote; buf = await get(from, id); }
         const ab = await new Promise((res, rej) => { const p = ctx.decodeAudioData(buf, res, rej); if (p && p.catch) p.catch(rej); });
         this.buffers.set(id, ab);
       } catch (e) { /* the line falls back to speech synthesis */ }
       onProgress(++done / Math.max(1, ids.length));
     };
     const queue = ids.slice();
+    if (queue.length) await one(queue.shift());       // alone, so only one request goes to a place without clips
     await Promise.all(Array.from({ length: 6 }, async () => { while (queue.length) await one(queue.shift()); }));
   },
   /** a line's words in the player's language (strings.json, vo.<id>) */

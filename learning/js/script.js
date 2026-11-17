@@ -1523,6 +1523,13 @@
      none for types in silence rather than in English. Every other language
      keeps the English clips below. */
   const VO_PACK = I18n.hasVoice();
+  /* QuadLand: the clips play from beside the page. The game's Download ZIP
+     on GitHub leaves them out so it stays under 5 MB (its .gitattributes),
+     and there they come from the live site instead, which deploys them all.
+     Where they come from is settled once, before the loader asks for the
+     first one (voWhere). */
+  const VO_HOST = 'https://quadland-psi.vercel.app/learning/';
+  let voBase = '';
 
   /* The line as it is written on screen, lower-cased with its typographic
      quotes flattened -- so the map can be read against the source, and a
@@ -2057,19 +2064,47 @@
   const voBank = Object.create(null);
   let voNow = null;                    /* the one clip that may be sounding */
 
+  /* a language's own clip is named by its whole path (I18n.voice) */
+  function voPath(stem) { return VO_PACK ? stem : VO_DIR + stem + '.webm' + VO_REV; }
+
   function voFor(text) {
     const key = voKey(text);
     const stem = voStem(text);
     if (!stem) return null;
-    /* a language's own clip is named by its whole path (I18n.voice) */
     const bankKey = VO_PACK ? stem : key;
     let a = voBank[bankKey];
     if (!a) {
-      a = new Audio(VO_PACK ? stem : VO_DIR + stem + '.webm' + VO_REV);
+      a = new Audio(voBase + voPath(stem));
       a.preload = 'auto';
       voBank[bankKey] = a;
     }
     return a;
+  }
+
+  /* Is the first opening clip beside the page? An audio element asks, so a
+     page opened from disk (file://, where fetch is refused) is answered too.
+     If it is not there (the game's downloaded ZIP), every clip comes from the
+     live site. A slow answer is a slow network, not a missing clip. */
+  function voWhere() {
+    const text = VO_OPENING.find(t => voHas(t));
+    if (!text) return Promise.resolve();
+    return new Promise(resolve => {
+      const a = new Audio();
+      let settled = false;
+      const done = function (here) {
+        if (settled) return;
+        settled = true;
+        if (!here) voBase = VO_HOST;
+        a.removeAttribute('src');
+        try { a.load(); } catch (e) { /* only letting the probe go */ }
+        resolve();
+      };
+      a.preload = 'metadata';
+      a.addEventListener('loadedmetadata', () => done(true));
+      a.addEventListener('error', () => done(false));
+      setTimeout(() => done(true), 4000);
+      a.src = voPath(voHas(text));
+    });
   }
 
   /* Nothing is playing: the typewriter keeps the pace it was given. */
@@ -3734,6 +3769,7 @@
   }
 
   async function welcomeScreen() {
+    await voWhere();
     await runLoader();
     /* the mission's own voice can start arriving now: the bar is done with */
     warmVoices();

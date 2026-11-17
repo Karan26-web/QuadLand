@@ -150,4 +150,11 @@ python3 tools/split_vo.py voice-lab/recordings/take.mp3 --lang en --write      #
 To replace a single line with a recording, follow `docs/assets/08-voice.md`: save it as `assets/vo/<ID>.m4a` (another language: `assets/vo/<lan>/<ID>.m4a`), then run `python3 tools/make_vo.py --adopt` (with `--lang`). The words of every line are in `assets/i18n/strings.json`; `assets/vo/lines.json` lists the lines and which are the LXD's.
 
 ## Deploy
-It is a static site with no build step: upload the folder as it is, for example to Vercel with the "Other" preset and no build command. Keep the `vendor/` and `assets/` paths.
+It is a static site with no build step: upload the folder as it is, for example to Vercel with the "Other" preset and no build command. Keep the `vendor/` and `assets/` paths. The live site is https://quadland-psi.vercel.app (deployed from this repo).
+
+## The download (under 5 MB)
+GitHub's **Download ZIP** holds only what the game runs on: about 2.7 MB. `.gitattributes` marks the rest `export-ignore`, so it stays in the repo, in every clone and on the live site:
+- **The voice clips** (27.8 MB: the Ship AI in 6 languages, Swiftee's lesson in 4). The ZIP keeps their lists, and its game streams the clips from the live site: it looks for the first clip beside the page, and if it is not there, plays every clip from `https://quadland-psi.vercel.app` (`VOICE_HOST` in `src/engine/voice.js`, `VO_HOST` in `learning/js/script.js`). So the ZIP's game needs internet for its voices; without it, the subtitles and the lesson's text still show. The full repo plays its own clips and never calls the live site.
+- **The reference and development files:** `docs/`, `tools/`, `voice-lab/`, `.claude/`, the feedback PDFs, the lesson's build scripts and Swiftee's source art. Clone the repo to work on them.
+
+Check the size after adding anything big: `git archive --format=zip -o /tmp/q.zip HEAD && ls -l /tmp/q.zip` (it applies the committed `.gitattributes`, as GitHub does).
